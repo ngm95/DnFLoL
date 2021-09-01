@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD MAPPER 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="LGroupMapper">
+
+	<insert id="create">
+		INSERT INTO LGroup (
+			lgroupOwner, lgrouptype, lgroupMax, lgroupName, lgroupDate, lgroupDetail
+		) VALUES (
+			#{lgroupOwner}, #{lgrouptype}, #{lgroupMax}, #{lgroupName}, #{lgroupDate}, #{lgroupDetail}
+		)
+	</insert>
+	
+	<select id="readById" resultType="com.project.dnflol.dto.LGroupDTO">
+		SELECT lgroupId, lgroupOwner, lgrouptype, lgroupMax, lgroupName, lgroupDate, lgroupDetail
+		FROM LGroup
+		WHERE lgroupId = #{lgroupId}
+	</select>
+	
+	<select id="readAllByOwner" resultType="com.project.dnflol.dto.LGroupDTO">
+	<![CDATA[
+		SELECT lgroupId, lgroupOwner, lgrouptype, lgroupMax, lgroupName, lgroupDate, lgroupDetail
+		FROM LGroup
+		WHERE lgroupOwner = #{lgroupOwner}
+	]]>
+	</select>
+	
+	<update id="updateType">
+		UPDATE LGroup
+		SET lgroupType = #{lgroupType}, lgroupMax = #{lgroupMax}
+		WHERE lgropuID = #{lgropuID}
+	</update>
+	
+	<delete id="deleteById">
+		DELETE FROM LGroup
+		WHERE lgropuId = #{lgropuId}
+	</delete>
+
+</mapper>
