@@ -7,4 +7,5 @@ public class UserDTO {
 	String uid;
 	String uname;
 	String pw;
+	String email;
 }

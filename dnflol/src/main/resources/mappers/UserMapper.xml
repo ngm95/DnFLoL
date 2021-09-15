@@ -7,22 +7,28 @@
 
 	<insert id="create">
 		INSERT INTO User (
-			uid, uname, pw
+			uid, uname, eamil, pw
 		) VALUES (
-			#{uid}, #{uname}, #{pw}
+			#{uid}, #{uname}, #{email}, #{pw}
 		)
 	</insert>
 	
 	<select id="readById" resultType="com.project.dnflol.dto.UserDTO">
-		SELECT uid, uname, pw
+		SELECT uid, uname, eamil, pw
 		FROM User
 		WHERE uid = #{uid}
 	</select>
 	
 	<select id="readByName" resultType="com.project.dnflol.dto.UserDTO">
-		SELECT uid, uname, pw
+		SELECT uid, uname, eamil, pw
 		FROM User
 		WHERE uname = #{uname}
+	</select>
+	
+	<select id="readByEmail" resultType="com.project.dnflol.dto.UserDTO">
+		SELECT uid, uname, eamil, pw
+		FROM User
+		WHERE email = #{email}
 	</select>
 	
 	<update id="updatePw">

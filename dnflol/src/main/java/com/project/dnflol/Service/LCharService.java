@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import com.project.dnflol.DAO.LCharDAO;
 import com.project.dnflol.DTO.LCharDTO;
 import com.project.dnflol.Exception.AlreadyExistedLCharNameException;
+import com.project.dnflol.util.RegisterRequest;
 
 @Service
 public class LCharService {

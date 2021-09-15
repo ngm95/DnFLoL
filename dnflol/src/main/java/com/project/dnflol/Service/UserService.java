@@ -4,8 +4,11 @@ import org.springframework.stereotype.Service;
 
 import com.project.dnflol.DAO.UserDAO;
 import com.project.dnflol.DTO.UserDTO;
+import com.project.dnflol.Exception.AlreadyExistedEmailException;
 import com.project.dnflol.Exception.AlreadyExistedUIdException;
+import com.project.dnflol.Exception.AlreadyExistedUNameException;
 import com.project.dnflol.Exception.NoSuchUIdException;
+import com.project.dnflol.util.RegisterRequest;
 
 @Service
 public class UserService {
@@ -36,5 +39,32 @@ public class UserService {
 			throw new NoSuchUIdException(userDto.getUid());
 		else
 			userDao.updateName(userDto);
+	}
+	
+	public UserDTO readByName(String uname) {
+		return userDao.readByName(uname);
+	}
+	
+	public UserDTO readById(String uid) {
+		return userDao.readById(uid);
+	}
+	
+	public UserDTO readByEmail(String email) {
+		return userDao.readByEmail(email);
+	}
+	
+	public void register(RegisterRequest regReq) {
+		if (readByEmail(regReq.getEmail()) != null) 
+			throw new AlreadyExistedEmailException(regReq.getEmail());
+		else if (readById(regReq.getUid()) != null)
+			throw new AlreadyExistedUIdException(regReq.getUid());
+		else if (readByName(regReq.getUname()) != null) 
+			throw new AlreadyExistedUNameException(regReq.getUid());
+		else
+			userDao.register(regReq);
+	}
+	
+	public void delete(String uid) {
+		userDao.delete(uid);
 	}
 }
