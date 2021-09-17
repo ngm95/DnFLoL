@@ -15,7 +15,6 @@ import org.springframework.context.annotation.Configuration;
 @EnableAutoConfiguration(exclude = { DataSourceTransactionManagerAutoConfiguration.class, DataSourceAutoConfiguration.class })
 @ComponentScan(basePackages = "com.project.dnflol")
 public class DnflolApplication extends SpringBootServletInitializer{
-	
 	@Override
 	  protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
 	    return builder.sources(DnflolApplication.class);
