@@ -7,16 +7,24 @@
 
 	<insert id="create">
 		INSERT INTO LChar (
-			lcharName
+			lcharName, uid
 		) VALUES (
-			#{lcharName}
+			#{lcharName}, #{uid}
 		)
 	</insert>
 	
 	<select id="readByName" resultType="com.project.dnflol.dto.LCharDTO">
-		SELECT lcharId, lcharName
+		SELECT lcharId, uid, lcharName
 		FROM LChar
 		WHERE lcharName = #{lcharName}
+	</select>
+	
+	<select id="readAllByUId" resultType="com.project.dnflol.dto.LCharDTO">
+	<![CDATA[
+		SELECT lcharId, uid, lcharName
+		FROM LChar
+		WHERE uid = #{uid}
+	]]>
 	</select>
 	
 	<delete id="deleteById">

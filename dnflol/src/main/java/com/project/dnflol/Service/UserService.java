@@ -67,4 +67,6 @@ public class UserService {
 	public void delete(String uid) {
 		userDao.delete(uid);
 	}
+	
+	
 }

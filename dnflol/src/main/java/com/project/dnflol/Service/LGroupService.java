@@ -29,6 +29,10 @@ public class LGroupService {
 		return lgroupDao.readAllByOwner(lgroupOwner);
 	}
 	
+	public List<LGroupDTO> readAllByUId(String uid) {
+		return lgroupDao.readAllByUId(uid);
+	}
+	
 	public void deleteById(int groupId) {
 		lgroupDao.deleteById(groupId);
 	}

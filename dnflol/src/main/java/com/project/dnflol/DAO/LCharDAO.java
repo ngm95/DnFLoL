@@ -1,5 +1,7 @@
 package com.project.dnflol.DAO;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.apache.ibatis.session.SqlSession;
@@ -20,6 +22,10 @@ public class LCharDAO {
 	
 	public LCharDTO readByName(String lcharName) {
 		return sqlsession.selectOne(MAPPER + ".readByName", lcharName);
+	}
+	
+	public List<LCharDTO> readAllByUid(String uid) {
+		return sqlsession.selectList(MAPPER + ".readAllByUId", uid);
 	}
 	
 	public void deleteById(String lcharId) {

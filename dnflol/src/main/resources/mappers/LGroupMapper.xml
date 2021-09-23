@@ -27,6 +27,14 @@
 	]]>
 	</select>
 	
+	<select id="readAllByUId" resultType="com.project.dnflol.dto.LGroupDTO">
+	<![CDATA[
+		SELECT lgroupId, lgroupOwner, lgrouptype, lgroupMax, lgroupName, lgroupDate, lgroupDetail
+		FROM LGroup, LChar
+		WHERE LGroup.lgroupOnwer = LChar.lcharId AND LChar.uid = #{uid}
+	]]>
+	</select>
+	
 	<update id="updateType">
 		UPDATE LGroup
 		SET lgroupType = #{lgroupType}, lgroupMax = #{lgroupMax}

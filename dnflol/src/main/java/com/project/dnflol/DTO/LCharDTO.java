@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class LCharDTO {
-	int lcharID;
+	int lcharId;
+	String uid;
 	String lcharName;
 }

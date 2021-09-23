@@ -28,6 +28,10 @@ public class LGroupDAO {
 		return sqlsession.selectList(MAPPER + ".readAllByOwner", lgroupOnwer);
 	}
 	
+	public List<LGroupDTO> readAllByUId(String uid) {
+		return sqlsession.selectList(MAPPER + ".readAllByUId", uid);
+	}
+	
 	public void deleteById(int lgroupId) {
 		sqlsession.delete(MAPPER + ".deleteById", lgroupId);
 	}
