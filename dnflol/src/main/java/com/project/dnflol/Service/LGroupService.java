@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.project.dnflol.DAO.LGroupDAO;
 import com.project.dnflol.DTO.LGroupDTO;
+import com.project.dnflol.util.BoardMinMax;
 
 @Service
 public class LGroupService {
@@ -25,12 +26,28 @@ public class LGroupService {
 		return lgroupDao.readById(lgroupId);
 	}
 	
-	public List<LGroupDTO> readAllByOwner(int lgroupOwner) {
-		return lgroupDao.readAllByOwner(lgroupOwner);
+	public List<LGroupDTO> readAllByOwnerName(String onwerName) {
+		return lgroupDao.readAllByOwnerName(onwerName);
+	}
+	
+	public List<LGroupDTO> readAllByDetail(String lgropDetail) {
+		return lgroupDao.readAllByDetail(lgropDetail);
+	}
+	
+	public List<LGroupDTO> readAllByGroupName(String lgroupName) {
+		return lgroupDao.readAllByGroupName(lgroupName);
 	}
 	
 	public List<LGroupDTO> readAllByUId(String uid) {
 		return lgroupDao.readAllByUId(uid);
+	}
+	
+	public List<LGroupDTO> readLimitList(BoardMinMax bmm) {
+		return lgroupDao.readLimitList(bmm);
+	}
+	
+	public int readMaxCount() {
+		return lgroupDao.readMaxCount();
 	}
 	
 	public void deleteById(int groupId) {

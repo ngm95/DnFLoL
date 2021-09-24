@@ -17,13 +17,33 @@
 		SELECT lgroupId, lgroupOwner, lgrouptype, lgroupMax, lgroupName, lgroupDate, lgroupDetail
 		FROM LGroup
 		WHERE lgroupId = #{lgroupId}
+		ORDER BY lgroupDate DESC
 	</select>
 	
-	<select id="readAllByOwner" resultType="com.project.dnflol.dto.LGroupDTO">
+	<select id="readAllByOwnerName" resultType="com.project.dnflol.dto.LGroupDTO">
+	<![CDATA[
+		SELECT lgroupId, lgroupOwner, lgrouptype, lgroupMax, lgroupName, lgroupDate, lgroupDetail
+		FROM LGroup, LChar
+		WHERE LGroup.lgroupOnwer = LChar.lcharId AND LChar.lcharName = #{onwerName}
+		ORDER BY lgroupDate DESC
+	]]>
+	</select>
+	
+	<select id="readAllByDetail" resultType="com.project.dnflol.dto.LGroupDTO">
 	<![CDATA[
 		SELECT lgroupId, lgroupOwner, lgrouptype, lgroupMax, lgroupName, lgroupDate, lgroupDetail
 		FROM LGroup
-		WHERE lgroupOwner = #{lgroupOwner}
+		WHERE lgroupDetail Like CONCAT('%',#{lgroupDetail},'%')
+		ORDER BY lgroupDate DESC
+	]]>
+	</select>
+	
+	<select id="readAllByGroupName" resultType="com.project.dnflol.dto.LGroupDTO">
+	<![CDATA[
+		SELECT lgroupId, lgroupOwner, lgrouptype, lgroupMax, lgroupName, lgroupDate, lgroupDetail
+		FROM LGroup
+		WHERE lgroupName Like CONCAT('%',#{lgroupName},'%')
+		ORDER BY lgroupDate DESC
 	]]>
 	</select>
 	
@@ -33,6 +53,20 @@
 		FROM LGroup, LChar
 		WHERE LGroup.lgroupOnwer = LChar.lcharId AND LChar.uid = #{uid}
 	]]>
+	</select>
+	
+	<select id="readLimitList" resultType="com.project.dnflol.dto.LGroupDTO">
+	<![CDATA[
+		SELECT lgroupId, lgroupOwner, lgrouptype, lgroupMax, lgroupName, lgroupDate, lgroupDetail
+		FROM LGroup
+		ORDER BY lgroupDate DESC
+		LIMIT #{min}, #{max}
+	]]>
+	</select>
+	
+	<select id="readMaxCount" resultType="int">
+		SELECT Count(*)
+		FROM LGroup
 	</select>
 	
 	<update id="updateType">

@@ -59,4 +59,11 @@ public class MainPageController {
 		mv.setViewName("/myPage");
 		return mv;
 	} 
+	
+	@RequestMapping("/myNotice")
+	public ModelAndView myNotice(HttpSession sesion) {
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("/myNotice");
+		return mv;
+	}
 }
