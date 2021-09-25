@@ -20,12 +20,20 @@ public class LCharDAO {
 		sqlsession.insert(MAPPER + ".create", lcharDto);
 	}
 	
+	public LCharDTO readById(int lcharId) {
+		return sqlsession.selectOne(MAPPER + ".readById", lcharId);
+	}
+	
 	public LCharDTO readByName(String lcharName) {
 		return sqlsession.selectOne(MAPPER + ".readByName", lcharName);
 	}
 	
 	public List<LCharDTO> readAllByUid(String uid) {
 		return sqlsession.selectList(MAPPER + ".readAllByUId", uid);
+	}
+	
+	public List<LCharDTO> readAllAcceptedByGroupId(int groupId) {
+		return sqlsession.selectList(MAPPER + ".readAllAcceptedByGruopId", groupId);
 	}
 	
 	public void deleteById(String lcharId) {

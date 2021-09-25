@@ -4,6 +4,6 @@ import lombok.Getter;
 
 @Getter
 public class APIKey {
-	private String LOL_API_KEY = "0ff1d05f-0596-4e35-a0e9-b64813e11f5c";
+	private String LOL_API_KEY = "RGAPI-552c411b-77c1-47e4-a79f-e434e7732e7f";
 	private String DNF_API_KEY = "";
 }

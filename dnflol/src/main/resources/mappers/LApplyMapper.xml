@@ -16,7 +16,7 @@
 	<select id="read" resultType="com.project.dnflol.dto.LApplyDTO">
 		SELECT lapplyId, lcharId, lgroupId, lapplyResult
 		FROM LApply
-		WHERE lapplyId = #{lapplyId} AND lgroupId = #{lgroupId}
+		WHERE lcharId = #{lcharId} AND lgroupId = #{lgroupId}
 	</select>
 	
 	<select id="readAllByGroupId" resultType="com.project.dnflol.dto.LApplyDTO">

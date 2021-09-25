@@ -23,7 +23,11 @@ public class LCharService {
 		if (readByName(lcharDto.getLcharName()) == null)
 			lcharDao.create(lcharDto);
 		else
-			throw new AlreadyExistedLCharNameException(lcharDto.getLcharName());
+			throw new AlreadyExistedLCharNameException(lcharDto.getLcharName() + "는 이미 다른 계정과 연동되어 있습니다.");
+	}
+	
+	public LCharDTO readById(int lcharId) {
+		return lcharDao.readById(lcharId);
 	}
 	
 	public LCharDTO readByName(String lcharName) {
@@ -32,6 +36,10 @@ public class LCharService {
 	
 	public List<LCharDTO> readAllByUid(String uid) {
 		return lcharDao.readAllByUid(uid);
+	}
+	
+	public List<LCharDTO> readAllAcceptedByGroupId(int groupId) {
+		return lcharDao.readAllAcceptedByGroupId(groupId);
 	}
 	
 	public void deleteById(String lcharId) {

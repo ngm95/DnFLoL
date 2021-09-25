@@ -33,7 +33,7 @@
 	<![CDATA[
 		SELECT lgroupId, lgroupOwner, lgrouptype, lgroupMax, lgroupName, lgroupDate, lgroupDetail
 		FROM LGroup
-		WHERE lgroupDetail Like CONCAT('%',#{lgroupDetail},'%')
+		WHERE lgroupDetail LIKE CONCAT('%',#{lgroupDetail},'%')
 		ORDER BY lgroupDate DESC
 	]]>
 	</select>

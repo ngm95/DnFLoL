@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.project.dnflol.DAO.LApplyDAO;
 import com.project.dnflol.DTO.LApplyDTO;
+import com.project.dnflol.Exception.AlreadyExistedApplyException;
 
 @Service
 public class LApplyService {
@@ -20,6 +21,8 @@ public class LApplyService {
 	public void create(LApplyDTO lapplyDto) {
 		if (lapplyDao.read(lapplyDto) == null)
 			lapplyDao.create(lapplyDto);
+		else
+			throw new AlreadyExistedApplyException("이 계정은 이미 해당 그룹에 지원한 상태입니다.");
 	}
 	
 	public LApplyDTO read(LApplyDTO lapplyDto) {
