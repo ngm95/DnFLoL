@@ -7,6 +7,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -75,6 +76,8 @@ public class RegisterController {
 		/*
 		 * 회원가입을 시도해 이메일/닉네임/아이디가 이미 존재했다면 이전 단계로 돌아감
 		 */
+		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+		regReq.setPw(encoder.encode(regReq.getPw()));						// 비밀번호를 암호화한다.
 		try {
 			uServ.register(regReq);
 		} catch(AlreadyExistedEmailException aeee) {

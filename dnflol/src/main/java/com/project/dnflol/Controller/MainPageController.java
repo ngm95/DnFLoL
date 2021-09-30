@@ -44,7 +44,7 @@ public class MainPageController {
 		return mv;
 	}
 	
-	@RequestMapping("/myPage")
+	@RequestMapping("user/myPage")
 	public ModelAndView myPage(HttpSession session) {
 		ModelAndView mv = new ModelAndView();
 		List<LCharDTO> myChars = lcServ.readAllByUid(((UserDTO)session.getAttribute("authInfo")).getUid());	// LoL 연동 계정 정보
@@ -56,14 +56,14 @@ public class MainPageController {
 		 * DnF 연동 계정 정보와 작성한 글 정보를 session에 담는 작업 필요
 		 */
 		
-		mv.setViewName("/myPage");
+		mv.setViewName("/user/myPage");
 		return mv;
 	} 
 	
-	@RequestMapping("/myNotice")
-	public ModelAndView myNotice(HttpSession sesion) {
+	@RequestMapping("user/myNotice")
+	public ModelAndView myNotice(HttpSession session) {
 		ModelAndView mv = new ModelAndView();
-		mv.setViewName("/myNotice");
+		mv.setViewName("/user/myNotice");
 		return mv;
 	}
 }

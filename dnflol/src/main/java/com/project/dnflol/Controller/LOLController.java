@@ -208,9 +208,9 @@ public class LOLController {
 				String body = handler.handleResponse(response);
 				summonerDto = objectMapper.readValue(body, SummonerDTO.class);	// json을 SummonerDTO로 바꿈
 				LCharDTO lcharDto = new LCharDTO(((AuthInfo)session.getAttribute("authInfo")).getUid(), summonerDto.getName());
-				lcServ.create(lcharDto);
+				lcServ.create(lcharDto);										// 아이디를 계정에 연동
 			}
-		} catch(AlreadyExistedLCharNameException aelcne) {
+		} catch(AlreadyExistedLCharNameException aelcne) {						// 이미 연동되었던 아이디라면 실패했음을 알림
 			session.setAttribute("Exception", aelcne);
 			mv.setViewName("redirect:/findSummoner/" + summonerName);
 			return mv;
