@@ -14,6 +14,7 @@ public class LApplyService {
 	
 	@Autowired
 	private LApplyDAO lapplyDao;
+	
 	public LApplyService(LApplyDAO lapplyDao) {
 		this.lapplyDao = lapplyDao;
 	}

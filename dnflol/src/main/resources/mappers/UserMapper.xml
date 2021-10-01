@@ -13,23 +13,35 @@
 		)
 	</insert>
 	
+	<select id="readUserById" resultType="com.project.dnflol.Security.CustomUserDetails">
+		SELECT uid, pw, role
+		FROM User
+		WHERE uid = #{uid}
+	</select>
+	
 	<select id="readById" resultType="com.project.dnflol.dto.UserDTO">
-		SELECT uid, uname, eamil, pw
+		SELECT uid, uname, eamil, pw, role
 		FROM User
 		WHERE uid = #{uid}
 	</select>
 	
 	<select id="readByName" resultType="com.project.dnflol.dto.UserDTO">
-		SELECT uid, uname, eamil, pw
+		SELECT uid, uname, eamil, pw, role
 		FROM User
 		WHERE uname = #{uname}
 	</select>
 	
 	<select id="readByEmail" resultType="com.project.dnflol.dto.UserDTO">
-		SELECT uid, uname, eamil, pw
+		SELECT uid, uname, eamil, pw, role
 		FROM User
 		WHERE email = #{email}
 	</select>
+	
+	<update id="updateRole">
+		UPDATE User
+		SET role = #{role}
+		WHERE uid = #{uid}
+	</update>
 	
 	<update id="updatePw">
 		UPDATE User

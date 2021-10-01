@@ -8,4 +8,6 @@ public class UserDTO {
 	String uname;
 	String pw;
 	String email;
+	String role;
+	
 }

@@ -1,0 +1,80 @@
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+    
+    <link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css/main.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css/index.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath }/resources/css/style-signup.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+    
+    <!-- datepicker -->
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.8.18/themes/base/jquery-ui.css" type="text/css" />  
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>  
+	<script src="http://code.jquery.com/ui/1.8.18/jquery-ui.min.js"></script>  
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>회원가입 정보 입력</title>
+</head>
+<body class="signup-pages">
+
+
+
+    <div class="signup-box">
+        <div class="signup-logo">
+            <a href="/"><b>D</b>n<b>F</b> <b>L</b>o<b>L</b></a>
+        </div>
+
+        <div class="signup-box-body">
+            <p class="box-msg">Register a new membership</p>
+
+            <form modelAttribute="registerRequest" action="/register/step3" method="post">
+                <div class="form-group has-feedback">
+                    <input type="text" class="form-control" placeholder="ID" path="uid"/>
+                    <span class="glyphicon glyphicon-user form-control-feedback"></span>
+                    <form:errors path="uid" class="signup-errors"/>
+                </div>
+	   			<div class="form-group has-feedback">
+                    <input type="text" class="form-control" placeholder="NAME" path="uname"/>
+                    <span class="glyphicon glyphicon-user form-control-feedback"></span>
+                    <form:errors path="uname" class="signup-errors"/>
+                </div>
+	   			<div class="form-group has-feedback">
+                    <input type="email" class="form-control" placeholder="EMAIL" path="email"/>
+                    <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+                    <form:errors path="email" class="signup-errors"/>
+                </div>
+                <div class="form-group has-feedback">
+                    <input type="password" class="form-control" placeholder="PASSWORD" path="pw"/>
+                    <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                    <form:errors path="password" class="signup-errors"/>
+                </div>
+                <div class="form-group has-feedback">
+                    <input type="password" class="form-control" placeholder="Retype PASSWORD" path="checkPw"/>
+                    <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                    <form:errors path="checkPassword" class="signup-errors"/>
+                </div>
+                
+                <div class="row">
+                    <div">
+                    </div>
+                    <div>
+                        <button type="submit" class="btn btn-style">sign up</button>
+                    </div>
+                </div>
+            </form:form>
+            <div class="social-auth-links text-center">
+                <p>- OR -</p>
+            </div>
+
+            <p>이미 회원가입 하셨나요?</p><a href="/security/login" class="text-center">로그인하기</a>
+        </div>
+    </div>
+
+</body>
+</html>

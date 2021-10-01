@@ -50,7 +50,7 @@ public class LOLController {
 	LCharService lcServ;
 	
 	APIKey api = new APIKey();
-	BoardMinMax bmm = new BoardMinMax(lgServ.readMaxCount());	// 게시판에 노출되는 글을 컨트롤할 객체
+	BoardMinMax bmm;											// 게시판에 노출되는 글을 컨트롤할 객체
 	ObjectMapper objectMapper = new ObjectMapper();				// JSON 형태로 반환되는 response를 DTO형태로 바꿔주는 Jackson 라이브러리를 사용하기 위한 객체
 	
 	/**
@@ -61,6 +61,8 @@ public class LOLController {
 	 */
 	@RequestMapping("/board")
 	public ModelAndView lolBoard(HttpSession session) {
+		if (bmm == null)
+			bmm = new BoardMinMax(lgServ.readMaxCount());	
 		List<LGroupDTO> lgroupList = lgServ.readLimitList(bmm);
 		if (session.getAttribute("lgroupList") == null) {			// 처음 접속했다면 새 리스트 생성
 			session.setAttribute("lgroupList", lgroupList);			// 최근 100개의 글
@@ -148,7 +150,7 @@ public class LOLController {
 		session.setAttribute("lcharList", lcharList);
 		
 		ModelAndView mv = new ModelAndView();
-		mv.setViewName("/lol/board/detail");
+		mv.setViewName("/lol/boardDetail");
 		return mv;
 	}
 	
@@ -181,7 +183,7 @@ public class LOLController {
 			session.setAttribute("Exception", leae);
 		}
 		
-		mv.setViewName("redirect:/lol/board/detail" + lgroupId);
+		mv.setViewName("redirect:/lol/boardDetail" + lgroupId);
 		return mv;
 	}
 	

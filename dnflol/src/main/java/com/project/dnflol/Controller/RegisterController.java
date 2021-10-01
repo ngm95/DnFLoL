@@ -52,7 +52,7 @@ public class RegisterController {
 			return mv;
 		}
 		else {									// 확인 버튼이 눌렸으면 RegisterRequest 객체를 추가해 step2로 넘어감
-			mv.setViewName("/signUp/step2");
+			mv.setViewName("/register/step2");
 			mv.addObject("registerRequest", new RegisterRequest());
 			return mv;
 		}

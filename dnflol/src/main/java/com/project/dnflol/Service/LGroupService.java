@@ -9,10 +9,11 @@ import com.project.dnflol.DAO.LGroupDAO;
 import com.project.dnflol.DTO.LGroupDTO;
 import com.project.dnflol.util.BoardMinMax;
 
-@Service
+@Service("lgServ")
 public class LGroupService {
 	
 	private LGroupDAO lgroupDao;
+	
 	@Autowired
 	public LGroupService(LGroupDAO lgroupDao) {
 		this.lgroupDao = lgroupDao;
