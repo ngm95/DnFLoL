@@ -9,13 +9,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.project.dnflol.Exception.AlreadyExistedEmailException;
 import com.project.dnflol.Exception.AlreadyExistedUIdException;
 import com.project.dnflol.Exception.AlreadyExistedUNameException;
 import com.project.dnflol.Service.UserService;
@@ -45,7 +46,7 @@ public class RegisterController {
 	 * @param agree step1에서 확인 버튼을 눌렀는지 여부
 	 */
 	@RequestMapping("/step2")
-	public ModelAndView registerStep2(@RequestParam(value="agree", defaultValue="false") boolean agree) throws Exception {
+	public ModelAndView registerStep2(@RequestParam(value="agree", defaultValue="false") boolean agree, Model model) throws Exception {
 		ModelAndView mv = new ModelAndView();
 		if (!agree) {							// 확인 버튼이 눌리지 않았으면 step1으로 되돌아감
 			mv.setViewName("/register/step1");
@@ -53,13 +54,13 @@ public class RegisterController {
 		}
 		else {									// 확인 버튼이 눌렸으면 RegisterRequest 객체를 추가해 step2로 넘어감
 			mv.setViewName("/register/step2");
-			mv.addObject("registerRequest", new RegisterRequest());
+			model.addAttribute("request", new RegisterRequest());
 			return mv;
 		}
 	}
 	
 	@RequestMapping(value="/step3", method=RequestMethod.POST)
-	public ModelAndView registerStep3(@Valid RegisterRequest regReq, BindingResult br) throws Exception {
+	public ModelAndView registerStep3(@Valid @ModelAttribute("request") RegisterRequest regReq, BindingResult br) throws Exception {
 		ModelAndView mv = new ModelAndView();
 		
 		if (br.hasErrors()) {					// 필요한 정보가 정한 폼에 맞지 않으면 이전 단계로 돌아감
@@ -80,10 +81,6 @@ public class RegisterController {
 		regReq.setPw(encoder.encode(regReq.getPw()));						// 비밀번호를 암호화한다.
 		try {
 			uServ.register(regReq);
-		} catch(AlreadyExistedEmailException aeee) {
-			br.rejectValue("email", "duplicate", "이미 존재하는 이메일입니다.");
-			mv.setViewName("/register/step2");
-			return mv;
 		} catch(AlreadyExistedUNameException aeune) {
 			br.rejectValue("uname", "duplicate", "이미 존재하는 닉네임입니다.");
 			mv.setViewName("/register/step2");

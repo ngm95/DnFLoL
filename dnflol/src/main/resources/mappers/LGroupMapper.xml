@@ -13,14 +13,14 @@
 		)
 	</insert>
 	
-	<select id="readById" resultType="com.project.dnflol.dto.LGroupDTO">
+	<select id="readById" resultType="com.project.dnflol.DTO.LGroupDTO">
 		SELECT lgroupId, lgroupOwner, lgrouptype, lgroupMax, lgroupName, lgroupDate, lgroupDetail
 		FROM LGroup
 		WHERE lgroupId = #{lgroupId}
 		ORDER BY lgroupDate DESC
 	</select>
 	
-	<select id="readAllByOwnerName" resultType="com.project.dnflol.dto.LGroupDTO">
+	<select id="readAllByOwnerName" resultType="com.project.dnflol.DTO.LGroupDTO">
 	<![CDATA[
 		SELECT lgroupId, lgroupOwner, lgrouptype, lgroupMax, lgroupName, lgroupDate, lgroupDetail
 		FROM LGroup, LChar
@@ -29,7 +29,7 @@
 	]]>
 	</select>
 	
-	<select id="readAllByDetail" resultType="com.project.dnflol.dto.LGroupDTO">
+	<select id="readAllByDetail" resultType="com.project.dnflol.DTO.LGroupDTO">
 	<![CDATA[
 		SELECT lgroupId, lgroupOwner, lgrouptype, lgroupMax, lgroupName, lgroupDate, lgroupDetail
 		FROM LGroup
@@ -38,7 +38,7 @@
 	]]>
 	</select>
 	
-	<select id="readAllByGroupName" resultType="com.project.dnflol.dto.LGroupDTO">
+	<select id="readAllByGroupName" resultType="com.project.dnflol.DTO.LGroupDTO">
 	<![CDATA[
 		SELECT lgroupId, lgroupOwner, lgrouptype, lgroupMax, lgroupName, lgroupDate, lgroupDetail
 		FROM LGroup
@@ -47,7 +47,7 @@
 	]]>
 	</select>
 	
-	<select id="readAllByUId" resultType="com.project.dnflol.dto.LGroupDTO">
+	<select id="readAllByUId" resultType="com.project.dnflol.DTO.LGroupDTO">
 	<![CDATA[
 		SELECT lgroupId, lgroupOwner, lgrouptype, lgroupMax, lgroupName, lgroupDate, lgroupDetail
 		FROM LGroup, LChar
@@ -55,7 +55,7 @@
 	]]>
 	</select>
 	
-	<select id="readLimitList" resultType="com.project.dnflol.dto.LGroupDTO">
+	<select id="readLimitList" resultType="com.project.dnflol.DTO.LGroupDTO">
 	<![CDATA[
 		SELECT lgroupId, lgroupOwner, lgrouptype, lgroupMax, lgroupName, lgroupDate, lgroupDetail
 		FROM LGroup

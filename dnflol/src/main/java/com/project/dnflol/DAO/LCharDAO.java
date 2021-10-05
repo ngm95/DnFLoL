@@ -2,9 +2,8 @@ package com.project.dnflol.DAO;
 
 import java.util.List;
 
-import javax.annotation.Resource;
-
-import org.apache.ibatis.session.SqlSession;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.project.dnflol.DTO.LCharDTO;
@@ -13,34 +12,34 @@ import com.project.dnflol.DTO.LCharDTO;
 public class LCharDAO {
 	private static final String MAPPER = "LCharMapper";
 	
-	@Resource
-	SqlSession sqlsession;
+	@Autowired
+	SqlSessionTemplate template;
 	
 	public void create(LCharDTO lcharDto) {
-		sqlsession.insert(MAPPER + ".create", lcharDto);
+		template.insert(MAPPER + ".create", lcharDto);
 	}
 	
 	public LCharDTO readById(int lcharId) {
-		return sqlsession.selectOne(MAPPER + ".readById", lcharId);
+		return template.selectOne(MAPPER + ".readById", lcharId);
 	}
 	
 	public LCharDTO readByName(String lcharName) {
-		return sqlsession.selectOne(MAPPER + ".readByName", lcharName);
+		return template.selectOne(MAPPER + ".readByName", lcharName);
 	}
 	
 	public List<LCharDTO> readAllByUid(String uid) {
-		return sqlsession.selectList(MAPPER + ".readAllByUId", uid);
+		return template.selectList(MAPPER + ".readAllByUId", uid);
 	}
 	
 	public List<LCharDTO> readAllAcceptedByGroupId(int groupId) {
-		return sqlsession.selectList(MAPPER + ".readAllAcceptedByGruopId", groupId);
+		return template.selectList(MAPPER + ".readAllAcceptedByGruopId", groupId);
 	}
 	
 	public void deleteById(String lcharId) {
-		sqlsession.delete(MAPPER + ".deleteById", lcharId);
+		template.delete(MAPPER + ".deleteById", lcharId);
 	}
 	
 	public void deleteByName(String lcharName) {
-		sqlsession.delete(MAPPER + ".deleteByName", lcharName);
+		template.delete(MAPPER + ".deleteByName", lcharName);
 	}
 }

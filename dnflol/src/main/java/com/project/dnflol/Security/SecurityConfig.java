@@ -41,16 +41,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.antMatchers("/lol/**").authenticated()
 			.antMatchers("/dnf/**").authenticated();
 		http.formLogin()
-			.loginPage("/security/loginPrecess")
+			.loginPage("/security/login")
 			.defaultSuccessUrl("/")
-			.failureForwardUrl("/")
+			.failureForwardUrl("/security/denied")
 			.permitAll();
 		http.logout()
 			.logoutRequestMatcher(new AntPathRequestMatcher("/security/logout"))
 			.logoutSuccessUrl("/")
 			.invalidateHttpSession(true);
 		http.exceptionHandling()
-			.accessDeniedPage("/security/denied");
+			.accessDeniedPage("/security/deniedPage");
 	}
 	
 	@Override

@@ -2,9 +2,8 @@ package com.project.dnflol.DAO;
 
 import java.util.List;
 
-import javax.annotation.Resource;
-
-import org.apache.ibatis.session.SqlSession;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.project.dnflol.DTO.LGroupDTO;
@@ -14,42 +13,42 @@ import com.project.dnflol.util.BoardMinMax;
 public class LGroupDAO {
 	private static final String MAPPER = "LGroupMapper";
 	
-	@Resource
-	SqlSession sqlsession;
+	@Autowired
+	SqlSessionTemplate template;
 	
 	public void create(LGroupDTO lgroupDto) {
-		sqlsession.insert(MAPPER + ".create", lgroupDto);
+		template.insert(MAPPER + ".create", lgroupDto);
 	}
 	
 	public LGroupDTO readById(int lgroupId) {
-		return sqlsession.selectOne(MAPPER + ".readById", lgroupId); 
+		return template.selectOne(MAPPER + ".readById", lgroupId); 
 	}
 	
 	public List<LGroupDTO> readAllByOwnerName(String onwerName) {
-		return sqlsession.selectList(MAPPER + ".readAllByOwner", onwerName);
+		return template.selectList(MAPPER + ".readAllByOwner", onwerName);
 	}
 	
 	public List<LGroupDTO> readAllByDetail(String lgropDetail) {
-		return sqlsession.selectList(MAPPER + ".readAllByDetail", lgropDetail);
+		return template.selectList(MAPPER + ".readAllByDetail", lgropDetail);
 	}
 	
 	public List<LGroupDTO> readAllByGroupName(String lgroupName) {
-		return sqlsession.selectList(MAPPER + ".readAllByGroupName", lgroupName);
+		return template.selectList(MAPPER + ".readAllByGroupName", lgroupName);
 	}
 	
 	public List<LGroupDTO> readAllByUId(String uid) {
-		return sqlsession.selectList(MAPPER + ".readAllByUId", uid);
+		return template.selectList(MAPPER + ".readAllByUId", uid);
 	}
 	
 	public List<LGroupDTO> readLimitList(BoardMinMax bmm) {
-		return sqlsession.selectList(MAPPER + ".readLimitList", bmm);
+		return template.selectList(MAPPER + ".readLimitList", bmm);
 	}
 	
 	public int readMaxCount() {
-		return sqlsession.selectOne(MAPPER + ".readMaxCount");
+		return template.selectOne(MAPPER + ".readMaxCount");
 	}
 	
 	public void deleteById(int lgroupId) {
-		sqlsession.delete(MAPPER + ".deleteById", lgroupId);
+		template.delete(MAPPER + ".deleteById", lgroupId);
 	}
 }

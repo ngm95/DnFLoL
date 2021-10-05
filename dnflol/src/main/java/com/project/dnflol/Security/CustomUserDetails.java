@@ -6,9 +6,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import lombok.Getter;
+import lombok.Data;
 
-@Getter
+@Data
 public class CustomUserDetails implements UserDetails {
 	
 	private String uid;

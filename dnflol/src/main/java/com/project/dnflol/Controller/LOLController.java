@@ -32,6 +32,7 @@ import com.project.dnflol.Exception.AlreadyExistedLCharNameException;
 import com.project.dnflol.Service.LApplyService;
 import com.project.dnflol.Service.LCharService;
 import com.project.dnflol.Service.LGroupService;
+import com.project.dnflol.Service.UserService;
 import com.project.dnflol.util.APIKey;
 import com.project.dnflol.util.AuthInfo;
 import com.project.dnflol.util.BoardMinMax;
@@ -49,6 +50,9 @@ public class LOLController {
 	@Autowired
 	LCharService lcServ;
 	
+	@Autowired
+	UserService uServ;
+	
 	APIKey api = new APIKey();
 	BoardMinMax bmm;											// 게시판에 노출되는 글을 컨트롤할 객체
 	ObjectMapper objectMapper = new ObjectMapper();				// JSON 형태로 반환되는 response를 DTO형태로 바꿔주는 Jackson 라이브러리를 사용하기 위한 객체
@@ -61,6 +65,7 @@ public class LOLController {
 	 */
 	@RequestMapping("/board")
 	public ModelAndView lolBoard(HttpSession session) {
+		uServ.readById("cozy");
 		if (bmm == null)
 			bmm = new BoardMinMax(lgServ.readMaxCount());	
 		List<LGroupDTO> lgroupList = lgServ.readLimitList(bmm);

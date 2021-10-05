@@ -6,8 +6,8 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.project.dnflol.DTO.LCharDTO;
@@ -18,7 +18,7 @@ import com.project.dnflol.Service.LGroupService;
 import com.project.dnflol.Service.UserService;
 import com.project.dnflol.util.AuthInfo;
 
-@RestController
+@Controller
 public class MainPageController {
 	@Autowired
 	private UserService uServ;

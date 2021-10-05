@@ -2,9 +2,8 @@ package com.project.dnflol.DAO;
 
 import java.util.List;
 
-import javax.annotation.Resource;
-
-import org.apache.ibatis.session.SqlSession;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.project.dnflol.DTO.LApplyDTO;
@@ -13,26 +12,26 @@ import com.project.dnflol.DTO.LApplyDTO;
 public class LApplyDAO {
 	private static final String MAPPER = "LApplyMapper";
 
-	@Resource
-	SqlSession sqlsession;
+	@Autowired
+	SqlSessionTemplate template;
 
 	public void create(LApplyDTO lapplyDto) {
-		sqlsession.insert(MAPPER + ".create", lapplyDto);
+		template.insert(MAPPER + ".create", lapplyDto);
 	}
 
 	public LApplyDTO read(LApplyDTO lapplyDto) {
-		return sqlsession.selectOne(MAPPER + ".read", lapplyDto);
+		return template.selectOne(MAPPER + ".read", lapplyDto);
 	}
 
 	public List<LApplyDTO> readAllByGroupId(int groupId) {
-		return sqlsession.selectList(MAPPER + ".readAllByGroupId", groupId);
+		return template.selectList(MAPPER + ".readAllByGroupId", groupId);
 	}
 	
 	public void updateLapplyResult(LApplyDTO lapplyDto) {
-		sqlsession.update(MAPPER + ".updatelapplyResult", lapplyDto);
+		template.update(MAPPER + ".updatelapplyResult", lapplyDto);
 	}
 	
 	public void delete(LApplyDTO lapplyDto) {
-		sqlsession.delete(MAPPER + ".delete", lapplyDto);
+		template.delete(MAPPER + ".delete", lapplyDto);
 	}
 }

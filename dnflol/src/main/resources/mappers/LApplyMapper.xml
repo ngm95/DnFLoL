@@ -13,25 +13,19 @@
 		)
 	</insert>
 	
-	<select id="read" resultType="com.project.dnflol.dto.LApplyDTO">
+	<select id="read" resultType="com.project.dnflol.DTO.LApplyDTO">
 		SELECT lapplyId, lcharId, lgroupId, lapplyResult
 		FROM LApply
 		WHERE lcharId = #{lcharId} AND lgroupId = #{lgroupId}
 	</select>
 	
-	<select id="readAllByGroupId" resultType="com.project.dnflol.dto.LApplyDTO">
+	<select id="readAllByGroupId" resultType="com.project.dnflol.DTO.LApplyDTO">
 	<![CDATA[
 		SELECT lapplyId, lcharId, lgroupId, lapplyResult
 		FROM LApply
 		WHERE lgroupId = #{lgroupId}
 		ORDER BY lapplyID DESC
 	]]>
-	</select>
-	
-	<select id="readAllByGroupId" resultType="com.project.dnflol.dto.LApplyDTO">
-		SELECT lapplyId, lcharId, lgroupId, lapplyResult
-		FROM LApply
-		WHERE lgroupId = #{lgroupId}
 	</select>
 	
 	<update id="updatelapplyResult">

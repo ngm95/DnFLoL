@@ -1,8 +1,10 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-	<meta charset="utf-8">
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<%@ include file="/view/includes/00_head.jsp" %>
+    <%@ include file="/view/includes/03_header.jsp" %>
     <title>약관 확인 및 동의</title>
 </head>
 <body class="signup-pages">
@@ -20,7 +22,6 @@
                     서비스 약관 동의
                 </div>
                 <div class="box-body">
-                <pre>
                     제 1 장 총 칙
                     제 1 조 목적
                     본 약관은 서비스 이용자가 주식회사 ooo(이하 “회사”라 합니다)가 제공하는 온라인상의 인터넷 서비스(이하 “서비스”라고 하며, 접속 가능한 유∙무선 단말기의 종류와는 상관없이 이용 가능한 “회사”가 제공하는 모든 “서비스”를 의미합니다. 이하 같습니다)에 회원으로 가입하고 이를 이용함에 있어 회사와 회원(본 약관에 동의하고 회원등록을 완료한 서비스 이용자를 말합니다. 이하 “회원”이라고 합니다)의 권리•의무 및 책임사항을 규정함을 목적으로 합니다.
@@ -118,7 +119,6 @@
 
                     ③
                     회사는 제2항 이외의 방법으로 회원의 게시물 등을 이용하고자 하는 경우에는 전화, 팩스, 전자우편 등을 통해 사전에 회원의 동의를 얻습니다.
-                </pre>
                 </div>
 
             </div>
@@ -128,7 +128,6 @@
                     개인정보 수집 및 이용 동의
                 </div>
                 <div class="box-body">
-                <pre>
                     제 1 장 총 칙
                     제 1 조 목적
                     본 약관은 서비스 이용자가 주식회사 ooo(이하 “회사”라 합니다)가 제공하는 온라인상의 인터넷 서비스(이하 “서비스”라고 하며, 접속 가능한 유∙무선 단말기의 종류와는 상관없이 이용 가능한 “회사”가 제공하는 모든 “서비스”를 의미합니다. 이하 같습니다)에 회원으로 가입하고 이를 이용함에 있어 회사와 회원(본 약관에 동의하고 회원등록을 완료한 서비스 이용자를 말합니다. 이하 “회원”이라고 합니다)의 권리•의무 및 책임사항을 규정함을 목적으로 합니다.
@@ -226,7 +225,6 @@
 
                     ③
                     회사는 제2항 이외의 방법으로 회원의 게시물 등을 이용하고자 하는 경우에는 전화, 팩스, 전자우편 등을 통해 사전에 회원의 동의를 얻습니다.
-                </pre>
                 </div>
 
             </div>
