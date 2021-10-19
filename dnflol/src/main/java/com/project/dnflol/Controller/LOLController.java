@@ -65,7 +65,6 @@ public class LOLController {
 	 */
 	@RequestMapping("/board")
 	public ModelAndView lolBoard(HttpSession session) {
-		uServ.readById("cozy");
 		if (bmm == null)
 			bmm = new BoardMinMax(lgServ.readMaxCount());	
 		List<LGroupDTO> lgroupList = lgServ.readLimitList(bmm);
@@ -87,7 +86,10 @@ public class LOLController {
 	 */
 	@RequestMapping("/board/next")
 	public ModelAndView lolNextBoard(HttpSession session) {
-		bmm.next();
+		if (bmm == null)
+			bmm = new BoardMinMax(lgServ.readMaxCount());
+		else
+			bmm.next();
 		List<LGroupDTO> lgroupList = lgServ.readLimitList(bmm);
 		session.setAttribute("lgroupList", lgroupList);
 		session.setAttribute("isPrevValid", bmm.isPrevValid());
@@ -105,7 +107,10 @@ public class LOLController {
 	 */
 	@RequestMapping("/board/prev")
 	public ModelAndView lolPrevBoard(HttpSession session) {
-		bmm.prev();
+		if (bmm == null)
+			bmm = new BoardMinMax(lgServ.readMaxCount());
+		else
+			bmm.prev();
 		List<LGroupDTO> lgroupList = lgServ.readLimitList(bmm);
 		session.setAttribute("lgroupList", lgroupList);
 		session.setAttribute("isPrevValid", bmm.isPrevValid());

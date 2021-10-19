@@ -4,16 +4,26 @@
 <html>
 <head>
     <%@ include file="/view/includes/00_head.jsp" %>
-    <%@ include file="/view/includes/03_header.jsp" %>
     <title>메인 페이지</title>
 </head>
-<body class="signup-pages">
-
-    <div class="signup-box">
-        <div class="signup-logo">
-            <a href="/"><b>D</b>n<b>F</b> <b>L</b>o<b>L</b></a>
-        </div>
-    </div>
-
+<body class="main-pages">
+	<div class="container" style="height: 100%">
+		<%@ include file="/WEB-INF/views/includes/03_header.jsp"%>
+		<div class="jumbotron">
+			<h1><b>D</b>n<b>F</b> <b>L</b>o<b>L</b></h1>
+			<h2>파티 찾기 사이트</h2>
+			<br>
+		</div>
+		<div class="jumbotron" style="text-align: left;">
+			<h2>사용 방법</h2>
+			<p class="lead">
+			1. 회원가입 후 로그인하세요.<br>
+			2. 마이페이지에서 계정을 연동할 수 있습니다.<br>
+			3. DnF | LoL 중에서 원하는 탭으로 접속하세요.<br>
+			4. 파티 모집 게시글을 작성하거나 참여해보세요.<br>
+			5. 지금 시작하세요!</p>
+		</div>
+	</div>
+	<%@ include file="/WEB-INF/views/includes/09_footer.jsp"%>
 </body>
 </html>
