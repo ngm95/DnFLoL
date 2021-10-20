@@ -23,6 +23,10 @@ public class LGroupService {
 		lgroupDao.create(lgroupDto);
 	}
 	
+	public Integer readlgroupId(LGroupDTO lgroupDto) {
+		return lgroupDao.readLgroupId(lgroupDto);
+	}
+	
 	public LGroupDTO readById(int lgroupId) {
 		return lgroupDao.readById(lgroupId);
 	}

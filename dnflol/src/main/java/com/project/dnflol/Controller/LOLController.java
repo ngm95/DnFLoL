@@ -1,10 +1,13 @@
 package com.project.dnflol.Controller;
 
 
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -14,10 +17,14 @@ import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -293,5 +300,25 @@ public class LOLController {
 		ModelAndView mv = new ModelAndView();
 		mv.setViewName("/lol/matchAndLeague");							// 
 		return mv;
+	}
+	
+	@RequestMapping(value="/board/newPostGet", method=RequestMethod.GET)
+	public String newPostGet(Model model) {
+		model.addAttribute("post", new LGroupDTO());
+		return "/lol/board/newPost";
+	}
+	
+	@RequestMapping(value="/board/newPostPost", method=RequestMethod.POST)
+	public String newPostPost(@Valid @ModelAttribute("post") LGroupDTO lgroupDto, BindingResult br) throws Exception {
+		if (br.hasErrors()) {					// 필요한 정보가 정한 폼에 맞지 않으면 이전 단계로 돌아감
+			return "redirect:/lol/board/newPost";
+		}
+		
+		Date date = new Date(System.currentTimeMillis());
+		lgroupDto.setLgroupDate(date);
+		lgServ.create(lgroupDto);
+		
+		Integer lgroupId = lgServ.readlgroupId(lgroupDto);
+		return "redirect:/lol/board/detail/" + lgroupId;
 	}
 }

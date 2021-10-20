@@ -7,19 +7,24 @@
 
 	<insert id="create">
 		INSERT INTO LGroup (
-			lgroupOwner, lgrouptype, lgroupMax, lgroupName, lgroupDate, lgroupDetail
+			lgroupOwner, lgroupType, lgroupMax, lgroupName, lgroupDate, lgroupDetail
 		) VALUES (
-			#{lgroupOwner}, #{lgrouptype}, #{lgroupMax}, #{lgroupName}, #{lgroupDate}, #{lgroupDetail}
+			#{lgroupOwner}, #{lgroupType}, #{lgroupMax}, #{lgroupName}, #{lgroupDate}, #{lgroupDetail}
 		)
 	</insert>
 	
 	<select id="readById" resultType="com.project.dnflol.DTO.LGroupDTO">
-		SELECT lgroupId, lgroupOwner, lgrouptype, lgroupMax, lgroupName, lgroupDate, lgroupDetail
+		SELECT lgroupId, lgroupOwner, lgroupType, lgroupMax, lgroupName, lgroupDate, lgroupDetail
 		FROM LGroup
 		WHERE lgroupId = #{lgroupId}
 		ORDER BY lgroupDate DESC
 	</select>
 	
+	<select id="readlgroupId" resultType="Integer">
+		SELECT lgroupId
+		FROM LGroup
+		WHERE lgroupOwner = #{lgroupOwner}, lgroupType = #{lgroupType}, lgroupName = #{lgroupName}, lgroupDetail = #{lgroupDetail}, lgroupDate = #{lgroupDate}
+	</select>
 	<select id="readAllByOwnerName" resultType="com.project.dnflol.DTO.LGroupDTO">
 	<![CDATA[
 		SELECT lgroupId, lgroupOwner, lgrouptype, lgroupMax, lgroupName, lgroupDate, lgroupDetail
@@ -31,7 +36,7 @@
 	
 	<select id="readAllByDetail" resultType="com.project.dnflol.DTO.LGroupDTO">
 	<![CDATA[
-		SELECT lgroupId, lgroupOwner, lgrouptype, lgroupMax, lgroupName, lgroupDate, lgroupDetail
+		SELECT lgroupId, lgroupOwner, lgroupType, lgroupMax, lgroupName, lgroupDate, lgroupDetail
 		FROM LGroup
 		WHERE lgroupDetail LIKE CONCAT('%',#{lgroupDetail},'%')
 		ORDER BY lgroupDate DESC
@@ -40,7 +45,7 @@
 	
 	<select id="readAllByGroupName" resultType="com.project.dnflol.DTO.LGroupDTO">
 	<![CDATA[
-		SELECT lgroupId, lgroupOwner, lgrouptype, lgroupMax, lgroupName, lgroupDate, lgroupDetail
+		SELECT lgroupId, lgroupOwner, lgroupType, lgroupMax, lgroupName, lgroupDate, lgroupDetail
 		FROM LGroup
 		WHERE lgroupName Like CONCAT('%',#{lgroupName},'%')
 		ORDER BY lgroupDate DESC
@@ -49,7 +54,7 @@
 	
 	<select id="readAllByUId" resultType="com.project.dnflol.DTO.LGroupDTO">
 	<![CDATA[
-		SELECT lgroupId, lgroupOwner, lgrouptype, lgroupMax, lgroupName, lgroupDate, lgroupDetail
+		SELECT lgroupId, lgroupOwner, lgroupType, lgroupMax, lgroupName, lgroupDate, lgroupDetail
 		FROM LGroup, LChar
 		WHERE LGroup.lgroupOnwer = LChar.lcharId AND LChar.uid = #{uid}
 	]]>
@@ -57,7 +62,7 @@
 	
 	<select id="readLimitList" resultType="com.project.dnflol.DTO.LGroupDTO">
 	<![CDATA[
-		SELECT lgroupId, lgroupOwner, lgrouptype, lgroupMax, lgroupName, lgroupDate, lgroupDetail
+		SELECT lgroupId, lgroupOwner, lgroupType, lgroupMax, lgroupName, lgroupDate, lgroupDetail
 		FROM LGroup
 		ORDER BY lgroupDate DESC
 		LIMIT #{min}, #{max}

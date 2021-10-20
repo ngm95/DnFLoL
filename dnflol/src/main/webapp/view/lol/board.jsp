@@ -13,16 +13,16 @@
         <div class="jumbotron">
             <c:forEach var="lgroup" items="${lgroupList}">
             	<div class="groupboard" id="${lgroup.lgroupId}">
-            		<a href="/lol/board/detail/${lgroup.lgroupId}">${lgroup.lgroupName} created by ${lgroup.lgroupOwner}, 
-            			<c:choose>
-            				<c:when test="${lgroup.lgrouptype eq '1'}">일반듀오</c:when>
-            				<c:when test="${lgroup.lgrouptype eq '2'}">일반다인큐</c:when>
-            				<c:when test="${lgroup.lgrouptype eq '3'}">랭크듀오</c:when>
-            				<c:when test="${lgroup.lgrouptype eq '4'}">자유랭크</c:when>
-            			</c:choose>
+            		<a href="/lol/board/detail/${lgroup.lgroupId}">${lgroup.lgroupName} created by ${lgroup.lgroupOwner}, ${lgroup.lgroupType }
             		</a>
             	</div>
             </c:forEach>
+            
+            <form action="/lol/board/newPost" method="GET">
+                <div class="col-xs-3">
+                    <button type="submit" class="btn btn-style">새로운 글 작성</button>
+                </div>
+            </form>
         </div>
     </div>
 

@@ -8,7 +8,7 @@
 </head>
 <body class="main-pages">
 	<div class="container" style="height: 100%">
-		<%@ include file="/WEB-INF/views/includes/03_header.jsp"%>
+		<%@ include file="/view/includes/03_header.jsp"%>
 		<div class="jumbotron">
 			<h1><b>D</b>n<b>F</b> <b>L</b>o<b>L</b></h1>
 			<h2>파티 찾기 사이트</h2>
@@ -24,6 +24,6 @@
 			5. 지금 시작하세요!</p>
 		</div>
 	</div>
-	<%@ include file="/WEB-INF/views/includes/09_footer.jsp"%>
+	<%@ include file="/view/includes/09_footer.jsp"%>
 </body>
 </html>
