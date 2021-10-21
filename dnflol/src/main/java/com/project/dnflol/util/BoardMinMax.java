@@ -1,40 +1,40 @@
 package com.project.dnflol.util;
 
-import lombok.Getter;
+import lombok.Data;
 
-@Getter
+@Data
 public class BoardMinMax {
 	int limit;
 	int min;
 	int max;
-	boolean prevValid;
-	boolean nextValid;
+	String prev;
+	String next;
 	public BoardMinMax(int limit) {
 		this.limit = limit;
 		this.min = 0;
 		this.max = 100;
-		prevValid = false;
-		if (min < limit && limit <= max)
-			nextValid = false;
+		prev = "false";
+		if (min < limit && limit < max)
+			next = "true";
 		else
-			nextValid = true;
+			next = "false";
 	}
 	public void next() {
-		if (nextValid) {
+		if (next.equals("true")) {
 			this.min = max;
 			this.max += 100;
-			prevValid = true;
+			prev = "true";
 			if (min < limit && limit <= max)
-				nextValid = false;
+				next = "false";
 		}
 	}
 	public void prev() {
-		if (prevValid) {
+		if (prev.equals("true")) {
 			this.max = min;
 			this.min -= 100;
-			nextValid = true;
+			next = "true";
 			if (min == 0)
-				prevValid = false;
+				prev = "false";
 		}
 	}
 }

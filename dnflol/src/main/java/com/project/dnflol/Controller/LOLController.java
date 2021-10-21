@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -44,7 +43,6 @@ import com.project.dnflol.Service.UserService;
 import com.project.dnflol.util.APIKey;
 import com.project.dnflol.util.AuthInfo;
 import com.project.dnflol.util.BoardMinMax;
-import com.project.dnflol.util.LBoardCheckBox;
 
 @Controller
 @RequestMapping("/lol")
@@ -72,15 +70,14 @@ public class LOLController {
 	 *   검색 버튼을 누르면 입력 폼에 입력된 정보와 체크박스에서 선택된 정보를 가지고 비슷한 글을 찾아서 그 글들을 보여줌.
 	 */
 	@RequestMapping("/board")
-	public ModelAndView lolBoard(HttpSession session) {
-		if (bmm == null)
-			bmm = new BoardMinMax(lgServ.readMaxCount());	
+	public ModelAndView lolBoard(Model model, HttpSession session) {
+		model.addAttribute("findDetail", new String());
+		bmm = new BoardMinMax(lgServ.readMaxCount());	
+		
 		List<LGroupDTO> lgroupList = lgServ.readLimitList(bmm);
-		if (session.getAttribute("lgroupList") == null) {			// 처음 접속했다면 새 리스트 생성
-			session.setAttribute("lgroupList", lgroupList);			// 최근 100개의 글
-			session.setAttribute("isPrevValid", bmm.isPrevValid());	// 이전 100개 글을 불러올 수 있는가?
-			session.setAttribute("isNextValid", bmm.isNextValid()); // 다음 100개 글을 불러올 수 있는가?
-		}
+		
+		session.setAttribute("lgroupList", lgroupList);			// 최근 100개의 글
+		session.setAttribute("bmm", bmm);	// 이전 100개 글을 불러올 수 있는가?
 
 		ModelAndView mv = new ModelAndView();
 		mv.setViewName("/lol/board");
@@ -94,17 +91,12 @@ public class LOLController {
 	 */
 	@RequestMapping("/board/next")
 	public ModelAndView lolNextBoard(HttpSession session) {
-		if (bmm == null)
-			bmm = new BoardMinMax(lgServ.readMaxCount());
-		else
-			bmm.next();
+		bmm.next();
 		List<LGroupDTO> lgroupList = lgServ.readLimitList(bmm);
 		session.setAttribute("lgroupList", lgroupList);
-		session.setAttribute("isPrevValid", bmm.isPrevValid());
-		session.setAttribute("isNextValid", bmm.isNextValid());
-
+		session.setAttribute("bmm", bmm);
 		ModelAndView mv = new ModelAndView();
-		mv.setViewName("redirect:/lol/board");
+		mv.setViewName("/lol/board");
 		return mv;
 	}
 
@@ -115,17 +107,13 @@ public class LOLController {
 	 */
 	@RequestMapping("/board/prev")
 	public ModelAndView lolPrevBoard(HttpSession session) {
-		if (bmm == null)
-			bmm = new BoardMinMax(lgServ.readMaxCount());
-		else
-			bmm.prev();
+		bmm.prev();
 		List<LGroupDTO> lgroupList = lgServ.readLimitList(bmm);
 		session.setAttribute("lgroupList", lgroupList);
-		session.setAttribute("isPrevValid", bmm.isPrevValid());
-		session.setAttribute("isNextValid", bmm.isNextValid());
+		session.setAttribute("bmm", bmm);
 
 		ModelAndView mv = new ModelAndView();
-		mv.setViewName("redirect:/lol/board");
+		mv.setViewName("/lol/board");
 		return mv;
 	}
 
@@ -134,12 +122,12 @@ public class LOLController {
 	 * - 설명, 그룹이름, 생성자이름중 하나를 선택해서 검색할 수 있으며 prev, next는 비활성화된다.
 	 *   이후 게시판 페이지로 리다이렉트한다.
 	 */
-	@GetMapping("/board/find/{findDetail}")
-	public ModelAndView lolFindBoard(HttpSession session, @PathVariable(value="findDetail") String findDetail, @RequestBody LBoardCheckBox lbcb) {
+	@GetMapping("/board/find/?findDetail={findDetail}")
+	public ModelAndView lolFindBoard(HttpSession session, @PathVariable(value="findDetail") String findDetail, @RequestBody String checkRadio) {
 		List<LGroupDTO> lgroupList;								// 체크박스 결과를 받아와 적절한 방법으로 글을 검색한다.
-		if (lbcb.getPosition().equals("detail"))
+		if (checkRadio.equals("detail"))
 			lgroupList = lgServ.readAllByDetail(findDetail);
-		else if (lbcb.getPosition().equals("groupName"))
+		else if (checkRadio.equals("groupName"))
 			lgroupList = lgServ.readAllByGroupName(findDetail);
 		else
 			lgroupList = lgServ.readAllByOwnerName(findDetail);

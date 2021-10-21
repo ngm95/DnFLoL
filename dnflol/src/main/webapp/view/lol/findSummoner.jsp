@@ -32,6 +32,9 @@
 				<c:when test="${empty summonerDto.name}">
 					<p>검색된 결과가 없습니다.</p>
 				</c:when>
+				<c:when test="${empty summonerDto.summonerLevel}">
+					<p>검색 중 오류가 발생했습니다.</p>
+				</c:when>	
 				<c:otherwise>
 					<h6>검색 결과</h6>
 					<p>아이디 : ${summonerDto.name}, 레벨 : ${summonerDto.summonerLevel}, 티어 : ${leagueDto.tier} ${leagueDto.rank}</p>

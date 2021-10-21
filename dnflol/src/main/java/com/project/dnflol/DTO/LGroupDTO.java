@@ -7,8 +7,8 @@ import lombok.Data;
 @Data
 public class LGroupDTO {
 	int lgroupId;
-	String lgroupOwner;	// int->String
-	String lgroupType;	// int->String
+	String lgroupOwner;	
+	String lgroupType;	
 	int lgroupMax;
 	String lgroupName;
 	Date lgroupDate;
