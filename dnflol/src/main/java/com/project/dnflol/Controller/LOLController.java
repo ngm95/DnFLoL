@@ -2,7 +2,6 @@ package com.project.dnflol.Controller;
 
 
 import java.sql.Date;
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,11 +21,13 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.dnflol.DTO.LApplyDTO;
 import com.project.dnflol.DTO.LCharDTO;
@@ -50,16 +51,16 @@ import com.project.dnflol.util.LBoardCheckBox;
 public class LOLController {
 	@Autowired
 	LGroupService lgServ;
-	
+
 	@Autowired
 	LApplyService laServ;
-	
+
 	@Autowired
 	LCharService lcServ;
-	
+
 	@Autowired
 	UserService uServ;
-	
+
 	APIKey api = new APIKey();
 	BoardMinMax bmm;											// 게시판에 노출되는 글을 컨트롤할 객체
 	ObjectMapper objectMapper = new ObjectMapper();				// JSON 형태로 반환되는 response를 DTO형태로 바꿔주는 Jackson 라이브러리를 사용하기 위한 객체
@@ -85,7 +86,7 @@ public class LOLController {
 		mv.setViewName("/lol/board");
 		return mv;
 	}
-	
+
 	/**
 	 * 게시판 페이지에서 다음 버튼을 눌렀을 때 이벤트 처리
 	 * - bmm을 이용해 새로 가져올 글의 범위와 prev, next 버튼의 활성화 여부를 계산해서 세션에 넣는다.
@@ -106,7 +107,7 @@ public class LOLController {
 		mv.setViewName("redirect:/lol/board");
 		return mv;
 	}
-	
+
 	/**
 	 * 게시판 페이지에서 이전 버튼을 눌렀을 때 이벤트 처리
 	 * - bmm을 이용해 새로 가져올 글의 범위와 prev, next 버튼의 활성화 여부를 계산해서 세션에 넣는다.
@@ -122,12 +123,12 @@ public class LOLController {
 		session.setAttribute("lgroupList", lgroupList);
 		session.setAttribute("isPrevValid", bmm.isPrevValid());
 		session.setAttribute("isNextValid", bmm.isNextValid());
-		
+
 		ModelAndView mv = new ModelAndView();
 		mv.setViewName("redirect:/lol/board");
 		return mv;
 	}
-	
+
 	/**
 	 * 게시판 페이지에서 찾기 버튼을 눌렀을 때 이벤트 처리
 	 * - 설명, 그룹이름, 생성자이름중 하나를 선택해서 검색할 수 있으며 prev, next는 비활성화된다.
@@ -145,12 +146,38 @@ public class LOLController {
 		session.setAttribute("lgroupList", lgroupList);			
 		session.setAttribute("isPrevValid", false);
 		session.setAttribute("isNextValid", false);
-		
+
 		ModelAndView mv = new ModelAndView();
 		mv.setViewName("redirect:/lol/board");
 		return mv;
 	}
-	
+
+	@GetMapping(value="/board/newPostGET")
+	public String newPostGet(Model model) {
+		model.addAttribute("post", new LGroupDTO());
+		return "/lol/board/newPost";
+	}
+
+	@PostMapping(value="/board/newPostPOST")
+	public String newPostPost(@Valid @ModelAttribute("post") LGroupDTO lgroupDto, BindingResult br) throws Exception {
+		if (br.hasErrors()) {					// 필요한 정보가 정한 폼에 맞지 않으면 이전 단계로 돌아감
+			return "redirect:/lol/board/newPost";
+		}
+
+		if (lgroupDto.getLgroupType().equals("듀오랭크"))
+			lgroupDto.setLgroupMax(2);
+		else
+			lgroupDto.setLgroupMax(5);
+
+
+		Date date = new Date(System.currentTimeMillis());
+		lgroupDto.setLgroupDate(date);
+		lgServ.create(lgroupDto);
+
+		Integer lgroupId = lgServ.readlgroupId(lgroupDto);
+		return "redirect:/lol/board/detail/" + lgroupId;
+	}
+
 	/**
 	 * 그룹의 세부 정보를 보여주는 페이지
 	 * - 그룹 생성자와 현재까지의 멤버 목록을 보여줌
@@ -159,18 +186,84 @@ public class LOLController {
 	 */
 	@GetMapping("/board/detail/{lgroupId}")
 	public ModelAndView lolGroupBoard(HttpSession session, @PathVariable(value="lgroupId") int lgroupId) {
-		LGroupDTO lgroupDto = lgServ.readById(lgroupId);									// 그룹 세부 정보
-		LCharDTO lgroupChief = lcServ.readById(lgServ.readById(lgroupId).getLgroupOwner());	// 그룹 생성자
-		List<LCharDTO> lcharList = lcServ.readAllAcceptedByGroupId(lgroupId);				// 수락된 멤버 목록
+		LGroupDTO lgroupDto = lgServ.readById(lgroupId);										// 그룹 세부 정보
+		List<LCharDTO> acceptedList = lcServ.readAllAcceptedByGroupId(lgroupId);				// 수락된 멤버 목록
 		session.setAttribute("lgroupDto", lgroupDto);
-		session.setAttribute("lgroupChief", lgroupChief);
-		session.setAttribute("lcharList", lcharList);
-		
+		session.setAttribute("acceptedList", acceptedList);
+
 		ModelAndView mv = new ModelAndView();
 		mv.setViewName("/lol/boardDetail");
 		return mv;
 	}
+
+	@GetMapping("/findSummoner")
+	public ModelAndView findSummoner(Model model) {
+		model.addAttribute("summoner", new SummonerDTO());
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("/lol/findSummoner");
+		return mv;
+	}
+
+	@PostMapping("/findSummoner")
+	public ModelAndView findSummoner(HttpSession session, @Valid @ModelAttribute("summoner") SummonerDTO summoner, BindingResult br) {
+		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+		String requestURL = "https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/" + summoner.getName().replaceAll(" ", "") + "?api_key=" + api.getLOL_API_KEY();
+		SummonerDTO summonerDto = new SummonerDTO();
+		ModelAndView mv = new ModelAndView();
+		try {
+			HttpClient client = HttpClientBuilder.create().build();
+			HttpGet getRequest = new HttpGet(requestURL);
+			HttpResponse response = client.execute(getRequest);
+			
+			session.setAttribute("status", response.getStatusLine().getStatusCode());
+			/*
+			 * 기본적인 계정 정보를 받아옴
+			 */
+			if (response.getStatusLine().getStatusCode() == 200) {
+				ResponseHandler<String> handler = new BasicResponseHandler();
+				String body = handler.handleResponse(response);
+				summonerDto = objectMapper.readValue(body, SummonerDTO.class);	// json을 SummonerDTO로 바꿈
+				session.setAttribute("summonerDto", summonerDto);		// 세션에 SummonerDTO를 넣음
+			}
+			
+			/*
+			 * 계정의 티어를 받아옴
+			 */
+			String leagueURL = "https://kr.api.riotgames.com/lol/league/v4/entries/by-summoner/" + summonerDto.getId() + "?api_key=" + api.getLOL_API_KEY();
+			getRequest = new HttpGet(leagueURL);
+			response = client.execute(getRequest);
+			if (response.getStatusLine().getStatusCode() == 200) {
+				ResponseHandler<String> handler = new BasicResponseHandler();
+				String body = handler.handleResponse(response);
+				LeagueDTO leagueDto = objectMapper.readValue(body.substring(1, body.length()-1), LeagueDTO.class);
+				session.setAttribute("leagueDto", leagueDto);
+			}
+		} catch(Exception e) {
+			session.setAttribute("Exception", e);
+			mv.setViewName("/security/denied");
+		}
+		
+		mv.setViewName("/lol/findSummoner");
+		return mv;
+	}
 	
+	@RequestMapping("/addSummoner") 
+	public String addSummoner(Model model, HttpSession session) {
+		SummonerDTO summonerDto = (SummonerDTO)session.getAttribute("summonerDto");
+		LCharDTO lcharDto = new LCharDTO(((AuthInfo)session.getAttribute("authInfo")).getUid(), summonerDto.getName());
+		lcServ.create(lcharDto);										// 아이디를 계정에 연동
+		
+		model.addAttribute("summonerDto", new SummonerDTO());
+		
+		return "redirect:/user/myPage";				// 이전 페이지로 되돌아감
+	}
+	
+	@GetMapping("/deleteSummoner/{lcharName}")
+	public String deleteSummoner(HttpSession session, @PathVariable(value="lcharName") String lcharName) {
+		lcServ.deleteByName(lcharName);
+		return "redirect:/user/myPage";
+	}
+
 	/**
 	 * 그룹에 신청할 계정을 찾는 페이지
 	 * - 현재 아이디와 연동되어 있는 계정 목록이 나타남
@@ -180,30 +273,30 @@ public class LOLController {
 	public ModelAndView lolFindSummoner(HttpSession session) {
 		List<LCharDTO> myLCharList = lcServ.readAllByUid(((AuthInfo)session.getAttribute("authInfo")).getUid());	// 현재 접속한 아이디와 연동된 계정 목록
 		session.setAttribute("myLCharList", myLCharList);
-		
+
 		ModelAndView mv = new ModelAndView();
 		mv.setViewName("/lol/selectSummoner");
 		return mv;
 	}
-	
+
 	/**
 	 * 그룹 신청 페이지에서 아이디를 클릭하면 신청을 넣고 게시판 페이지로 돌아감
 	 */
-	@RequestMapping("/summit/{lcharId}?{lgroupId}")
-	public ModelAndView lolSummitToGroup(HttpSession session, @PathVariable("lcharId") int lcharId, @PathVariable("lgroupId") int lgroupId) {
-		LApplyDTO lapplyDto = new LApplyDTO(lcharId, lgroupId);		// 그룹 신청 폼 생성
-		
+	@RequestMapping("/summit/{lcharName}?{lgroupId}")
+	public ModelAndView lolSummitToGroup(HttpSession session, @PathVariable("lcharName") String lcharName, @PathVariable("lgroupId") int lgroupId) {
+		LApplyDTO lapplyDto = new LApplyDTO(lcharName, lgroupId);		// 그룹 신청 폼 생성
+
 		ModelAndView mv = new ModelAndView();
 		try {
 			laServ.create(lapplyDto);
 		} catch(AlreadyExistedApplyException leae) {
 			session.setAttribute("Exception", leae);
 		}
-		
+
 		mv.setViewName("redirect:/lol/boardDetail" + lgroupId);
 		return mv;
 	}
-	
+
 	/**
 	 * 라이엇 API에서 제시한 URL Form에 맞게 실행해서 계정을 찾아 아이디와 연동한다.
 	 * @param summonerName 찾고자 하는 소환사명
@@ -211,14 +304,14 @@ public class LOLController {
 	@GetMapping("/findSummoner/{lcharName}")
 	public ModelAndView lolFindSummoner(HttpSession session, @PathVariable("lcharName") String summonerName) {
 		String requestURL = "https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/" + summonerName + "?api_key=" + api.getLOL_API_KEY();
-		
+
 		ModelAndView mv = new ModelAndView();
 		SummonerDTO summonerDto = null;
 		try {
 			HttpClient client = HttpClientBuilder.create().build();
 			HttpGet getRequest = new HttpGet(requestURL);
 			HttpResponse response = client.execute(getRequest);
-			
+
 			/*
 			 * 기본적인 계정 정보를 받아옴
 			 */
@@ -229,6 +322,8 @@ public class LOLController {
 				LCharDTO lcharDto = new LCharDTO(((AuthInfo)session.getAttribute("authInfo")).getUid(), summonerDto.getName());
 				lcServ.create(lcharDto);										// 아이디를 계정에 연동
 			}
+			
+			
 		} catch(AlreadyExistedLCharNameException aelcne) {						// 이미 연동되었던 아이디라면 실패했음을 알림
 			session.setAttribute("Exception", aelcne);
 			mv.setViewName("redirect:/findSummoner/" + summonerName);
@@ -238,13 +333,13 @@ public class LOLController {
 			mv.setViewName("redirect:/lol/board");
 			return mv;
 		}
-		
+
 		session.setAttribute("linked", true);
 		session.setAttribute("SummonerDTO", summonerDto);		// 세션에 SummonerDTO를 넣음
 		mv.setViewName("redirect:/lol/board");					// 이전 상태로 되돌아감
 		return mv;
 	}
-	
+
 	/**
 	 * 계정 전적 정보를 볼 수 있는 페이지
 	 * - 계정 전적을 랭크 / 일반 / 합계로 구분해서 각각 최근 10게임의 전적, 승률, 주요 포지션 등을 보여줌
@@ -252,13 +347,13 @@ public class LOLController {
 	@RequestMapping("/matchAndLeague/{lcharName}")
 	public ModelAndView lolMatchAndLeague(HttpSession session, HttpServletRequest request, @PathVariable("lcharName") String summonerName) {
 		String summonerURL = "https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/" + summonerName + "?api_key=" + api.getLOL_API_KEY();
-		
+
 		SummonerDTO summonerDto = null;
 		try {
 			HttpClient client = HttpClientBuilder.create().build();
 			HttpGet getRequest = new HttpGet(summonerURL);
 			HttpResponse response = client.execute(getRequest);
-			
+
 			/*
 			 * 기본적인 계정 정보를 받아옴
 			 */
@@ -267,7 +362,7 @@ public class LOLController {
 				String body = handler.handleResponse(response);
 				summonerDto = objectMapper.readValue(body, SummonerDTO.class);	// json을 SummonerDTO로 바꿈
 			}
-			
+
 			/*
 			 * 계정의 전적을 받아옴
 			 */
@@ -280,7 +375,7 @@ public class LOLController {
 				List<LMatchDTO> matchList = objectMapper.readValue(body, objectMapper.getTypeFactory().constructCollectionType(List.class, LMatchDTO.class));
 				session.setAttribute("matchList", matchList);
 			}
-			
+
 			/*
 			 * 계정의 티어를 받아옴
 			 */
@@ -294,31 +389,11 @@ public class LOLController {
 				session.setAttribute("leagueDto", leagueDto);
 			}
 		} catch(Exception e) {
-			
+
 		}
-		
+
 		ModelAndView mv = new ModelAndView();
 		mv.setViewName("/lol/matchAndLeague");							// 
 		return mv;
-	}
-	
-	@RequestMapping(value="/board/newPostGet", method=RequestMethod.GET)
-	public String newPostGet(Model model) {
-		model.addAttribute("post", new LGroupDTO());
-		return "/lol/board/newPost";
-	}
-	
-	@RequestMapping(value="/board/newPostPost", method=RequestMethod.POST)
-	public String newPostPost(@Valid @ModelAttribute("post") LGroupDTO lgroupDto, BindingResult br) throws Exception {
-		if (br.hasErrors()) {					// 필요한 정보가 정한 폼에 맞지 않으면 이전 단계로 돌아감
-			return "redirect:/lol/board/newPost";
-		}
-		
-		Date date = new Date(System.currentTimeMillis());
-		lgroupDto.setLgroupDate(date);
-		lgServ.create(lgroupDto);
-		
-		Integer lgroupId = lgServ.readlgroupId(lgroupDto);
-		return "redirect:/lol/board/detail/" + lgroupId;
 	}
 }

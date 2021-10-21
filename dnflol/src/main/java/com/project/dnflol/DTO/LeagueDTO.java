@@ -10,11 +10,11 @@ public class LeagueDTO {
 	String rank;
 	String summonerId;
 	String summonerName;
-	int leaguePoints;
-	int wins;
-	int losses;
-	boolean veteran;
-	boolean inactive;
-	boolean freshBlood;
-	boolean hotStreak;
+	String leaguePoints;
+	String wins;
+	String losses;
+	String veteran;
+	String inactive;
+	String freshBlood;
+	String hotStreak;
 }

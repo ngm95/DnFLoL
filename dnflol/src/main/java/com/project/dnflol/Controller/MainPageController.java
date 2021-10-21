@@ -33,8 +33,7 @@ public class MainPageController {
 	public ModelAndView mainPage(HttpSession session, Authentication auth) {
 		ModelAndView mv = new ModelAndView();
 		/*
-		 * 만약 로그인되어 있는데 로그인 정보가 세션에 존재하지 않는다면
-		 * 아이디와 이름을 뽑아서 세션에 저장해 둔다.
+		 * 로그인 정보 저장
 		 */
 		if (auth != null && session.getAttribute("authInfo") == null) {				
 			UserDTO dto = uServ.readById(auth.getName());
@@ -47,10 +46,11 @@ public class MainPageController {
 	@RequestMapping("user/myPage")
 	public ModelAndView myPage(HttpSession session) {
 		ModelAndView mv = new ModelAndView();
-		List<LCharDTO> myChars = lcServ.readAllByUid(((UserDTO)session.getAttribute("authInfo")).getUid());	// LoL 연동 계정 정보
-		session.setAttribute("myChars", myChars);
-		List<LGroupDTO> myGroups = lgServ.readAllByUId(((UserDTO)session.getAttribute("authInfo")).getUid()); // LoL에서 내가 작성한 글 정보 
-		session.setAttribute("myGroups", myGroups);
+		AuthInfo auth = (AuthInfo)session.getAttribute("authInfo");
+		List<LCharDTO> mylolChars = lcServ.readAllByUid(auth.getUid());	// LoL 연동 계정 정보
+		session.setAttribute("mylolChars", mylolChars);
+		List<LGroupDTO> mylolGroups = lgServ.readAllByUId(auth.getUid()); // LoL에서 내가 작성한 글 정보 
+		session.setAttribute("mylolGroups", mylolGroups);
 		
 		/*
 		 * DnF 연동 계정 정보와 작성한 글 정보를 session에 담는 작업 필요
@@ -61,7 +61,7 @@ public class MainPageController {
 	} 
 	
 	@RequestMapping("user/myNotice")
-	public ModelAndView myNotice(HttpSession session) {
+	public ModelAndView myNotice() {
 		ModelAndView mv = new ModelAndView();
 		mv.setViewName("/user/myNotice");
 		return mv;

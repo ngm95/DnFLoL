@@ -13,38 +13,27 @@
 		)
 	</insert>
 	
-	<select id="readById" resultType="com.project.dnflol.DTO.LCharDTO">
-		SELECT lcharId, uid, lcharName
-		FROM LChar
-		WHERE lcharId = #{lcharId}
-	</select>
-	
 	<select id="readByName" resultType="com.project.dnflol.DTO.LCharDTO">
-		SELECT lcharId, uid, lcharName
+		SELECT uid, lcharName
 		FROM LChar
 		WHERE lcharName = #{lcharName}
 	</select>
 	
 	<select id="readAllByUId" resultType="com.project.dnflol.DTO.LCharDTO">
 	<![CDATA[
-		SELECT lcharId, uid, lcharName
+		SELECT uid, lcharName
 		FROM LChar
 		WHERE uid = #{uid}
 	]]>
 	</select>
 	
 	<select id="readAllAcceptedByGroupId" resultType="com.project.dnflol.DTO.LCharDTO">
-		SELECT lcharId, uid, lcharName
+		SELECT uid, lcharName
 		FROM LChar
 		WHERE lcharId IN (SELECT LApply.lcharId
 						  FROM LApply, LGroup
 						  WHERE LApply.lgroupId = LGroup.lgroupId AND LApply.lapplyResult = 'ACCEPTED' AND lgroupId = #{lgroupId})
 	</select>
-	
-	<delete id="deleteById">
-		DELETE FROM LChar
-		WHERE lcharId = #{lcharId}
-	</delete>
 	
 	<delete id="deleteByName">
 		DELETE FROM LChar

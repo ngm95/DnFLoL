@@ -28,8 +28,8 @@
 	<select id="readAllByOwnerName" resultType="com.project.dnflol.DTO.LGroupDTO">
 	<![CDATA[
 		SELECT lgroupId, lgroupOwner, lgrouptype, lgroupMax, lgroupName, lgroupDate, lgroupDetail
-		FROM LGroup, LChar
-		WHERE LGroup.lgroupOnwer = LChar.lcharId AND LChar.lcharName = #{onwerName}
+		FROM LGroup
+		WHERE lgroupOwner LIKE CONCAT('%',#{ownerName},'%')
 		ORDER BY lgroupDate DESC
 	]]>
 	</select>
@@ -56,7 +56,7 @@
 	<![CDATA[
 		SELECT lgroupId, lgroupOwner, lgroupType, lgroupMax, lgroupName, lgroupDate, lgroupDetail
 		FROM LGroup, LChar
-		WHERE LGroup.lgroupOnwer = LChar.lcharId AND LChar.uid = #{uid}
+		WHERE LGroup.lgroupOwner = LChar.lcharName AND LChar.uid = #{uid}
 	]]>
 	</select>
 	

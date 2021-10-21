@@ -26,10 +26,6 @@ public class LCharService {
 			throw new AlreadyExistedLCharNameException(lcharDto.getLcharName() + "는 이미 다른 계정과 연동되어 있습니다.");
 	}
 	
-	public LCharDTO readById(int lcharId) {
-		return lcharDao.readById(lcharId);
-	}
-	
 	public LCharDTO readByName(String lcharName) {
 		return lcharDao.readByName(lcharName);
 	}
@@ -40,10 +36,6 @@ public class LCharService {
 	
 	public List<LCharDTO> readAllAcceptedByGroupId(int groupId) {
 		return lcharDao.readAllAcceptedByGroupId(groupId);
-	}
-	
-	public void deleteById(String lcharId) {
-		lcharDao.deleteById(lcharId);
 	}
 	
 	public void deleteByName(String lcharName) {

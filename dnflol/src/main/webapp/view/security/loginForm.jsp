@@ -6,12 +6,12 @@
 <html>
 <head>
 <%@ include file="/view/includes/00_head.jsp" %>
-    <%@ include file="/view/includes/03_header.jsp" %>
 <title>로그인 페이지</title>
 </head>
 <body class="signup-pages">
 
-	<div class="signup-box">
+	<div class="container" style="height: 100%">
+		<%@ include file="/view/includes/03_header.jsp"%>
 		<div class="signup-logo">
 			<a href="/"><b>D</b>n<b>F</b> <b>L</b>o<b>L</b></a>
 		</div>

@@ -33,13 +33,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	public void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
+			.antMatchers("/lol/**").authenticated()
+			.antMatchers("/dnf/**").authenticated()
 			.antMatchers("/").permitAll()
 			.antMatchers("/register/**").permitAll()
 			.antMatchers("/security/**").permitAll()
+			.antMatchers("/user/**").permitAll()
 			.antMatchers("/mainPage").permitAll()
-			.antMatchers("/lol/board").permitAll()
-			.antMatchers("/lol/**").authenticated()
-			.antMatchers("/dnf/**").authenticated();
+			.antMatchers("/lol/board").permitAll();
 		http.formLogin()
 			.loginPage("/security/login")
 			.defaultSuccessUrl("/")
@@ -50,7 +51,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.logoutSuccessUrl("/")
 			.invalidateHttpSession(true);
 		http.exceptionHandling()
-			.accessDeniedPage("/security/deniedPage");
+			.accessDeniedPage("/security/denied");
 	}
 	
 	@Override

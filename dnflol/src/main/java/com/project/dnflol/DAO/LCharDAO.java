@@ -19,10 +19,6 @@ public class LCharDAO {
 		template.insert(MAPPER + ".create", lcharDto);
 	}
 	
-	public LCharDTO readById(int lcharId) {
-		return template.selectOne(MAPPER + ".readById", lcharId);
-	}
-	
 	public LCharDTO readByName(String lcharName) {
 		return template.selectOne(MAPPER + ".readByName", lcharName);
 	}
@@ -33,10 +29,6 @@ public class LCharDAO {
 	
 	public List<LCharDTO> readAllAcceptedByGroupId(int groupId) {
 		return template.selectList(MAPPER + ".readAllAcceptedByGruopId", groupId);
-	}
-	
-	public void deleteById(String lcharId) {
-		template.delete(MAPPER + ".deleteById", lcharId);
 	}
 	
 	public void deleteByName(String lcharName) {

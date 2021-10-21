@@ -8,7 +8,7 @@ public class SummonerDTO {
 	String accountId;
 	String puuid;
 	String name;
-	int profileIconId;
-	int revisionDate;
-	int summonerLevel;
+	String profileIconId;
+	String revisionDate;
+	String summonerLevel;
 }

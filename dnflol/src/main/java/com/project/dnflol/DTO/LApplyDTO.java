@@ -5,11 +5,11 @@ import lombok.Data;
 @Data
 public class LApplyDTO {
 	int lapplyId;
-	int lcharId;
+	String lcharId;
 	int lgroupId;
 	String lapplyResult;
 	
-	public LApplyDTO(int lcharId, int lgroupId) {
+	public LApplyDTO(String lcharId, int lgroupId) {
 		this.lcharId = lcharId;
 		this.lgroupId = lgroupId;
 	}
