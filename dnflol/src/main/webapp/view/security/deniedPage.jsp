@@ -26,5 +26,6 @@
       <div class="container text-center">
         <a href='<c:url value="/"/>' class="text-dark"><i class="fas fa-undo"></i></a>
       </div>
+      <%@ include file="/view/includes/09_footer.jsp"%>
 </body>
 </html>

@@ -44,6 +44,6 @@
 		</div>
 
 	</div>
-
+	<%@ include file="/view/includes/09_footer.jsp"%>
 </body>
 </html>
