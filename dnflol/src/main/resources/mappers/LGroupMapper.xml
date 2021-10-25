@@ -23,8 +23,9 @@
 	<select id="readlgroupId" resultType="Integer">
 		SELECT lgroupId
 		FROM LGroup
-		WHERE lgroupOwner = #{lgroupOwner}, lgroupType = #{lgroupType}, lgroupName = #{lgroupName}, lgroupDetail = #{lgroupDetail}, lgroupDate = #{lgroupDate}
+		WHERE lgroupOwner = #{lgroupOwner} AND lgroupType = #{lgroupType} AND lgroupName = #{lgroupName} AND lgroupDate = #{lgroupDate}
 	</select>
+	
 	<select id="readAllByOwnerName" resultType="com.project.dnflol.DTO.LGroupDTO">
 	<![CDATA[
 		SELECT lgroupId, lgroupOwner, lgrouptype, lgroupMax, lgroupName, lgroupDate, lgroupDetail

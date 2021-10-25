@@ -7,21 +7,21 @@
 
 	<insert id="create">
 		INSERT INTO LApply (
-			lcharId, lgroupId
+			lcharName, lgroupId
 		) VALUES (
-			#{lcharId}, #{lgroupId}
+			#{lcharName}, #{lgroupId}
 		)
 	</insert>
 	
 	<select id="read" resultType="com.project.dnflol.DTO.LApplyDTO">
-		SELECT lapplyId, lcharId, lgroupId, lapplyResult
+		SELECT lapplyId, lcharName, lgroupId, lapplyResult
 		FROM LApply
-		WHERE lcharId = #{lcharId} AND lgroupId = #{lgroupId}
+		WHERE lcharName = #{lcharName} AND lgroupId = #{lgroupId}
 	</select>
 	
 	<select id="readAllByGroupId" resultType="com.project.dnflol.DTO.LApplyDTO">
 	<![CDATA[
-		SELECT lapplyId, lcharId, lgroupId, lapplyResult
+		SELECT lapplyId, lcharName, lgroupId, lapplyResult
 		FROM LApply
 		WHERE lgroupId = #{lgroupId}
 		ORDER BY lapplyID DESC

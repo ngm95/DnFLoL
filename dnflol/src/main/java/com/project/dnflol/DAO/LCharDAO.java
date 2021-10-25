@@ -28,7 +28,7 @@ public class LCharDAO {
 	}
 	
 	public List<LCharDTO> readAllAcceptedByGroupId(int groupId) {
-		return template.selectList(MAPPER + ".readAllAcceptedByGruopId", groupId);
+		return template.selectList(MAPPER + ".readAllAcceptedByGroupId", groupId);
 	}
 	
 	public void deleteByName(String lcharName) {

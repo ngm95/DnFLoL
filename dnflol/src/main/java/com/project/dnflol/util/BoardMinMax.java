@@ -14,10 +14,10 @@ public class BoardMinMax {
 		this.min = 0;
 		this.max = 100;
 		prev = "false";
-		if (min < limit && limit < max)
-			next = "true";
-		else
+		if (limit <= max)
 			next = "false";
+		else
+			next = "true";
 	}
 	public void next() {
 		if (next.equals("true")) {

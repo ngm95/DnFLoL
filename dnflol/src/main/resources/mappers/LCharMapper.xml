@@ -30,9 +30,9 @@
 	<select id="readAllAcceptedByGroupId" resultType="com.project.dnflol.DTO.LCharDTO">
 		SELECT uid, lcharName
 		FROM LChar
-		WHERE lcharId IN (SELECT LApply.lcharId
+		WHERE lcharName IN (SELECT LApply.lcharName
 						  FROM LApply, LGroup
-						  WHERE LApply.lgroupId = LGroup.lgroupId AND LApply.lapplyResult = 'ACCEPTED' AND lgroupId = #{lgroupId})
+						  WHERE LApply.lgroupId = LGroup.lgroupId AND LApply.lapplyResult = 'ACCEPTED' AND Lgroup.lgroupId = #{lgroupId})
 	</select>
 	
 	<delete id="deleteByName">

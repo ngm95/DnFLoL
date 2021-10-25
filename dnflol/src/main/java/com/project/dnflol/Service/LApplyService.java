@@ -23,7 +23,7 @@ public class LApplyService {
 		if (lapplyDao.read(lapplyDto) == null)
 			lapplyDao.create(lapplyDto);
 		else
-			throw new AlreadyExistedApplyException("이 계정은 이미 해당 그룹에 지원한 상태입니다.");
+			throw new AlreadyExistedApplyException(lapplyDto.getLcharName());
 	}
 	
 	public LApplyDTO read(LApplyDTO lapplyDto) {

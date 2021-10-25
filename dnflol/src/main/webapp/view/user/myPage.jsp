@@ -16,7 +16,7 @@
 		<div>
 			<div class="board-pages">
 				<div class="jumbotron">
-					<b>내 LOL 계정</b>
+					<h2><b>내 LOL 계정</b></h2>
 					<c:choose>
 						<c:when test="${empty mylolChars}">
 							<p>연동된 LOL 계정이 없습니다.</p>
@@ -43,14 +43,15 @@
 			
 			<div class="board-pages">
 				<div class="jumbotron">
-					<b>내가 작성한 LOL 게시글</b>
+					<h2><b>내가 작성한 LOL 게시글</b></h2>
 					<c:choose>
 						<c:when test="${empty mylolGroups}">
 							<p>작성한 LOL 게시글이 없습니다.</p>
 						</c:when>
 						<c:otherwise>
-							<c:forEach var="groups" items="${mylolGroups}">
-								<p>제목 : ${lgroups.lgroupName}, ${lgroups.lgroupType}</p>
+							<c:forEach var="lgroup" items="${mylolGroups}">
+								<h3><a href="/lol/boardDetail/${lgroup.lgroupId}">제목 : ${lgroup.lgroupName}</a></h3>
+								<h4>게시글 작성자 : ${lgroup.lgroupOwner}, 게임 종류 : ${lgroup.lgroupType}</h4>
 							</c:forEach>
 						</c:otherwise>
 					</c:choose>

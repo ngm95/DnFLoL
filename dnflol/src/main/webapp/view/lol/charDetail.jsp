@@ -7,17 +7,18 @@
 <html>
 <head>
 <%@ include file="/view/includes/00_head.jsp"%>
-<title>게시글 세부내용</title>
+<title>계정 상세정보</title>
 </head>
 <body class="board-pages">
 
 	<div class="container" style="height: 100%">
 		<%@ include file="/view/includes/03_header.jsp"%>
+		
 		<div class="jumbotron">
-			<h4>${lgroupDto.lgroupName} created by ${lgroupDto.lgroupOwner}, ${lgroupDto.lgroupType}</h4>
-			<h3>인원 수 : ${fn:length(acceptedList)+1} / ${lgroupDto.lgroupMax}</h3>
-			
+			<h4>${lcharDto.lcharName}</h4>
+			<p>티어 : ${leagueDto.tier} ${leagueDto.rank}, ${leaguePoints}p</p>
 		</div>
+		
 	</div>
 </body>
 </html>
