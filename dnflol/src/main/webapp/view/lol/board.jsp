@@ -14,7 +14,7 @@
 		
 		<div style="margin-right:10px; padding-right:10px; margin-bottom:10px; padding-bottom:10px">
 			<form action="/lol/board/newPostGET" method="GET">
-				<button type="submit" style="float:right; background-color:green; color:white">새로운 글 작성</button>
+				<button type="submit" style="float:right; background-color:turquoise; color:white">새로운 글 작성</button>
 			</form>
 		</div>
 		
@@ -25,7 +25,7 @@
 				</c:when>
 				<c:otherwise>
 					<c:forEach var="lgroup" items="${lgroupList}">
-						<div class="alert alert-primary" role="alert">
+						<div class="alert alert-primary" role="alert" style="background-color:yellowgreen">
 							<a href="/lol/boardDetail/${lgroup.lgroupId}">${lgroup.lgroupName} created by ${lgroup.lgroupOwner}, ${lgroup.lgroupType}</a>
 						</div>
 					</c:forEach>
@@ -37,24 +37,24 @@
 				<c:choose>
 					<c:when test="${bmm.prev eq 'true'}">
 						<form action="/lol/board/prev" method="GET">
-							<button type="submit" style="float:left">이전 글</button>
+							<button type="submit" style="float:left; background-color:pink; color:white">이전 글</button>
 						</form>
 					</c:when>
 					<c:otherwise>
 						<form action="/lol/board/prev" method="GET">
-							<button type="submit" style="float:left" disabled>이전 글</button>
+							<button type="submit" style="float:left; background-color:pink; color:white" disabled>이전 글</button>
 						</form>
 					</c:otherwise>
 				</c:choose>
 				<c:choose>
 					<c:when test="${bmm.next eq 'true'}">
 						<form action="/lol/board/next" method="GET">
-							<button type="submit" style="float:right">다음 글</button>
+							<button type="submit" style="float:right; background-color:pink; color:white">다음 글</button>
 						</form>
 					</c:when>
 					<c:otherwise>
 						<form action="/lol/board/next" method="GET">
-							<button type="submit" style="float:right" disabled>다음 글</button>
+							<button type="submit" style="float:right; background-color:pink; color:white" disabled>다음 글</button>
 						</form>
 					</c:otherwise>
 				</c:choose>
@@ -66,7 +66,7 @@
 		<div class="jumbotron">
 			<form:form modelAttribute="searchForm" action="/lol/findBoard" method="post">
 				<div class="form-group has-feedback">
-					<label for="findDetail">검색하기(미구현)</label>
+					<label for="findDetail">검색하기</label>
 					<form:input type="text" class="form-control" placeholder="검색할 내용" path="findDetail" id="findDetail" />
 					<span class="glyphicon glyphicon-user form-control-feedback"></span>
 				</div>
