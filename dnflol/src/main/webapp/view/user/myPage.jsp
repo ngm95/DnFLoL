@@ -22,7 +22,7 @@
 						</h2>
 						<div>
 							<form action="${pageContext.request.contextPath}/lol/findSummoner" method="get">
-								<input type="submit" value="계정 추가하기" style="float:right">
+								<input type="submit" value="계정 추가하기" style="float:right; background-color:SkyBlue; color:white">
 							</form>
 						</div>
 					</div>
@@ -37,7 +37,7 @@
 									<div>
 										<form style="display: inline-block" action="${pageContext.request.contextPath}/lol/deleteSummoner/${chars.lcharName}" method="get">
 											<p>계정명 : ${chars.lcharName} 
-											<input type="submit" value="연동 해제">
+											<input type="submit" value="연동 해제" style="background-color:pink; color:white">
 										</form>
 									</div>
 								</div>

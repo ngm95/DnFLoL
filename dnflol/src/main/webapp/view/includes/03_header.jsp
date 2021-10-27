@@ -18,7 +18,7 @@
 	</sec:authorize>
 	<sec:authorize access="isAuthenticated()">
 		<ul class="nav nav-pills pull-right">
-			<li role="presentation"><a href="#">${auth.uname}님 반갑습니다</a></li>
+			<li role="presentation"><a href="#">${authInfo.uname}님 반갑습니다</a></li>
 			<li role="presentation"><a href="/user/myPage">내 정보</a></li>
 			<li role="presentation"><a href="/security/logout">로그아웃</a></li>
 		</ul>

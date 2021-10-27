@@ -16,7 +16,7 @@
 		<div class="board-pages">
 
 			<div class="jumbotron">
-				<h3><b>LOL 게시글 작성</b></h3>
+				<h2><b>LOL 게시글 작성</b></h2>
 				<c:choose>
 					<c:when test="${empty mylolChars}">
 						<p>연동된 LOL 계정이 없어서 게시글 작성이 불가능합니다.</p>
@@ -33,7 +33,7 @@
 								
 								<div>
 									<form:label path="lgroupOwner">내 계정 선택</form:label>
-									<form:select path="lgroupOwner" style="margin-right:30px; padding-left:5px; padding-right:5px">
+									<form:select path="lgroupOwner" style="margin-right:30px; padding-left:5px; padding-right:5px; margin-bottom:15px">
 										<c:forEach var="chars" items="${mylolChars}">
 											<form:option value="${chars.lcharName}">${chars.lcharName}</form:option>
 										</c:forEach>

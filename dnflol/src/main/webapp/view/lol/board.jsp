@@ -9,58 +9,61 @@
 </head>
 <body class="board-pages">
 
-	<div class="container" style="height: 100%">
+	<div class="container" style="height: 100%" style="margin-bottom:0px; padding-bottom:0px">
 		<%@ include file="/view/includes/03_header.jsp"%>
+		
+		<div style="margin-right:10px; padding-right:10px; margin-bottom:10px; padding-bottom:10px">
+			<form action="/lol/board/newPostGET" method="GET">
+				<button type="submit" style="float:right; background-color:green; color:white">새로운 글 작성</button>
+			</form>
+		</div>
 		
 		<div class="jumbotron">
 			<c:choose>
 				<c:when test="${empty lgroupList}">
 					<h3>작성된 글이 없습니다!</h3>
 				</c:when>
+				<c:otherwise>
+					<c:forEach var="lgroup" items="${lgroupList}">
+						<div class="alert alert-primary" role="alert">
+							<a href="/lol/boardDetail/${lgroup.lgroupId}">${lgroup.lgroupName} created by ${lgroup.lgroupOwner}, ${lgroup.lgroupType}</a>
+						</div>
+					</c:forEach>
+				</c:otherwise>
 			</c:choose>
-			<c:forEach var="lgroup" items="${lgroupList}">
-				<div class="groupboard" style="font-family:'Nanum Gothic'; font-size:2.0em" id="${lgroup.lgroupId}">
-					<a href="/lol/boardDetail/${lgroup.lgroupId}">${lgroup.lgroupName} created by ${lgroup.lgroupOwner}, ${lgroup.lgroupType}</a>
-				</div>
-			</c:forEach>
+			
 
 			<div class="row">
 				<c:choose>
 					<c:when test="${bmm.prev eq 'true'}">
 						<form action="/lol/board/prev" method="GET">
-							<button type="submit" class="btn btn-style" style="float:left">이전 글</button>
+							<button type="submit" style="float:left">이전 글</button>
 						</form>
 					</c:when>
 					<c:otherwise>
 						<form action="/lol/board/prev" method="GET">
-							<button type="submit" class="btn btn-style" style="float:left" disabled>이전 글</button>
+							<button type="submit" style="float:left" disabled>이전 글</button>
 						</form>
 					</c:otherwise>
 				</c:choose>
 				<c:choose>
 					<c:when test="${bmm.next eq 'true'}">
 						<form action="/lol/board/next" method="GET">
-							<button type="submit" class="btn btn-style" style="float:right">다음 글</button>
+							<button type="submit" style="float:right">다음 글</button>
 						</form>
 					</c:when>
 					<c:otherwise>
 						<form action="/lol/board/next" method="GET">
-							<button type="submit" class="btn btn-style" style="float:right" disabled>다음 글</button>
+							<button type="submit" style="float:right" disabled>다음 글</button>
 						</form>
 					</c:otherwise>
 				</c:choose>
 			</div>
 		</div>
 		
-		<div class="container" style="weight:90%">
-			<form action="/lol/board/newPostGET" method="GET">
-				<div>
-					<button type="submit" style="float: right">새로운 글 작성</button>
-				</div>
-			</form>
-		</div>
+		
 
-		<div class="jumbotron" style="">
+		<div class="jumbotron">
 			<form:form modelAttribute="searchForm" action="/lol/findBoard" method="post">
 				<div class="form-group has-feedback">
 					<label for="findDetail">검색하기(미구현)</label>

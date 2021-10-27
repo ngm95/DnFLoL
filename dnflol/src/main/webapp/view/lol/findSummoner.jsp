@@ -20,8 +20,8 @@
 					<span class="glyphicon glyphicon-user form-control-feedback"></span>
 				</div>
 				<div class="row">
-					<div class="col-xs-8">
-						<button type="submit" class="btn btn-style" style="background-color:blue; color:white">검색</button>
+					<div>
+						<button type="submit" class="btn btn-style" style="float:right; background-color:SkyBlue; color:white">검색</button>
 					</div>
 				</div>
 			</form:form>
