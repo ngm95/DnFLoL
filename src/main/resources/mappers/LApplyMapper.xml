@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD MAPPER 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="LApplyMapper">
+
+	<insert id="create">
+		INSERT INTO LApply (
+			lcharName, lgroupId
+		) VALUES (
+			#{lcharName}, #{lgroupId}
+		)
+	</insert>
+	
+	<select id="read" resultType="com.project.dnflol.DTO.LApplyDTO">
+		SELECT lapplyId, lcharName, lgroupId, lapplyResult
+		FROM LApply
+		WHERE lcharName = #{lcharName} AND lgroupId = #{lgroupId}
+	</select>
+	
+	<select id="readAllByGroupId" resultType="com.project.dnflol.DTO.LApplyDTO">
+	<![CDATA[
+		SELECT lapplyId, lcharName, lgroupId, lapplyResult
+		FROM LApply
+		WHERE lgroupId = #{lgroupId}
+		ORDER BY lapplyID DESC
+	]]>
+	</select>
+	
+	<update id="updatelapplyResult">
+		UPDATE LApply
+		SET lapplyResult = #{lapplyResult}
+		WHERE lapplyId = #{lapplyId} AND lgroupId = #{lgroupId}
+	</update>
+	
+	<delete id="delete">
+		DELETE FROM LApply
+		WHERE lapplyId = #{lapplyId} AND lgroupId = #{lgroupId}
+	</delete>
+
+</mapper>

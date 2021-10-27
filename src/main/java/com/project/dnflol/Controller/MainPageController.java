@@ -4,6 +4,19 @@ import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.BasicResponseHandler;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.springframework.web.bind.annotation.GetMapping;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import com.project.dnflol.DTO.DAdventureDTO;
+import com.project.dnflol.DTO.TimeLineDTO;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -17,21 +30,6 @@ import com.project.dnflol.Service.LCharService;
 import com.project.dnflol.Service.LGroupService;
 import com.project.dnflol.Service.UserService;
 import com.project.dnflol.util.AuthInfo;
-
-
-
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.BasicResponseHandler;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.springframework.web.bind.annotation.GetMapping;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import com.project.dnflol.DTO.DAdventureDTO;
-import com.project.dnflol.DTO.TimeLineDTO;
 
 @Controller
 public class MainPageController {
