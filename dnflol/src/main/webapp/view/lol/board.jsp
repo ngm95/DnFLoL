@@ -12,9 +12,9 @@
 	<div class="container" style="height: 100%" style="margin-bottom:0px; padding-bottom:0px">
 		<%@ include file="/view/includes/03_header.jsp"%>
 		
-		<div style="margin-right:10px; padding-right:10px; margin-bottom:10px; padding-bottom:10px">
+		<div>
 			<form action="/lol/board/newPostGET" method="GET">
-				<button type="submit" style="float:right; background-color:turquoise; color:white">새로운 글 작성</button>
+				<button class="btn btn-style" type="submit" style="float:right; background-color:turquoise; color:white">새로운 글 작성</button>
 			</form>
 		</div>
 		
@@ -33,58 +33,48 @@
 			</c:choose>
 			
 
-			<div class="row">
+			<div class="form-group">
 				<c:choose>
 					<c:when test="${bmm.prev eq 'true'}">
 						<form action="/lol/board/prev" method="GET">
-							<button type="submit" style="float:left; background-color:pink; color:white">이전 글</button>
+							<button class="btn btn-style" type="submit" style="float:left; background-color:pink; color:white">이전 글</button>
 						</form>
 					</c:when>
 					<c:otherwise>
 						<form action="/lol/board/prev" method="GET">
-							<button type="submit" style="float:left; background-color:pink; color:white" disabled>이전 글</button>
+							<button class="btn btn-style" type="submit" style="float:left; background-color:pink; color:white" disabled>이전 글</button>
 						</form>
 					</c:otherwise>
 				</c:choose>
 				<c:choose>
 					<c:when test="${bmm.next eq 'true'}">
 						<form action="/lol/board/next" method="GET">
-							<button type="submit" style="float:right; background-color:pink; color:white">다음 글</button>
+							<button class="btn btn-style" type="submit" style="float:right; background-color:pink; color:white">다음 글</button>
 						</form>
 					</c:when>
 					<c:otherwise>
 						<form action="/lol/board/next" method="GET">
-							<button type="submit" style="float:right; background-color:pink; color:white" disabled>다음 글</button>
+							<button class="btn btn-style" type="submit" style="float:right; background-color:pink; color:white" disabled>다음 글</button>
 						</form>
 					</c:otherwise>
 				</c:choose>
 			</div>
 		</div>
-		
-		
 
 		<div class="jumbotron">
+			<h3><b>검색하기</b></h3>
+			<p>여기 아래쪽 다 일렬로 붙이고싶은데 마음대로 안됨</p>
 			<form:form modelAttribute="searchForm" action="/lol/findBoard" method="post">
-				<div class="form-group has-feedback">
-					<label for="findDetail">검색하기</label>
-					<form:input type="text" class="form-control" placeholder="검색할 내용" path="findDetail" id="findDetail" />
-					<span class="glyphicon glyphicon-user form-control-feedback"></span>
-				</div>
-				<div>
-
-					<input type="radio" name="checkRadio" value="groupName" checked> 
-					<label for="groupName" style="padding-right:10px">그룹 이름</label> 
+				<div class="form-row">
+					<form:select path="checkRadio">
+						<form:option value="groupName">제목</form:option>
+						<form:option value="groupOwner">작성자</form:option>
+						<form:option value="detail">설명</form:option>
+					</form:select>
 					
-					<input type="radio" name="checkRadio" value="groupOwner"> 
-					<label for="groupOwner" style="padding-right:10px">작성자</label> 
+					<form:input type="text" class="form-control" placeholder="검색할 내용" path="findDetail"/>
 					
-					<input type="radio" name="checkRadio" value="detail"> 
-					<label for="detail">세부 내용</label>
-				</div>
-				<div class="row">
-					<div class="col-xs-8">
-						<button type="submit" class="btn btn-style" style="background-color: blue; color: white">검색</button>
-					</div>
+					<form:button class="btn btn-style" type="submit" style="background-color: blue; color: white">검색하기</form:button>
 				</div>
 			</form:form>
 		</div>

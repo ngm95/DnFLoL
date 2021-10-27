@@ -9,7 +9,7 @@
 <%
 
 %>
-<div class="header">
+<div class="header" style="font-size:1.5em">
 	<sec:authorize access="isAnonymous()">
 		<ul class="nav nav-pills pull-right">
 			<li role="presentation"><a href="/security/login">로그인</a></li>

@@ -12,17 +12,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
     
-    <!-- datepicker -->
-    <link rel="stylesheet" href="http://code.jquery.com/ui/1.8.18/themes/base/jquery-ui.css" type="text/css" />  
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>  
-	<script src="http://code.jquery.com/ui/1.8.18/jquery-ui.min.js"></script>  
-	<meta name="_csrf" content="${_csrf.token}"/>
-	<meta name="_csrf_header" content="${_csrf.headerName}"/>
-	<%  
-		response.setHeader("Cache-Control","no-store");  
-		response.setHeader("Pragma","no-cache");  
-		response.setDateHeader("Expires",0);  
-		if (request.getProtocol().equals("HTTP/1.1"))
-        	response.setHeader("Cache-Control", "no-cache");
-	%>
-    <title>DnF LoL</title>
+<!--     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"> -->
+<!--     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script> -->
+<!-- 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script> -->
+<!-- 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script> -->

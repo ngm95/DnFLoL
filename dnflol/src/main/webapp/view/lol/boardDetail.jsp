@@ -52,7 +52,7 @@
 									<p>계정명 : ${chars.lcharName} 
 									<input type="hidden" id="lgroupId" name="lgroupId" value="${lgroupDto.lgroupId}">
 									<input type="hidden" id="lcharName" name="lcharName" value="${chars.lcharName}">
-									<input type="submit" value="신청하기">
+									<button class="btn btn-style" type="submit" style="background-color:SkyBlue; color:white">신청하기</button>
 								</form:form>
 							</div>
 						</c:forEach>
