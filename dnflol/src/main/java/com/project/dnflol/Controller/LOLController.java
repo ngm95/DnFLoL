@@ -230,6 +230,7 @@ public class LOLController {
 
 	@PostMapping("/findSummoner")
 	public ModelAndView findSummoner(HttpSession session, @Valid @ModelAttribute("summoner") SummonerDTO summoner, BindingResult br) {
+		System.out.println(summoner);
 		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 		String requestURL = "https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/" + summoner.getName().replaceAll(" ", "") + "?api_key=" + api.getLOL_API_KEY();
 		SummonerDTO summonerDto = new SummonerDTO();

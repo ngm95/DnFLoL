@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD MAPPER 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="DCharMapper">
+
+	<insert id="create">
+		INSERT INTO DChar (
+			dcharName, uid
+		) VALUES (
+			#{dcharName}, #{uid}
+		)
+	</insert>
+	
+	<select id="readByName" resultType="com.project.dnflol.DTO.DCharDTO">
+		SELECT uid, dcharName
+		FROM DChar
+		WHERE dcharName = #{dcharName}
+	</select>
+	
+	<select id="readAllByUId" resultType="com.project.dnflol.DTO.DCharDTO">
+	<![CDATA[
+		SELECT uid, dcharName
+		FROM DChar
+		WHERE uid = #{uid}
+	]]>
+	</select>
+	
+	<select id="readAllAcceptedByGroupId" resultType="com.project.dnflol.DTO.DCharDTO">
+		SELECT uid, dcharName
+		FROM DChar
+		WHERE dcharId IN (SELECT DApply.dcharId
+						  FROM DApply, DGroup
+						  WHERE DApply.dgroupId = DGroup.dgroupId AND DApply.dapplyResult = 'ACCEPTED' AND dgroupId = #{dgroupId})
+	</select>
+	
+	<delete id="deleteByName">
+		DELETE FROM DChar
+		WHERE dcharName = #{dcharName}
+	</delete>
+
+</mapper>

@@ -18,6 +18,21 @@ import com.project.dnflol.Service.LGroupService;
 import com.project.dnflol.Service.UserService;
 import com.project.dnflol.util.AuthInfo;
 
+
+
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.BasicResponseHandler;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.springframework.web.bind.annotation.GetMapping;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import com.project.dnflol.DTO.DAdventureDTO;
+import com.project.dnflol.DTO.TimeLineDTO;
+
 @Controller
 public class MainPageController {
 	@Autowired
@@ -64,6 +79,54 @@ public class MainPageController {
 	public ModelAndView myNotice() {
 		ModelAndView mv = new ModelAndView();
 		mv.setViewName("/user/myNotice");
+		return mv;
+	}
+	ObjectMapper objectMapper = new ObjectMapper();
+	@GetMapping("/dnf")
+	public ModelAndView lolFindSummoner(HttpSession session) {
+		String requestURL = "https://api.neople.co.kr/df/servers/siroco/characters/fb2eabeab87124585a54a48356cc02c3/timeline?limit=100&code=201,507&apikey=VdItQKfKUZWekekAag0O6i7vxRhE9TMs";
+		
+		ModelAndView mv = new ModelAndView();
+		DAdventureDTO summonerDto = null;
+		try {
+			HttpClient client = HttpClientBuilder.create().build();
+			System.out.print(1);
+			HttpGet getRequest = new HttpGet(requestURL);
+			System.out.print(2);
+			HttpResponse response = client.execute(getRequest);
+			System.out.print(3);
+			/*
+			 * 기본적인 계정 정보를 받아옴
+			 */
+			if (response.getStatusLine().getStatusCode() == 200) {
+				ResponseHandler<String> handler = new BasicResponseHandler();
+				System.out.print(4);
+				String body = handler.handleResponse(response);
+				//body = body.substring(9,body.length());
+				//body.indexOf
+				
+				body = body.substring(body.indexOf("rows")+6,body.length()-2);
+				System.out.print(body);
+				objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+				List<TimeLineDTO> timeline = objectMapper.readValue(body, objectMapper.getTypeFactory().constructCollectionType(List.class, TimeLineDTO.class));
+				//summonerDto = objectMapper.readValue(body, DAdventureDTO.class);	// json을 SummonerDTO로 바꿈
+				System.out.print("5");
+				session.setAttribute("result", timeline);
+				for (TimeLineDTO ele : timeline) {
+					 ele.getData();
+				}
+				System.out.print("6");
+				//LCharDTO lcharDto = new LCharDTO(((AuthInfo)session.getAttribute("authInfo")).getUid(), summonerDto.getName());
+				//lcServ.create(lcharDto);										// 아이디를 계정에 연동
+			}
+		} catch(Exception e) {
+			session.setAttribute("linked", false);
+			mv.setViewName("redirect:/secrity/denied");
+			return mv;
+		}
+		
+		session.setAttribute("linked", true);
+		mv.setViewName("/dnf/test");					// 이전 상태로 되돌아감
 		return mv;
 	}
 }

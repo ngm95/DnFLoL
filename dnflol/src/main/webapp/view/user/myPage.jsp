@@ -16,28 +16,35 @@
 		<div>
 			<div class="board-pages">
 				<div class="jumbotron">
-					<h2><b>내 LOL 계정</b></h2>
+					<div>
+						<h2>
+							<b>내 LOL 계정</b>
+						</h2>
+						<div>
+							<form action="${pageContext.request.contextPath}/lol/findSummoner" method="get">
+								<button type="submit" class="btn btn-style" style="float:right; background-color:SkyBlue; color:white">계정 추가하기</button>
+							</form>
+						</div>
+					</div>
+
 					<c:choose>
 						<c:when test="${empty mylolChars}">
 							<p>연동된 LOL 계정이 없습니다.</p>
 						</c:when>
 						<c:otherwise>
 							<c:forEach var="chars" items="${mylolChars}">
-							<div>
-								
-								<form style="display:inline-block" action="${pageContext.request.contextPath}/lol/deleteSummoner/${chars.lcharName}" method="get">
-									<p>계정명 : ${chars.lcharName}
-									<input type="submit" value="연동 해제">
-								</form>
-							</div>
+								<div class="row">
+									<div>
+										<form style="display: inline-block" action="${pageContext.request.contextPath}/lol/deleteSummoner/${chars.lcharName}" method="get">
+											<p>계정명 : ${chars.lcharName} 
+											<button type="submit" class="btn btn-style" style="background-color:pink; color:white">연동 해제</button>
+										</form>
+									</div>
+								</div>
 							</c:forEach>
 						</c:otherwise>
 					</c:choose>
-					<div class="col-xs-3">
-						<form action="${pageContext.request.contextPath}/lol/findSummoner" method="get">
-							<input type="submit" value="계정 추가하기">
-						</form>
-					</div>
+					
 				</div>
 			</div>
 			
