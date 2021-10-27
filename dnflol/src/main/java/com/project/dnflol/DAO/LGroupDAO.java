@@ -29,7 +29,7 @@ public class LGroupDAO {
 	}
 	
 	public List<LGroupDTO> readAllByOwnerName(String onwerName) {
-		return template.selectList(MAPPER + ".readAllByOwner", onwerName);
+		return template.selectList(MAPPER + ".readAllByOwnerName", onwerName);
 	}
 	
 	public List<LGroupDTO> readAllByDetail(String lgropDetail) {

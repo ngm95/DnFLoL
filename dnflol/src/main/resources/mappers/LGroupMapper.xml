@@ -78,7 +78,7 @@
 	<update id="updateType">
 		UPDATE LGroup
 		SET lgroupType = #{lgroupType}, lgroupMax = #{lgroupMax}
-		WHERE lgropuID = #{lgropuID}
+		WHERE lgroupId = #{lgropuId}
 	</update>
 	
 	<delete id="deleteById">

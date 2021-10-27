@@ -15,8 +15,8 @@
 		<div class="jumbotron">
 			<form:form modelAttribute="summoner" action="/lol/findSummoner" method="post">
 				<div class="form-group has-feedback">
-					<label for="uid">아이디</label>
-					<form:input type="text" class="form-control" placeholder="ID" path="name" id="name" />
+					<label for="uid">LOL 계정 ID</label>
+					<form:input type="text" class="form-control" placeholder="계정 ID" path="name" id="name" />
 					<span class="glyphicon glyphicon-user form-control-feedback"></span>
 				</div>
 				<div class="row">
@@ -27,7 +27,7 @@
 			</form:form>
 		</div>
 
-		<div>
+		<div class="jumbotron">
 			<c:choose>
 				<c:when test="${empty summonerDto.name}">
 					<p>검색된 결과가 없습니다.</p>

@@ -11,8 +11,8 @@
 
 	<div class="container" style="height: 100%">
 		<%@ include file="/view/includes/03_header.jsp"%>
+		
 		<div class="jumbotron">
-
 			<c:choose>
 				<c:when test="${empty lgroupList}">
 					<h3>작성된 글이 없습니다!</h3>
@@ -24,50 +24,43 @@
 				</div>
 			</c:forEach>
 
-			<div style="display: inline-block">
+			<div class="row">
 				<c:choose>
 					<c:when test="${bmm.prev eq 'true'}">
 						<form action="/lol/board/prev" method="GET">
-							<div>
-								<button type="submit" class="btn btn-style" style="float:left">이전 글</button>
-							</div>
+							<button type="submit" class="btn btn-style" style="float:left">이전 글</button>
 						</form>
 					</c:when>
 					<c:otherwise>
 						<form action="/lol/board/prev" method="GET">
-							<div>
-								<button type="submit" class="btn btn-style" style="float:left" disabled>이전 글</button>
-							</div>
+							<button type="submit" class="btn btn-style" style="float:left" disabled>이전 글</button>
 						</form>
 					</c:otherwise>
 				</c:choose>
 				<c:choose>
 					<c:when test="${bmm.next eq 'true'}">
 						<form action="/lol/board/next" method="GET">
-							<div>
-								<button type="submit" class="btn btn-style" style="float:right">다음 글</button>
-							</div>
+							<button type="submit" class="btn btn-style" style="float:right">다음 글</button>
 						</form>
 					</c:when>
 					<c:otherwise>
 						<form action="/lol/board/next" method="GET">
-							<div>
-								<button type="submit" class="btn btn-style" style="float:right" disabled>다음 글</button>
-							</div>
+							<button type="submit" class="btn btn-style" style="float:right" disabled>다음 글</button>
 						</form>
 					</c:otherwise>
 				</c:choose>
 			</div>
-			<div>
-				<form action="/lol/board/newPostGET" method="GET">
-					<div class="col-xs-8">
-						<button type="submit">새로운 글 작성</button>
-					</div>
-				</form>
-			</div>
+		</div>
+		
+		<div class="container" style="weight:90%">
+			<form action="/lol/board/newPostGET" method="GET">
+				<div>
+					<button type="submit" style="float: right">새로운 글 작성</button>
+				</div>
+			</form>
 		</div>
 
-		<div class="jumbotron">
+		<div class="jumbotron" style="">
 			<form:form modelAttribute="searchForm" action="/lol/findBoard" method="post">
 				<div class="form-group has-feedback">
 					<label for="findDetail">검색하기(미구현)</label>
