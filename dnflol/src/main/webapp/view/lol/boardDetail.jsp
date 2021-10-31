@@ -14,11 +14,8 @@
 	<div class="container" style="height: 100%">
 		<%@ include file="/view/includes/03_header.jsp"%>
 		<div class="jumbotron">
-			<h2>제목 : <b>${lgroupDto.lgroupName}</b></h2>
-			<h3>작성자 : ${lgroupDto.lgroupOwner}</h3>
-			<h3>게임 타입 : ${lgroupDto.lgroupType}</h3>
+			<h2><b>${lgroupDto.lgroupName}</b> created by <b>${lgroupDto.lgroupOwner}</b>, ${lgroupDto.lgroupType}</h2>
 			<h3>인원 수 : ${fn:length(acceptedList)+1} / ${lgroupDto.lgroupMax}</h3>
-			
 			<c:choose>
 				<c:when test="${empty acceptedList}">
 					<p>아직 수락된 신청이 없습니다.</p>
@@ -36,10 +33,9 @@
 			</c:choose>
 			<h4>설명 : ${lgroupDto.lgroupDetail}</h4>
 		</div>
-		
 		<div>
 			<div class="jumbotron">
-				<h3>내 LOL 계정</h3>
+				<b>내 LOL 계정</b>
 				<c:choose>
 					<c:when test="${empty mylolChars}">
 						<p>연동된 LOL 계정이 없습니다.</p>
@@ -52,7 +48,7 @@
 									<p>계정명 : ${chars.lcharName} 
 									<input type="hidden" id="lgroupId" name="lgroupId" value="${lgroupDto.lgroupId}">
 									<input type="hidden" id="lcharName" name="lcharName" value="${chars.lcharName}">
-									<button class="btn btn-style" type="submit" style="background-color:SkyBlue; color:white">신청하기</button>
+									<input type="submit" value="신청하기">
 								</form:form>
 							</div>
 						</c:forEach>
