@@ -14,8 +14,9 @@
 	<div class="container contents-wrap" style="height: 100%">
 		<%@ include file="/view/includes/03_header.jsp"%>
 		<div class="jumbotron">
+			<button type="button" class="btn btn-success" onclick="location.href='/lol/board'" style="float:right">목록</button>
 			<h2><b>${lgroupDto.lgroupName}</b> created by <b>${lgroupDto.lgroupOwner}</b>, ${lgroupDto.lgroupType}</h2>
-			<div class="jumbotron-board">
+			<div class="jumbotron-board" style="margin-top:45px">
 				<h3>인원 수 : ${fn:length(acceptedList)+1} / ${lgroupDto.lgroupMax}</h3>
 				<c:choose>
 					<c:when test="${empty acceptedList}">

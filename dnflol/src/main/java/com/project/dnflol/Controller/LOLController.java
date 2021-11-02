@@ -63,9 +63,14 @@ public class LOLController {
 	UserService uServ;
 
 	APIKey api = new APIKey();
+	List<LGroupDTO> lgroupList;
 	BoardMinMax bmm;											// 게시판에 노출되는 글을 컨트롤할 객체
 	ObjectMapper objectMapper = new ObjectMapper();				// JSON 형태로 반환되는 response를 DTO형태로 바꿔주는 Jackson 라이브러리를 사용하기 위한 객체
 	
+	/**
+	 * LOLController 내의 메소드를 실행하기 전에 실행되어
+	 * "authInfo" 이름으로 Model에 객체를 넣어 둠
+	 */
 	@ModelAttribute("authInfo")
 	public AuthInfo authInfo(Authentication auth) {
 		if (auth == null)
@@ -93,33 +98,26 @@ public class LOLController {
 	 *   검색 버튼을 누르면 입력 폼에 입력된 정보와 체크박스에서 선택된 정보를 가지고 비슷한 글을 찾아서 그 글들을 보여줌.
 	 */
 	@RequestMapping("/board")
-	public ModelAndView lolBoard(Model model, HttpSession session) {
-		bmm = new BoardMinMax(lgServ.readMaxCount());	
-		
-		List<LGroupDTO> lgroupList = lgServ.readLimitList(bmm);
-		model.addAttribute("lgroupList", lgroupList);			// 최근 15개의 글
-		model.addAttribute("bmm", bmm);
-
+	public ModelAndView lolBoard() {
 		ModelAndView mv = new ModelAndView();
-		mv.setViewName("/lol/board");
+		bmm = new BoardMinMax(lgServ.readMaxCount());	
+		lgroupList = lgServ.readLimitList(bmm);
+		
+		mv.setViewName("redirect:/lol/board/" + bmm.getPaging());
 		return mv;
 	}
-
+	
 	/**
 	 * 게시판 페이지에서 다음 버튼을 눌렀을 때 이벤트 처리
 	 * - bmm을 이용해 새로 가져올 글의 범위와 prev, next 버튼의 활성화 여부를 계산해서 세션에 넣는다.
 	 *   이후 게시판 페이지로 리다이렉트한다.
 	 */
 	@RequestMapping("/board/next")
-	public ModelAndView lolNextBoard(Model model, HttpSession session) {
+	public ModelAndView lolNextBoard() {
+		ModelAndView mv = new ModelAndView();
 		bmm.next();
 		
-		List<LGroupDTO> lgroupList = lgServ.readLimitList(bmm);
-		model.addAttribute("lgroupList", lgroupList);
-		model.addAttribute("bmm", bmm);
-		
-		ModelAndView mv = new ModelAndView();
-		mv.setViewName("/lol/board");
+		mv.setViewName("redirect:/lol/board/" + bmm.getPaging());
 		return mv;
 	}
 
@@ -129,14 +127,24 @@ public class LOLController {
 	 *   이후 게시판 페이지로 리다이렉트한다.
 	 */
 	@RequestMapping("/board/prev")
-	public ModelAndView lolPrevBoard(Model model, HttpSession session) {
+	public ModelAndView lolPrevBoard() {
+		ModelAndView mv = new ModelAndView();
 		bmm.prev();
 		
-		List<LGroupDTO> lgroupList = lgServ.readLimitList(bmm);
-		model.addAttribute("lgroupList", lgroupList);
-		model.addAttribute("bmm", bmm);
-
+		mv.setViewName("redirect:/lol/board/" + bmm.getPaging());
+		return mv;
+	}
+	
+	@RequestMapping("/board/{page}")
+	public ModelAndView lolBoardPaging(Model model, @PathVariable("page") int page) {
 		ModelAndView mv = new ModelAndView();
+
+		int startIdx = bmm.getMin()+(page-1)*10;
+		int endIdx = Math.min(bmm.getLimit(), startIdx+10);
+		
+		model.addAttribute("lgroupList", lgroupList.subList(startIdx, endIdx));			// 글을 10개씩 쪼개서 가져감
+		model.addAttribute("bmm", bmm);
+		
 		mv.setViewName("/lol/board");
 		return mv;
 	}
@@ -148,7 +156,6 @@ public class LOLController {
 	 */
 	@PostMapping("/findBoard")
 	public ModelAndView lolFindBoard(Model model, @Valid @ModelAttribute("searchForm") LSearchForm form, BindingResult br) {
-		List<LGroupDTO> lgroupList;								// 체크박스 결과를 받아와 적절한 방법으로 글을 검색한다.
 		if (form.getCheckRadio().equals("detail"))
 			lgroupList = lgServ.readAllByDetail(form.getFindDetail());
 		else if (form.getCheckRadio().equals("groupName"))
@@ -156,11 +163,13 @@ public class LOLController {
 		else
 			lgroupList = lgServ.readAllByOwnerName(form.getFindDetail());
 		
+		bmm = new BoardMinMax(lgroupList.size());
+		
 		model.addAttribute("lgroupList", lgroupList);			
 		model.addAttribute("bmm", bmm);
 
 		ModelAndView mv = new ModelAndView();
-		mv.setViewName("/lol/board");
+		mv.setViewName("redirect:/lol/board/" + bmm.getPaging());
 		return mv;
 	}
 
@@ -175,24 +184,22 @@ public class LOLController {
 
 	@PostMapping(value="/board/newPostPOST")
 	public String newPostPost(@Valid @ModelAttribute("post") LGroupDTO lgroupDto, BindingResult br) throws Exception {
-		if (br.hasErrors()) {						// 필요한 정보가 정한 폼에 맞지 않으면 이전 단계로 돌아감
+		if (br.hasErrors())													// 필요한 정보가 정한 폼에 맞지 않으면 이전 단계로 돌아감
 			return "redirect:/lol/board/newPostGET";
-		}
 
-		if (lgroupDto.getLgroupOwner() == null) {
+		if (lgroupDto.getLgroupOwner() == null)								
 			return "redirect:/lol/board/newPostGET";
-		}
 		
-		if (lgroupDto.getLgroupType().equals("듀오랭크"))
+		if (lgroupDto.getLgroupType().equals("듀오랭크"))						// 선택한 게임 타입에 따라 최대 인원수를 정함
 			lgroupDto.setLgroupMax(2);
 		else
 			lgroupDto.setLgroupMax(5);
 
-		DateFormat format = new SimpleDateFormat("yy.MM.dd kk:mm:ss");
+		DateFormat format = new SimpleDateFormat("yy.MM.dd kk:mm:ss");		// '연.월.일 시간:분:초' 형식으로 시간을 구함
 		String dateStr = format.format(Calendar.getInstance().getTime());
 		lgroupDto.setLgroupDate(dateStr);
 		
-		lgServ.create(lgroupDto);
+		lgServ.create(lgroupDto);											// 게시글을 만듬
 		
 		Integer lgroupId = lgServ.readlgroupId(lgroupDto);
 		return "redirect:/lol/boardDetail/" + lgroupId;
