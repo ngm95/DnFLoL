@@ -10,7 +10,7 @@
 </head>
 <body class="board-pages">
 
-	<div class="container" style="height: 100%">
+	<div class="container contents-wrap" style="height: 100%">
 		<%@ include file="/view/includes/03_header.jsp"%>
 		
 		<div>
@@ -66,7 +66,8 @@
 			</div>
 			
 		</div>
+		<%@ include file="/view/includes/09_footer.jsp"%>
 	</div>
-	<%@ include file="/view/includes/09_footer.jsp"%>
+	
 </body>
 </html>

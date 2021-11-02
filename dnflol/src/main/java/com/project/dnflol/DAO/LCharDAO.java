@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.project.dnflol.DTO.LCharDTO;
+import com.project.dnflol.util.UidAndLGroupid;
 
 @Repository
 public class LCharDAO {
@@ -27,8 +28,20 @@ public class LCharDAO {
 		return template.selectList(MAPPER + ".readAllByUId", uid);
 	}
 	
-	public List<LCharDTO> readAllAcceptedByGroupId(int groupId) {
-		return template.selectList(MAPPER + ".readAllAcceptedByGroupId", groupId);
+	public List<LCharDTO> readAllAcceptedByGroupId(int lgroupId) {
+		return template.selectList(MAPPER + ".readAllAcceptedByGroupId", lgroupId);
+	}
+	
+	public List<LCharDTO> readAllAppliedByUid(UidAndLGroupid ulg) {
+		return template.selectList(MAPPER + ".readAllAppliedByUid", ulg);
+	}
+	
+	public List<LCharDTO> readAllNotAppliedByUid(UidAndLGroupid ulg) {
+		return template.selectList(MAPPER + ".readAllNotAppliedByUid", ulg);
+	}
+	
+	public List<LCharDTO> readAllAppliedByGroupId(int lgroupId) {
+		return template.selectList(MAPPER + ".readAllAppliedByGroupId", lgroupId);
 	}
 	
 	public void deleteByName(String lcharName) {
