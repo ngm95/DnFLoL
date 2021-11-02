@@ -27,7 +27,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -315,7 +314,7 @@ public class LOLController {
 	 * 계정 전적 정보를 볼 수 있는 페이지
 	 * - 계정 전적을 랭크 / 일반 / 합계로 구분해서 각각 최근 10게임의 전적, 승률, 주요 포지션 등을 보여줌
 	 */
-	@RequestMapping("/matchAndLeague/{lcharName}")
+	@RequestMapping("/charDetail/{lcharName}")
 	public ModelAndView lolMatchAndLeague(Model model, HttpServletRequest request, @PathVariable("lcharName") String lcharName) {
 		LCharDTO lcharDto = lcServ.readByName(lcharName);
 		model.addAttribute("lcharDto", lcharDto);

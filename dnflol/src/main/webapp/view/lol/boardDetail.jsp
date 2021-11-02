@@ -38,14 +38,18 @@
 
 		<div class="jumbotron">
 			<h3>신청 중인 계정</h3>
-			<c:choose>
-				<c:when test="${empty allAppliedChars}">
-					
-				</c:when>
-				<c:otherwise>
-					
-				</c:otherwise>
-			</c:choose>
+			<div class="jumbotron-board">
+				<c:choose>
+					<c:when test="${empty allAppliedChars}">
+						<p>아직 신청이 없습니다.</p>
+					</c:when>
+					<c:otherwise>
+						<c:forEach var="chars" items="${allAppliedChars}">
+							<a href="/lol/charDetail/${chars.lcharName}">${chars.lcharName}</a>
+						</c:forEach>
+					</c:otherwise>
+				</c:choose>
+			</div>
 		</div>
 		
 		<div class="jumbotron">
