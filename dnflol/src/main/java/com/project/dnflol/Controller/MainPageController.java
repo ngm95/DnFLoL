@@ -71,4 +71,5 @@ public class MainPageController {
 		mv.setViewName("/user/myNotice");
 		return mv;
 	}
+
 }
