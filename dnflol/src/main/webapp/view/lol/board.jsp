@@ -9,90 +9,72 @@
 </head>
 <body class="board-pages">
 
-	<div class="container" style="height: 100%">
+	<div class="container contents-wrap" style="height: 100%">
 		<%@ include file="/view/includes/03_header.jsp"%>
 		<div class="jumbotron">
+		
+			<button type="button" class="btn btn-info" onclick="location.href='/lol/board/newPostGET'" style="float:right">새로운 글 작성</button>
+			<div class="jumbotron-board" style="margin-top:45px">
+				<c:choose>
+					<c:when test="${empty lgroupList}">
+						<h3>작성된 글이 없습니다!</h3>
+					</c:when>
+				</c:choose>
+				<c:forEach var="lgroup" items="${lgroupList}">
+					<div class="groupboard" style="font-family: 'Nanum Gothic'; font-size: 1.6em" id="${lgroup.lgroupId}">
+						<a href="/lol/boardDetail/${lgroup.lgroupId}">${lgroup.lgroupName} created by ${lgroup.lgroupOwner}, ${lgroup.lgroupType}        ${lgroup.lgroupDate}</a>
+					</div>
+				</c:forEach>
+			</div>
+			
 
-			<c:choose>
-				<c:when test="${empty lgroupList}">
-					<h3>작성된 글이 없습니다!</h3>
-				</c:when>
-			</c:choose>
-			<c:forEach var="lgroup" items="${lgroupList}">
-				<div class="groupboard" style="font-family:'Nanum Gothic'; font-size:2.0em" id="${lgroup.lgroupId}">
-					<a href="/lol/boardDetail/${lgroup.lgroupId}">${lgroup.lgroupName} created by ${lgroup.lgroupOwner}, ${lgroup.lgroupType}</a>
-				</div>
-			</c:forEach>
-
-			<div style="display: inline-block">
+			<nav>
+			<ul class="pagination justify-content-center">
 				<c:choose>
 					<c:when test="${bmm.prev eq 'true'}">
-						<form action="/lol/board/prev" method="GET">
-							<div>
-								<button type="submit" class="btn btn-style" style="float:left">이전 글</button>
-							</div>
-						</form>
+						<li class="page-item"><a class="page-link" href="/lol/board/prev">이전</a></li>
 					</c:when>
 					<c:otherwise>
-						<form action="/lol/board/prev" method="GET">
-							<div>
-								<button type="submit" class="btn btn-style" style="float:left" disabled>이전 글</button>
-							</div>
-						</form>
+						<li class="page-item disabled"><a class="page-link">이전</a></li>
 					</c:otherwise>
 				</c:choose>
+				<li class="page-item"><a class="page-link" href="/lol/board/1">${bmm.paging}</a></li>
+				<li class="page-item"><a class="page-link" href="/lol/board/2">${bmm.paging + 1}</a></li>
+				<li class="page-item"><a class="page-link" href="/lol/board/3">${bmm.paging + 2}</a></li>
+				<li class="page-item"><a class="page-link" href="/lol/board/4">${bmm.paging + 3}</a></li>
+				<li class="page-item"><a class="page-link" href="/lol/board/5">${bmm.paging + 4}</a></li>
+				<li class="page-item"><a class="page-link" href="/lol/board/6">${bmm.paging + 5}</a></li>
+				<li class="page-item"><a class="page-link" href="/lol/board/7">${bmm.paging + 6}</a></li>
+				<li class="page-item"><a class="page-link" href="/lol/board/8">${bmm.paging + 7}</a></li>
+				<li class="page-item"><a class="page-link" href="/lol/board/9">${bmm.paging + 8}</a></li>
+				<li class="page-item"><a class="page-link" href="/lol/board/10">${bmm.paging + 9}</a></li>
 				<c:choose>
 					<c:when test="${bmm.next eq 'true'}">
-						<form action="/lol/board/next" method="GET">
-							<div>
-								<button type="submit" class="btn btn-style" style="float:right">다음 글</button>
-							</div>
-						</form>
+						<li class="page-item"><a class="page-link" href="/lol/board/next">다음</a></li>
 					</c:when>
 					<c:otherwise>
-						<form action="/lol/board/next" method="GET">
-							<div>
-								<button type="submit" class="btn btn-style" style="float:right" disabled>다음 글</button>
-							</div>
-						</form>
+						<li class="page-item disabled"><a class="page-link">다음</a></li>
 					</c:otherwise>
 				</c:choose>
-			</div>
-			<div>
-				<form action="/lol/board/newPostGET" method="GET">
-					<div class="col-xs-8">
-						<button type="submit">새로운 글 작성</button>
-					</div>
-				</form>
-			</div>
+			</ul>
+			</nav>
 		</div>
 
 		<div class="jumbotron">
 			<form:form modelAttribute="searchForm" action="/lol/findBoard" method="post">
-				<div class="form-group has-feedback">
-					<label for="findDetail">검색하기(미구현)</label>
-					<form:input type="text" class="form-control" placeholder="검색할 내용" path="findDetail" id="findDetail" />
-					<span class="glyphicon glyphicon-user form-control-feedback"></span>
-				</div>
-				<div>
-
-					<input type="radio" name="checkRadio" value="groupName" checked> 
-					<label for="groupName" style="padding-right:10px">그룹 이름</label> 
-					
-					<input type="radio" name="checkRadio" value="groupOwner"> 
-					<label for="groupOwner" style="padding-right:10px">작성자</label> 
-					
-					<input type="radio" name="checkRadio" value="detail"> 
-					<label for="detail">세부 내용</label>
-				</div>
-				<div class="row">
-					<div class="col-xs-8">
-						<button type="submit" class="btn btn-style" style="background-color: blue; color: white">검색</button>
-					</div>
+				<div class="input-group">
+					<form:select class="form-select" path="checkRadio">
+						<form:option value="groupName">그룹 이름</form:option>
+						<form:option value="groupOwner">작성자</form:option>
+						<form:option value="detail">세부 내용</form:option>
+					</form:select>
+					<form:input class="form-control" type="text" path="findDetail" placeholder="검색할 내용"/>
+					<form:button class="btn btn-outline-secondary" type="submit">검색하기</form:button>
 				</div>
 			</form:form>
 		</div>
+		<%@ include file="/view/includes/09_footer.jsp"%>
 	</div>
-	<%@ include file="/view/includes/09_footer.jsp"%>
+	
 </body>
 </html>

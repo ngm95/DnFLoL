@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.project.dnflol.DAO.LCharDAO;
 import com.project.dnflol.DTO.LCharDTO;
 import com.project.dnflol.Exception.AlreadyExistedLCharNameException;
+import com.project.dnflol.util.UidAndLGroupid;
 
 @Service
 public class LCharService {
@@ -36,6 +37,18 @@ public class LCharService {
 	
 	public List<LCharDTO> readAllAcceptedByGroupId(int groupId) {
 		return lcharDao.readAllAcceptedByGroupId(groupId);
+	}
+	
+	public List<LCharDTO> readAllAppliedByUid(String uid, int lgroupId) {
+		return lcharDao.readAllAppliedByUid(new UidAndLGroupid(uid, lgroupId));
+	}
+	
+	public List<LCharDTO> readAllNotAppliedByUid(String uid, int lgroupId) {
+		return lcharDao.readAllNotAppliedByUid(new UidAndLGroupid(uid, lgroupId));
+	}
+	
+	public List<LCharDTO> readAllAppliedByGroupId(int lgroupId) {
+		return lcharDao.readAllAppliedByGroupId(lgroupId);
 	}
 	
 	public void deleteByName(String lcharName) {
