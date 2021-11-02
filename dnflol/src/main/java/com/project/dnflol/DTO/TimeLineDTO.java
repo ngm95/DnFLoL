@@ -12,6 +12,10 @@ public class TimeLineDTO {
 	private class GameData {
 		String itemId;
 		String itemName;
+		String raidName;
+		String raidPartyName;
+		String phaseName;
+		String hard;
 		
 		public String toString() {
 			return itemId + ", " + itemName;

@@ -14,6 +14,16 @@ public class DAdventureDTO {
 	int limit; // 변환 Row수 기본:10, 최대:100
 
     String[] server_dict={"all","anton","bakal","cain","casillas", "diregie","hilder","prey","siroco"};
+    Ddate date; //날씨
+	@Data
+	private class Ddate {
+		String startDate; //예시 20210708T0000
+		String endDate;
+		
+		public String toString() {
+			return "startDate="+startDate + "&endDate=" + endDate;
+		}
+	}
 	 
    
 }

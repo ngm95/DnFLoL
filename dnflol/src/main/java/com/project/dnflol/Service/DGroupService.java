@@ -13,6 +13,8 @@ import com.project.dnflol.util.BoardMinMax;
 public class DGroupService {
 	
 	private DGroupDAO dgroupDao;
+	
+	//test
 	@Autowired
 	public DGroupService(DGroupDAO dgroupDao) {
 		this.dgroupDao = dgroupDao;

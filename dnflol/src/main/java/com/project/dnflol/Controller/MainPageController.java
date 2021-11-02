@@ -111,11 +111,12 @@ public class MainPageController {
 				List<TimeLineDTO> timeline = objectMapper.readValue(body, objectMapper.getTypeFactory().constructCollectionType(List.class, TimeLineDTO.class));
 				//summonerDto = objectMapper.readValue(body, DAdventureDTO.class);	// json을 SummonerDTO로 바꿈
 				System.out.print("5");
-				session.setAttribute("result", timeline);
+				
 				for (TimeLineDTO ele : timeline) {
 					 ele.getData();
 				}
 				System.out.print("6");
+				session.setAttribute("result", timeline);
 				//LCharDTO lcharDto = new LCharDTO(((AuthInfo)session.getAttribute("authInfo")).getUid(), summonerDto.getName());
 				//lcServ.create(lcharDto);										// 아이디를 계정에 연동
 			}
