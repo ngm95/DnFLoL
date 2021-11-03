@@ -23,16 +23,16 @@
 				</c:choose>
 
 				<table class="table table-striped">
-						<thead>
-							<tr>
-								<th scope="col">글 번호</th>
-								<th scope="col">제목</th>
-								<th scope="col">게임 종류</th>
-								<th scope="col">작성자</th>
-								<th scope="col">시간</th>
-							</tr>
-						</thead>
-						<tbody>
+					<thead>
+						<tr>
+							<th scope="col">글 번호</th>
+							<th scope="col">제목</th>
+							<th scope="col">게임 종류</th>
+							<th scope="col">작성자</th>
+							<th scope="col">시간</th>
+						</tr>
+					</thead>
+					<tbody>
 						<c:forEach var="lgroup" items="${lgroupList}">
 							<tr>
 								<th scope="row">${lgroup.lgroupId}</th>
@@ -42,8 +42,8 @@
 								<td>${lgroup.lgroupDate}</td>
 							</tr>
 						</c:forEach>
-						</tbody>
-					</table>
+					</tbody>
+				</table>
 			</div>
 			
 

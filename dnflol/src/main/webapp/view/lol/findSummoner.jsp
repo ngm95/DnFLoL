@@ -27,10 +27,10 @@
 			<div class="jumbotron-board">
 				<c:choose>
 					<c:when test="${empty summoner.name}">
-						<p>검색된 결과가 없습니다.</p>
+						<p style="color:green"><b>검색된 결과가 없습니다.</b></p>
 					</c:when>
 					<c:when test="${empty summoner.summonerLevel}">
-						<p>검색 중 오류가 발생했습니다.</p>
+						<p style="color:red"><b>검색 중 오류가 발생했습니다.</b></p>
 					</c:when>	
 					<c:otherwise>
 						<c:choose>
