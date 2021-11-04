@@ -7,7 +7,7 @@
 <html>
 <head>
 <%@ include file="/view/includes/00_head.jsp"%>
-<title>계정 상세정보</title>
+<title>LoL 계정 상세정보</title>
 </head>
 <body class="board-pages">
 

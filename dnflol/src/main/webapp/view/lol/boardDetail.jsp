@@ -7,7 +7,7 @@
 <html>
 <head>
 <%@ include file="/view/includes/00_head.jsp"%>
-<title>게시글 세부내용</title>
+<title>LoL 게시글 세부내용</title>
 </head>
 <body>
 

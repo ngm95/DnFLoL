@@ -66,8 +66,8 @@ public class LOLController {
 	@Autowired
 	UserService uServ;
 
-	APIKey api = new APIKey();
-	List<LGroupDTO> lgroupList;
+	APIKey api = new APIKey();									// API Key를 가지고 있는 객체
+	List<LGroupDTO> lgroupList;									// 게시판에 노출될 글 리스트
 	BoardMinMax bmm;											// 게시판에 노출되는 글을 컨트롤할 객체
 	ObjectMapper objectMapper = new ObjectMapper();				// JSON 형태로 반환되는 response를 DTO형태로 바꿔주는 Jackson 라이브러리를 사용하기 위한 객체
 	
@@ -140,8 +140,9 @@ public class LOLController {
 	}
 	
 	@RequestMapping("/board/{page}")
-	public ModelAndView lolBoardPaging(Model model, @PathVariable("page") int page) {
-		ModelAndView mv = new ModelAndView();
+	public String lolBoardPaging(Model model, @PathVariable("page") int page) {
+		if (bmm.getLimit() - page*10 < -10)												// URL로 비활성화된 페이지로 접근하면 다시 첫 페이지로 이동하도록 함
+			return "redirect:/lol/board/" + bmm.getPaging();	
 
 		int startIdx = bmm.getMin()+(page-1)*10;										// 현재 페이지에서 볼 수 있는 글의 시작, 끝 인덱스 계산
 		int endIdx = Math.min(bmm.getLimit(), startIdx+10);
@@ -149,8 +150,7 @@ public class LOLController {
 		model.addAttribute("lgroupList", lgroupList.subList(startIdx, endIdx));			// 현재 페이지에서 볼 수 있는 글만 담아서 모델에 담음
 		model.addAttribute("bmm", bmm);
 		
-		mv.setViewName("/lol/board");
-		return mv;
+		return "/lol/board";
 	}
 
 	/**
