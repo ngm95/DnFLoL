@@ -105,6 +105,9 @@ public class MainPageController {
 	public String myDnFNotice(Model model) {
 		String json = null;
 		
+		// 현재 로그인된 uid가 만든 게시글에 달린 신청을 찾아서 리스트에 넣어야돼
+		// 
+		
 		return json;
 	}
 }
