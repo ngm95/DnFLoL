@@ -1,8 +1,10 @@
 package com.project.dnflol.DTO;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class DApplyDTO {
 	int dapplyId;
 	String dcharId;

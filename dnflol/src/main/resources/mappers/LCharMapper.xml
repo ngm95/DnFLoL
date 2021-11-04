@@ -24,6 +24,7 @@
 		SELECT uid, lcharName
 		FROM LChar
 		WHERE uid = #{uid}
+		ORDER BY lcharName
 	]]>
 	</select>
 	
@@ -33,6 +34,33 @@
 		WHERE lcharName IN (SELECT LApply.lcharName
 						  FROM LApply, LGroup
 						  WHERE LApply.lgroupId = LGroup.lgroupId AND LApply.lapplyResult = 'ACCEPTED' AND Lgroup.lgroupId = #{lgroupId})
+	</select>
+	
+	<select id="readAllAppliedByUid" resultType="com.project.dnflol.DTO.LCharDTO">
+		SELECT uid, lcharName
+		FROM LChar
+		WHERE uid = #{uid} AND lcharName IN (SELECT LApply.lcharName
+											FROM LApply, LGroup
+											WHERE LApply.lgroupId = LGroup.lgroupId AND LApply.lgroupId = #{lgroupId} AND LGroup.lgroupId = #{lgroupId})
+		ORDER BY lcharName
+	</select>
+	
+	<select id="readAllNotAppliedByUid" resultType="com.project.dnflol.DTO.LCharDTO">
+		SELECT uid, lcharName
+		FROM LChar
+		WHERE uid = #{uid} AND lcharName NOT IN (SELECT LApply.lcharName
+												FROM LApply, LGroup
+												WHERE LApply.lgroupId = LGroup.lgroupId AND LApply.lgroupId = #{lgroupId} AND LGroup.lgroupId = #{lgroupId})
+		ORDER BY lcharName
+	</select>
+	
+	<select id = "readAllAppliedByGroupId" resultType="com.project.dnflol.DTO.LCharDTO">
+		SELECT uid, lcharName
+		FROM LChar
+		WHERE lcharName IN (SELECT lcharName
+							FROM LApply, LGroup
+							WHERE LApply.lgroupId = LGroup.lgroupId AND LApply.lgroupId = #{lgroupId} AND LGroup.lgroupId = #{lgroupId})
+		ORDER BY lcharName	
 	</select>
 	
 	<delete id="deleteByName">
