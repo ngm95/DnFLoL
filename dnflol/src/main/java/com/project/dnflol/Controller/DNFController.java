@@ -16,6 +16,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,7 +25,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.project.dnflol.DTO.DApplyDTO;
+import com.project.dnflol.DTO.DAdventureDTO;
+import com.project.dnflol.DTO.DCharDTO;
 import com.project.dnflol.DTO.DGroupDTO;
 import com.project.dnflol.DTO.TimeLineDTO;
 import com.project.dnflol.DTO.UserDTO;
@@ -142,7 +144,7 @@ public class DNFController {
 	 *   검색 버튼을 누르면 입력 폼에 입력된 정보와 체크박스에서 선택된 정보를 가지고 비슷한 글을 찾아서 그 글들을 보여줌.
 	 */
 	
-	@RequestMapping("/dnf/timeline")
+	@RequestMapping("/timeline")
 	public ModelAndView lolFindSummoner(Model model, @PathVariable("dcharName") String dcharName) {
 		String requestURL = "https://api.neople.co.kr/df/servers/siroco/characters/"+ dcharName + "timeline?limit=100&code=201,507&apikey=" + api.getDNF_API_KEY();
 		
@@ -175,6 +177,65 @@ public class DNFController {
 		return mv;
 	}
 	
+	@GetMapping("/findcharacter")
+	public ModelAndView findcharacter(Model model) {
+		ModelAndView mv = new ModelAndView();
+		model.addAttribute("character", new DAdventureDTO());	// 
+		mv.setViewName("/dnf/findcharacter");
+		return mv;
+	}
+	/*
+	 * 
+	 */
+	@PostMapping("/findcharacter") 
+	public ModelAndView findcharacter(Model model, @ModelAttribute("result") DAdventureDTO dadventureDTO) {
+		System.out.println(dadventureDTO);
+		String requestURL = "https://api.neople.co.kr/df/servers/siroco/characters?characterName="+ dadventureDTO.getCharacterName() + "&wordType=full&apikey=" + api.getDNF_API_KEY();
+	
+		
+		model.addAttribute("character", new DAdventureDTO());
+		ModelAndView mv = new ModelAndView();
+		try {
+			HttpClient client = HttpClientBuilder.create().build();
+			HttpGet getRequest = new HttpGet(requestURL);
+			HttpResponse response = client.execute(getRequest);
+			
+			if (response.getStatusLine().getStatusCode() == 200) {
+				ResponseHandler<String> handler = new BasicResponseHandler();
+				String body = handler.handleResponse(response);
+				
+				body = body.substring(body.indexOf("rows")+6,body.length()-1);
+				objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+				System.out.println(body + "\n");
+				//List<DAdventureDTO> characters = objectMapper.readValue(body.substring(body.indexOf("rows")+6, body.length()-1), new TypeReference<List<DAdventureDTO>>() {});
+				List<DAdventureDTO> characters = objectMapper.readValue(body, objectMapper.getTypeFactory().constructCollectionType(List.class, DAdventureDTO.class));
+				for (DAdventureDTO ele : characters) {
+					System.out.println(ele);
+				}
+				model.addAttribute("characters", characters);
+			}
+		} catch(Exception e) {
+			mv.setViewName("redirect:/secrutiry/denied");
+			return mv;
+		}
+		
+		mv.setViewName("/dnf/findcharacter");					// 이전 상태로 되돌아감
+		return mv;
+	}
+	
+	@PostMapping("/addcharacter") 
+	public String addcharacter(Model model, @Valid @ModelAttribute("result") DAdventureDTO dadventureDto, BindingResult br) {
+		DCharDTO dcharDto = new DCharDTO(((AuthInfo)model.getAttribute("authInfo")).getUid(), dadventureDto.getCharacterName(), dadventureDto.getCharacterId(), dadventureDto.getServerId());    // 새로운 던 캐릭 정보 생성
+		dcServ.create(dcharDto);					// 아이디를 계정에 연동
+		
+		return "redirect:/user/myPage";				// 마이페이지로 리다이렉트
+	}
+	@GetMapping("/deletecharacter/{characterName}")
+	public String deletecharacter(@PathVariable(value="characterName") String characterName) {
+		dcServ.deleteByName(characterName);				// DB에서 해당 던 캐릭터 삭제
+		return "redirect:/user/myPage";				// 마이페이지로 리다이렉트
+	}
+	
 	/**
 	 * 게시판 페이지에서 상세정보로 찾기 버튼을 눌렀을 때 이벤트 처리
 	 * 이후 게시판 페이지로 리다이렉트한다.
@@ -197,4 +258,6 @@ public class DNFController {
 		mv.setViewName("redirect:/dnf/board/" + bmm.getPaging());		//첫 번째 페이지로 리다이렉트
 		return mv;
 	}
+	
+	
 }

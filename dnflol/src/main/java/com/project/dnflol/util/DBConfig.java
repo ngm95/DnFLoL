@@ -21,7 +21,7 @@ public class DBConfig {
 	@Primary
 	public DataSource dataSource() {
 		return DataSourceBuilder.create()
-				.url("jdbc:mysql://localhost:3306/dnflol?serverTimezone=UTC&characterEncoding=UTF-8")
+				.url("jdbc:mysql://localhost:3306/dnflol?verifyServerCertificate=false&useSSL=false&serverTimezone=UTC&characterEncoding=UTF-8")
 				.driverClassName("com.mysql.cj.jdbc.Driver")
 				.username("dnflol")
 				.password("dnflol")
