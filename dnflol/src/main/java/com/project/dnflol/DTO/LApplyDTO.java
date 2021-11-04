@@ -9,9 +9,12 @@ public class LApplyDTO {
 	int lapplyId;
 	String lcharName;
 	int lgroupId;
+	String lgroupName;
 	String lapplyResult;
-	public LApplyDTO(String lcharName, int lgroupId) {
-		this.lcharName = lcharName;
+	
+	public LApplyDTO(int lapplyId, int lgroupId, String lapplyResult) {
+		this.lapplyId = lapplyId;
 		this.lgroupId = lgroupId;
+		this.lapplyResult = lapplyResult;
 	}
 }

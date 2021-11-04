@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
@@ -177,7 +178,7 @@ public class LOLController {
 	}
 
 	@GetMapping(value="/board/newPostGET")
-	public String newPostGet(HttpSession session, Model model) {
+	public String newPostGet(Model model) {
 		List<LCharDTO> mylolChars = lcServ.readAllByUid(((AuthInfo)model.getAttribute("authInfo")).getUid());	// DB접근을 통해 계정과 연동된 내 LOL 계정 정보를 받아 옴
 		model.addAttribute("mylolChars", mylolChars); 					// 모델에 계정과 연동된 내 LOL 계정 정보 저장
 		model.addAttribute("post", new LGroupDTO());					// 모델에 글 작성 양식 저장
@@ -214,7 +215,7 @@ public class LOLController {
 	 * - 페이지 하단에는 메인 게시판으로 되돌아가는 버튼과 신청 페이지로 이동할 수 있는 버튼이 존재
 	 */
 	@RequestMapping("/boardDetail/{lgroupId}")
-	public ModelAndView lolGroupBoardDetail(Model model, HttpSession session, @PathVariable(value="lgroupId") int lgroupId) {
+	public ModelAndView lolGroupBoardDetail(Model model, @PathVariable(value="lgroupId") int lgroupId) {
 		LGroupDTO lgroupDto = lgServ.readById(lgroupId);										// 게시글 세부 정보
 		List<LCharDTO> acceptedList = lcServ.readAllAcceptedByGroupId(lgroupId);				// 수락된 멤버 목록
 		model.addAttribute("lgroupDto", lgroupDto);
@@ -500,5 +501,23 @@ public class LOLController {
 		ModelAndView mv = new ModelAndView();
 		mv.setViewName("/lol/charDetail");							
 		return mv;
+	}
+	
+	@RequestMapping("/acceptApply/{lapplyId}&{lgroupId}")
+	public String acceptApply(HttpServletRequest request, @PathVariable("lapplyId") int lapplyId, @PathVariable("lgroupId") int lgroupId) {
+		LApplyDTO applyForm = new LApplyDTO(lapplyId, lgroupId, "ACCEPTED");
+		System.out.println(applyForm);
+		laServ.updateResult(applyForm);
+		System.out.println(request.getHeader("Referer"));
+		return "redirect:" + request.getHeader("Referer");
+	}
+	
+	@RequestMapping("/denyApply/{lapplyId}&{lgroupId}")
+	public String denyApply(HttpServletRequest request, @PathVariable("lapplyId") int lapplyId, @PathVariable("lgroupId") int lgroupId) {
+		LApplyDTO applyForm = new LApplyDTO(lapplyId, lgroupId, "ACCEPTED");
+		System.out.println(applyForm);
+		laServ.updateResult(applyForm);
+		System.out.println(request.getHeader("Referer"));
+		return "redirect:" + request.getHeader("Referer");
 	}
 }

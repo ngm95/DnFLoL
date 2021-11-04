@@ -44,6 +44,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		http.formLogin()
 			.loginPage("/security/login")
 			.defaultSuccessUrl("/")
+			//.successHandler(new LoginSuccessHandler())
 			.failureForwardUrl("/security/denied")
 			.permitAll();
 		http.logout()

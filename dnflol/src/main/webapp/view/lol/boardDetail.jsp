@@ -68,6 +68,7 @@
 									<p>계정명 : ${chars.lcharName} 
 									<input type="hidden" id="lgroupId" name="lgroupId" value="${lgroupDto.lgroupId}"> 
 									<input type="hidden" id="lcharName" name="lcharName" value="${chars.lcharName}"> 
+									<input type="hidden" id="lgroupName" name="lgroupName" value="${lgroupDto.lgroupName}">
 									<input type="submit" value="신청하기">
 								</form:form>
 							</div>
@@ -76,8 +77,6 @@
 							<div>
 								<form:form modelAttribute="applyForm" style="display: inline-block" action="${pageContext.request.contextPath}/lol/submit/" method="post">
 									<p>계정명 : ${chars.lcharName} 
-									<input type="hidden" id="lgroupId" name="lgroupId" value="${lgroupDto.lgroupId}"> 
-									<input type="hidden" id="lcharName" name="lcharName" value="${chars.lcharName}"> 
 									<input type="submit" value="신청하기" disabled>
 								</form:form>
 							</div>

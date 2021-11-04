@@ -7,25 +7,36 @@
 
 	<insert id="create">
 		INSERT INTO LApply (
-			lcharName, lgroupId
+			lcharName, lgroupId, lgroupName
 		) VALUES (
-			#{lcharName}, #{lgroupId}
+			#{lcharName}, #{lgroupId}, #{lgroupName}
 		)
 	</insert>
 	
 	<select id="read" resultType="com.project.dnflol.DTO.LApplyDTO">
-		SELECT lapplyId, lcharName, lgroupId, lapplyResult
+		SELECT *
 		FROM LApply
 		WHERE lcharName = #{lcharName} AND lgroupId = #{lgroupId}
 	</select>
 	
 	<select id="readAllByGroupId" resultType="com.project.dnflol.DTO.LApplyDTO">
 	<![CDATA[
-		SELECT lapplyId, lcharName, lgroupId, lapplyResult
+		SELECT *
 		FROM LApply
 		WHERE lgroupId = #{lgroupId}
 		ORDER BY lapplyID DESC
 	]]>
+	</select>
+	
+	<select id="readAllMyApply" resultType="com.project.dnflol.DTO.LApplyDTO">
+		SELECT *
+		FROM LApply
+		WHERE lapplyResult = 'NO' AND lgroupId IN (SELECT lgroupId
+												   FROM LGroup
+												   WHERE lgroupOwner IN (SELECT lcharName
+																		 FROM LChar, User
+																		 WHERE LChar.uid = User.uid And user.uid = #{uid}))
+		ORDER BY lapplyId DESC
 	</select>
 	
 	<update id="updatelapplyResult">

@@ -34,6 +34,10 @@ public class LApplyService {
 		return lapplyDao.readAllByGroupId(groupId);
 	}
 	
+	public List<LApplyDTO> readAllMyApply(String uid) {
+		return lapplyDao.readAllMyApply(uid);
+	}
+	
 	public void updateResult(LApplyDTO lapplyDto) {
 		lapplyDao.updateLapplyResult(lapplyDto);
 	}

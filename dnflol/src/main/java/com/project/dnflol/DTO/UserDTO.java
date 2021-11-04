@@ -9,5 +9,4 @@ public class UserDTO {
 	String pw;
 	String email;
 	String role;
-	
 }
