@@ -17,6 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.google.gson.Gson;
 import com.project.dnflol.DTO.LApplyDTO;
 import com.project.dnflol.DTO.LCharDTO;
+import com.project.dnflol.DTO.DCharDTO;
 import com.project.dnflol.DTO.UserDTO;
 import com.project.dnflol.Service.DCharService;
 import com.project.dnflol.Service.DGroupService;
@@ -80,6 +81,9 @@ public class MainPageController {
 		/*
 		 * DnF 연동 계정 정보와 작성한 글 정보를 model에 담는 작업 필요
 		 */
+		
+		List<DCharDTO> mydnfChars = dcServ.readAllByUid(auth.getUid());	// LoL 연동 계정 정보
+		model.addAttribute("mydnfChars", mydnfChars);
 		
 		mv.setViewName("/user/myPage");
 		return mv;

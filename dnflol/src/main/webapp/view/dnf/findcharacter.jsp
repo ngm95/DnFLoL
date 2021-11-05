@@ -15,10 +15,21 @@
 		<%@ include file="/view/includes/03_header.jsp"%>
 		<div class="jumbotron">
 			<h3>캐릭터 검색</h3>
-			<form:form modelAttribute="character" action="/dnf/findcharacter" method="post" style="margin-top:15px">
-				<div class="input-group mb-3">
-					<form:input type="text" class="form-control" path="characterName" placeholder="캐릭터 이름"/>
-					<form:button type="submit" class="btn btn-primary">검색</form:button>
+			<form:form modelAttribute="character" action="/dnf/findcharacter" method="post">
+				<div class="input-group">
+					<form:select class="form-select" path="serverId">
+						<form:option value="all">전체</form:option>
+						<form:option value="anton">안톤</form:option>
+						<form:option value="bakal">바칼</form:option>
+						<form:option value="cain">카인</form:option>
+						<form:option value="casillas">카시야스</form:option>
+						<form:option value="diregie">디레지에</form:option>
+						<form:option value="hilder">힐더</form:option>
+						<form:option value="prey">프레이</form:option>
+						<form:option value="siroco">시로코</form:option>
+					</form:select>
+					<form:input class="form-control" type="text" path="characterName" placeholder="캐릭터 이름"/>
+					<form:button class="btn btn-outline-secondary" type="submit">검색하기</form:button>
 				</div>
 			</form:form>
 		</div>
@@ -31,20 +42,27 @@
 						<p style="color:green"><b>검색된 결과가 없습니다.</b></p>
 					</c:when>	
 					<c:otherwise>
-						<c:forEach var="chars" items="${characters}">
-
-							<img src="https://img-api.neople.co.kr/df/servers/${chars.serverId}/characters/${chars.characterName}?zoom=1" style="width: 15%">
-							
-							이름 : ${chars.characterName}, 서버 : ${chars.serverId}
+					
+						<c:forEach var="chars" items="${characters}" varStatus="c">
+						
+						
+						<div class = "col-md-3">
+							<img src="https://img-api.neople.co.kr/df/servers/${chars.serverId}/characters/${chars.characterId}?zoom=1" >
 							
 							<form:form modelAttribute="character" action="/dnf/addcharacter" method="post">
 									<div class="col-xs-3">
 										<form:input type="hidden" path="characterName" value="${chars.characterName}" />
 										<form:input type="hidden" path="characterId" value="${chars.characterId}"/>
 										<form:input type="hidden" path="serverId" value="${chars.serverId}"/>
-										<button type="submit" class="btn btn-success" style="float: right">계정과 연동하기</button>
+										<button type="submit" class="btn btn-success">계정과 연동하기</button>
 									</div>
 							</form:form>
+							<p>
+							이름 : ${characters[c.index].characterName}, 서버 : ${chars.serverId}
+							<p>
+							</p>
+							</div>
+					
 						</c:forEach>
 					</c:otherwise>
 				</c:choose>
