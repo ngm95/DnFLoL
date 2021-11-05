@@ -190,7 +190,7 @@ public class DNFController {
 	@PostMapping("/findcharacter") 
 	public ModelAndView findcharacter(Model model, @ModelAttribute("result") DAdventureDTO dadventureDTO) {
 		System.out.println(dadventureDTO);
-		String requestURL = "https://api.neople.co.kr/df/servers/siroco/characters?characterName="+ dadventureDTO.getCharacterName() + "&wordType=full&apikey=" + api.getDNF_API_KEY();
+		String requestURL = "https://api.neople.co.kr/df/servers/"+dadventureDTO.getServerId()+"/characters?characterName="+ dadventureDTO.getCharacterName() + "&limit=30&wordType=full&apikey=" + api.getDNF_API_KEY();
 	
 		
 		model.addAttribute("character", new DAdventureDTO());
@@ -224,7 +224,7 @@ public class DNFController {
 	}
 	
 	@PostMapping("/addcharacter") 
-	public String addcharacter(Model model, @Valid @ModelAttribute("result") DAdventureDTO dadventureDto, BindingResult br) {
+	public String addcharacter(Model model, @Valid @ModelAttribute("character") DAdventureDTO dadventureDto, BindingResult br) {
 		DCharDTO dcharDto = new DCharDTO(((AuthInfo)model.getAttribute("authInfo")).getUid(), dadventureDto.getCharacterName(), dadventureDto.getCharacterId(), dadventureDto.getServerId());    // 새로운 던 캐릭 정보 생성
 		dcServ.create(dcharDto);					// 아이디를 계정에 연동
 		

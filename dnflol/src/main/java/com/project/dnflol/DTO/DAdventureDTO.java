@@ -9,7 +9,8 @@ public class DAdventureDTO {
 	String code; //타임라인 코드 201 : 레이드, 
 	String next; //다음 데이터 조회
 	int limit; // 변환 Row수 기본:10, 최대:100
-
+	
+	String[] server_dict={"all","anton","bakal","cain","casillas", "diregie","hilder","prey","siroco"};
     Ddate date; //날씨
 	@Data
 	private class Ddate {

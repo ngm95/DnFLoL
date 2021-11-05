@@ -7,28 +7,28 @@
 
 	<insert id="create">
 		INSERT INTO DChar (
-			dcharName, uid
+			dcname, uid,dcharId,dcserver
 		) VALUES (
-			#{dcharName}, #{uid}
+			#{dcname}, #{uid} ,#{dcharId},#{dcserver}
 		)
 	</insert>
 	
 	<select id="readByName" resultType="com.project.dnflol.DTO.DCharDTO">
-		SELECT uid, dcharName
+		SELECT uid, dcname
 		FROM DChar
-		WHERE dcharName = #{dcharName}
+		WHERE dcname = #{dcname}
 	</select>
 	
 	<select id="readAllByUId" resultType="com.project.dnflol.DTO.DCharDTO">
 	<![CDATA[
-		SELECT uid, dcharName
+		SELECT *
 		FROM DChar
 		WHERE uid = #{uid}
 	]]>
 	</select>
 	
 	<select id="readAllAcceptedByGroupId" resultType="com.project.dnflol.DTO.DCharDTO">
-		SELECT uid, dcharName
+		SELECT uid, dcname
 		FROM DChar
 		WHERE dcharId IN (SELECT DApply.dcharId
 						  FROM DApply, DGroup
@@ -37,7 +37,7 @@
 	
 	<delete id="deleteByName">
 		DELETE FROM DChar
-		WHERE dcharName = #{dcharName}
+		WHERE dcname = #{dcname}
 	</delete>
 
 </mapper>

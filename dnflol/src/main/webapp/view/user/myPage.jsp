@@ -53,7 +53,7 @@
 						<c:forEach var="chars" items="${mydnfChars}">
 							<div class="row">
 								<div>
-									<form style="display: inline-block" action="${pageContext.request.contextPath}/dnf/findcharacter/${chars.dcname}" method="get">
+									<form style="display: inline-block" action="${pageContext.request.contextPath}/dnf/deletecharacter/${chars.dcname}" method="get">
 										<p>
 											계정명 : ${chars.dcname}
 											<button type="submit" class="btn btn-style" style="background-color: pink; color: white; margin-left: 15px">연동 해제</button>
