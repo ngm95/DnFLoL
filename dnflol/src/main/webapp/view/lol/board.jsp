@@ -36,7 +36,7 @@
 									<td colspan="4">작성된 혹은 해당되는 글이 없습니다.</td>
 								</tr>
 								<c:forEach begin="0" end="8" step="1">
-									<tr>
+									<tr> 
 										<th scope="row">#</th>
 										<td colspan="4"></td>
 									</tr>

@@ -23,12 +23,10 @@
 						<p>아직 수락된 신청이 없습니다.</p>
 					</c:when>
 					<c:otherwise>
-						<c:forEach var="accepted" items="acceptedList">
-							<div style="display: inline-block">
-								<form style="display: inline-block" action="${pageContext.request.contextPath}//lol/matchAndLeague/${accepted.lcharName}" method="get">
-									<p>
-										계정명 : ${accepted.lcharName} <input type="submit" value="상세 정보">
-								</form>
+						<h4>수락된 신청</h4>
+						<c:forEach var="accepted" items="${acceptedList}">
+							<div class="row">
+								<button class="btn btn-info" onclick="location.href='/lol/charDetail/${accepted.lcharName}'">${accepted.lcharName}</button>
 							</div>
 						</c:forEach>
 					</c:otherwise>

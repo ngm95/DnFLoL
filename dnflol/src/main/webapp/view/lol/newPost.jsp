@@ -16,47 +16,47 @@
 
 		<div class="board-pages">
 
-			<div class="jumbotron">
-				<h3><b>내 LOL 계정 선택</b></h3>
+			<div class="jumbotron" style="padding-bottom:45px">
+				
 				<c:choose>
 					<c:when test="${empty mylolChars}">
+						<h3><b>내 LOL 계정 선택</b></h3>
 						<p>연동된 LOL 계정이 없어서 게시글 작성이 불가능합니다.</p>
 						<a href="/user/myPage">연동하러 가기</a>
 					</c:when>
 					
 					<c:otherwise>
+						<h3><b>게시글 작성</b></h3>
+						
 						<form:form modelAttribute="post" action="/lol/board/newPostPOST" method="post">
-							<c:forEach var="chars" items="${mylolChars}">
-								<input type="radio" name="lgroupOwner" value="${chars.lcharName}" style="padding-right:20px" checked>${chars.lcharName}
-							</c:forEach>
 
-							<div class="form-group has-feedback">
-								<form:input type="text" class="form-control" placeholder="제목" path="lgroupName" id="lgroupName" />
-								<span class="glyphicon glyphicon-user form-control-feedback"></span>
+							<div class="input-group" style="margin-bottom:15px; margin-top:10px">
+								<form:input class="form-control" type="text" path="lgroupName" placeholder="제목" />
 							</div>
+							<div class="input-group" style="margin-bottom:15px">
+								<form:select class="form-select" path="lgroupOwner">
+									<c:forEach var="chars" items="${mylolChars}">
+										<form:option value="${chars.lcharName}">${chars.lcharName}</form:option>
+									</c:forEach>
+								</form:select>
+								<form:select class="form-select" path="lgroupType">
+									<form:option value="듀오랭크">듀오랭크</form:option>
+									<form:option value="자유랭크">자유랭크</form:option>
+									<form:option value="일반게임">일반게임</form:option>
+								</form:select>
+							</div>
+							<div class="input-group" style="margin-bottom:5px">
+								<form:textarea class="form-control" type="text" rows="5" path="lgroupDetail" placeholder="게시글 설명"/>
+							</div>
+							<button type="submit" class="btn btn-primary" style="float:right">작성</button>
 
-							<div>
-								<input type="radio" name="lgroupType" value="듀오랭크" style="padding-right:20px" checked>듀오랭크 
-								<input type="radio" name="lgroupType" value="자유랭크" style="padding-right:20px">자유랭크 
-								<input type="radio" name="lgroupType" value="일반게임" style="padding-right:20px">일반게임
-							</div>
-
-							<div class="form-group has-feedback">
-								<form:input type="text" class="form-control" placeholder="내용" path="lgroupDetail" id="lgroupDetail" />
-								<span class="glyphicon glyphicon-lock form-control-feedback"></span>
-							</div>
-
-							<div class="row">
-								<div class="col-xs-1">
-									<button type="submit" class="btn btn-style">작성하기</button>
-								</div>
-							</div>
 						</form:form>
 					</c:otherwise>
 				</c:choose>
 			</div>
 		</div>
+		<%@ include file="/view/includes/09_footer.jsp"%>
 	</div>
-	<%@ include file="/view/includes/09_footer.jsp"%>
+	
 </body>
 </html>
