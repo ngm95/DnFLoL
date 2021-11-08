@@ -27,30 +27,34 @@
 					
 					<c:otherwise>
 						<h3><b>게시글 작성</b></h3>
+						<div class="jumbotron-board">
+							<form:form modelAttribute="post" action="/lol/board/newPostPOST" method="post">
+
+								<div class="input-group mb-3" style="margin-bottom: 15px; margin-top: 10px">
+									<span class="input-group-text">제목</span>
+									<form:input class="form-control" type="text" path="lgroupName" placeholder="제목" />
+								</div>
+								<div class="input-group" style="margin-bottom: 15px">
+									<form:select class="form-select" path="lgroupOwner">
+										<c:forEach var="chars" items="${mylolChars}">
+											<form:option value="${chars.lcharName}">${chars.lcharName}</form:option>
+										</c:forEach>
+									</form:select>
+									<form:select class="form-select" path="lgroupType">
+										<form:option value="듀오랭크">듀오랭크</form:option>
+										<form:option value="자유랭크">자유랭크</form:option>
+										<form:option value="일반게임">일반게임</form:option>
+									</form:select>
+								</div>
+								<div class="input-group mb-3" style="margin-bottom: 5px">
+									<span class="input-group-text">설명</span>
+									<form:textarea class="form-control" type="text" rows="5" path="lgroupDetail" placeholder="게시글 설명" />
+								</div>
+								<button type="submit" class="btn btn-primary" style="float: right">작성</button>
+
+							</form:form>
+						</div>
 						
-						<form:form modelAttribute="post" action="/lol/board/newPostPOST" method="post">
-
-							<div class="input-group" style="margin-bottom:15px; margin-top:10px">
-								<form:input class="form-control" type="text" path="lgroupName" placeholder="제목" />
-							</div>
-							<div class="input-group" style="margin-bottom:15px">
-								<form:select class="form-select" path="lgroupOwner">
-									<c:forEach var="chars" items="${mylolChars}">
-										<form:option value="${chars.lcharName}">${chars.lcharName}</form:option>
-									</c:forEach>
-								</form:select>
-								<form:select class="form-select" path="lgroupType">
-									<form:option value="듀오랭크">듀오랭크</form:option>
-									<form:option value="자유랭크">자유랭크</form:option>
-									<form:option value="일반게임">일반게임</form:option>
-								</form:select>
-							</div>
-							<div class="input-group" style="margin-bottom:5px">
-								<form:textarea class="form-control" type="text" rows="5" path="lgroupDetail" placeholder="게시글 설명"/>
-							</div>
-							<button type="submit" class="btn btn-primary" style="float:right">작성</button>
-
-						</form:form>
 					</c:otherwise>
 				</c:choose>
 			</div>

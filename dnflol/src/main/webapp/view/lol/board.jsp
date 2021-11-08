@@ -15,7 +15,7 @@
 		<div class="jumbotron">
 		
 			<button type="button" class="btn btn-info" onclick="location.href='/lol/board/newPostGET'" style="float:right">새로운 글 작성</button>
-			<h3>게시판</h3>
+			<h3><b>게시판</b></h3>
 			<div class="jumbotron-board" style="margin-top:45px">
 
 				<table class="table table-striped">

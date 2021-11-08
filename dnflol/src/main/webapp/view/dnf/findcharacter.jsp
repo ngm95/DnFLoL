@@ -38,32 +38,27 @@
 			<h3>검색 결과</h3>
 			<div class="jumbotron-board">
 				<c:choose>
-					<c:when test="${empty result.characterName}">
-						<p style="color:green"><b>검색된 결과가 없습니다.</b></p>
-					</c:when>	
+					<c:when test="${empty characters}">
+						<p style="color: green">
+							<b>검색된 결과가 없습니다.</b>
+						</p>
+					</c:when>
 					<c:otherwise>
-					
-						<c:forEach var="chars" items="${characters}" varStatus="c">
-						
-						
-						<div class = "col-md-3">
-							<img src="https://img-api.neople.co.kr/df/servers/${chars.serverId}/characters/${chars.characterId}?zoom=1" >
-							
-							<form:form modelAttribute="character" action="/dnf/addcharacter" method="post">
-									<div class="col-xs-3">
+						<div class="row row-cols-4">
+							<c:forEach var="chars" items="${characters}">
+								<div class="col">
+									<form:form modelAttribute="character" action="/dnf/addcharacter" method="post">
 										<form:input type="hidden" path="characterName" value="${chars.characterName}" />
-										<form:input type="hidden" path="characterId" value="${chars.characterId}"/>
-										<form:input type="hidden" path="serverId" value="${chars.serverId}"/>
-										<button type="submit" class="btn btn-success">계정과 연동하기</button>
-									</div>
-							</form:form>
-							<p>
-							이름 : ${characters[c.index].characterName}, 서버 : ${chars.serverId}
-							<p>
-							</p>
-							</div>
-					
-						</c:forEach>
+										<form:input type="hidden" path="characterId" value="${chars.characterId}" />
+										<form:input type="hidden" path="serverId" value="${chars.serverId}" />
+										<button type="submit" class="btn btn-success">
+											<img src="https://img-api.neople.co.kr/df/servers/${chars.serverId}/characters/${chars.characterId}?zoom=1">
+										</button>
+									</form:form>
+									이름 : ${chars.characterName}, 서버 : ${chars.serverId}
+								</div>
+							</c:forEach>
+						</div>
 					</c:otherwise>
 				</c:choose>
 			</div>

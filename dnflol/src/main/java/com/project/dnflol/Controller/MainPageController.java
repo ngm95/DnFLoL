@@ -15,9 +15,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.google.gson.Gson;
+import com.project.dnflol.DTO.DApplyDTO;
+import com.project.dnflol.DTO.DCharDTO;
 import com.project.dnflol.DTO.LApplyDTO;
 import com.project.dnflol.DTO.LCharDTO;
-import com.project.dnflol.DTO.DCharDTO;
 import com.project.dnflol.DTO.UserDTO;
 import com.project.dnflol.Service.DCharService;
 import com.project.dnflol.Service.DGroupService;
@@ -95,12 +96,12 @@ public class MainPageController {
 		String json = null;
 		Gson gson = new Gson();
 		AuthInfo authInfo = (AuthInfo)model.getAttribute("authInfo");
+		
 		List<LApplyDTO> applyList = null;
 		if (authInfo != null)
 			applyList = laServ.readAllMyApply(authInfo.getUid());
 
 		json = gson.toJson(applyList);
-		
 		return json;
 	}
 	
@@ -108,10 +109,15 @@ public class MainPageController {
 	@ResponseBody
 	public String myDnFNotice(Model model) {
 		String json = null;
+		Gson gson = new Gson();
+		AuthInfo authInfo = (AuthInfo)model.getAttribute("authInfo");
 		
+		List<DApplyDTO> applyList = null;
 		// 현재 로그인된 uid가 만든 게시글에 달린 신청을 찾아서 리스트에 넣어야돼
-		// 
+		// if (authInfo != null)
+		//	applyList = daServ.readAllMyApply(authInfo.getUid());
 		
+		json = gson.toJson(applyList);
 		return json;
 	}
 }

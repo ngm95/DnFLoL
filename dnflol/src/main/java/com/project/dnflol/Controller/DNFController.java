@@ -137,63 +137,19 @@ public class DNFController {
 		return "/dnf/board";
 	}
 	
-	/**
-	 * 메인 게시판 페이지
-	 * - 글을 최근 순서로 10개 단위 10페이지를 게시하고 이전/다음 버튼으로 다른 범위에 있는 글을 가져올 수 있음.
-	 * - 글을 일일히 찾기 싫은 사람을 위해 페이지 하단에는 게시판 검색을 위한 검색종류 선택 체크박스, 입력 폼, 검색버튼이 존재함.
-	 *   검색 버튼을 누르면 입력 폼에 입력된 정보와 체크박스에서 선택된 정보를 가지고 비슷한 글을 찾아서 그 글들을 보여줌.
-	 */
-	
-	@RequestMapping("/timeline")
-	public ModelAndView lolFindSummoner(Model model, @PathVariable("dcharName") String dcharName) {
-		String requestURL = "https://api.neople.co.kr/df/servers/siroco/characters/"+ dcharName + "timeline?limit=100&code=201,507&apikey=" + api.getDNF_API_KEY();
-		
-		ModelAndView mv = new ModelAndView();
-		try {
-			HttpClient client = HttpClientBuilder.create().build();
-			HttpGet getRequest = new HttpGet(requestURL);
-			HttpResponse response = client.execute(getRequest);
-			
-			/*
-			 * 
-			 */
-			if (response.getStatusLine().getStatusCode() == 200) {
-				ResponseHandler<String> handler = new BasicResponseHandler();
-				String body = handler.handleResponse(response);
-				//body.indexOf
-				
-				body = body.substring(body.indexOf("rows")+6,body.length()-2);
-				System.out.print(body);
-				objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-				List<TimeLineDTO> timeline = objectMapper.readValue(body, objectMapper.getTypeFactory().constructCollectionType(List.class, TimeLineDTO.class));
-				model.addAttribute("result", timeline);
-			}
-		} catch(Exception e) {
-			mv.setViewName("redirect:/secrity/denied");
-			return mv;
-		}
-		
-		mv.setViewName("/dnf/test");					// 이전 상태로 되돌아감
-		return mv;
-	}
-	
 	@GetMapping("/findcharacter")
 	public ModelAndView findcharacter(Model model) {
 		ModelAndView mv = new ModelAndView();
-		model.addAttribute("character", new DAdventureDTO());	// 
+		model.addAttribute("character", new DAdventureDTO());	
 		mv.setViewName("/dnf/findcharacter");
 		return mv;
 	}
-	/*
-	 * 
-	 */
+
 	@PostMapping("/findcharacter") 
-	public ModelAndView findcharacter(Model model, @ModelAttribute("result") DAdventureDTO dadventureDTO) {
-		System.out.println(dadventureDTO);
+	public ModelAndView findcharacter(Model model, @ModelAttribute("character") DAdventureDTO dadventureDTO) {
 		String requestURL = "https://api.neople.co.kr/df/servers/"+dadventureDTO.getServerId()+"/characters?characterName="+ dadventureDTO.getCharacterName() + "&limit=30&wordType=full&apikey=" + api.getDNF_API_KEY();
-	
-		
 		model.addAttribute("character", new DAdventureDTO());
+		
 		ModelAndView mv = new ModelAndView();
 		try {
 			HttpClient client = HttpClientBuilder.create().build();
@@ -206,12 +162,7 @@ public class DNFController {
 				
 				body = body.substring(body.indexOf("rows")+6,body.length()-1);
 				objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-				System.out.println(body + "\n");
-				//List<DAdventureDTO> characters = objectMapper.readValue(body.substring(body.indexOf("rows")+6, body.length()-1), new TypeReference<List<DAdventureDTO>>() {});
 				List<DAdventureDTO> characters = objectMapper.readValue(body, objectMapper.getTypeFactory().constructCollectionType(List.class, DAdventureDTO.class));
-				for (DAdventureDTO ele : characters) {
-					System.out.println(ele);
-				}
 				model.addAttribute("characters", characters);
 			}
 		} catch(Exception e) {
@@ -230,6 +181,7 @@ public class DNFController {
 		
 		return "redirect:/user/myPage";				// 마이페이지로 리다이렉트
 	}
+	
 	@GetMapping("/deletecharacter/{characterName}")
 	public String deletecharacter(@PathVariable(value="characterName") String characterName) {
 		dcServ.deleteByName(characterName);				// DB에서 해당 던 캐릭터 삭제
@@ -259,5 +211,34 @@ public class DNFController {
 		return mv;
 	}
 	
-	
+	@RequestMapping("/timeline")
+	public ModelAndView test(Model model, @PathVariable("dcharName") String dcharName) {
+		String requestURL = "https://api.neople.co.kr/df/servers/siroco/characters/"+ dcharName + "timeline?limit=100&code=201,507&apikey=" + api.getDNF_API_KEY();
+		
+		ModelAndView mv = new ModelAndView();
+		try {
+			HttpClient client = HttpClientBuilder.create().build();
+			HttpGet getRequest = new HttpGet(requestURL);
+			HttpResponse response = client.execute(getRequest);
+			
+			/*
+			 * 
+			 */
+			if (response.getStatusLine().getStatusCode() == 200) {
+				ResponseHandler<String> handler = new BasicResponseHandler();
+				String body = handler.handleResponse(response);
+				
+				body = body.substring(body.indexOf("rows")+6,body.length()-2);
+				objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+				List<TimeLineDTO> timeline = objectMapper.readValue(body, objectMapper.getTypeFactory().constructCollectionType(List.class, TimeLineDTO.class));
+				// 
+			}
+		} catch(Exception e) {
+			mv.setViewName("redirect:/secrity/denied");
+			return mv;
+		}
+		
+		mv.setViewName("/dnf/test");					
+		return mv;
+	}
 }
