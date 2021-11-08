@@ -57,7 +57,7 @@ public class MainPageController {
 			return new AuthInfo(user.getUid(), user.getUname());
 		}
 	}
-	
+	//test
 	@ModelAttribute("applyForm")
 	public LApplyDTO applyForm() {
 		return new LApplyDTO();
