@@ -44,18 +44,27 @@
 						</p>
 					</c:when>
 					<c:otherwise>
-						<div class="row row-cols-4">
+						<div class="row row-cols-6">
 							<c:forEach var="chars" items="${characters}">
-								<div class="col">
-									<form:form modelAttribute="character" action="/dnf/addcharacter" method="post">
+							
+								<div class="col-6 col-md-4">
+								<div class="m-4">
+								<form:form modelAttribute="character" action="/dnf/addcharacter" method="post">
+								<div class="card" style="margin-bottom">
+									
 										<form:input type="hidden" path="characterName" value="${chars.characterName}" />
 										<form:input type="hidden" path="characterId" value="${chars.characterId}" />
 										<form:input type="hidden" path="serverId" value="${chars.serverId}" />
-										<button type="submit" class="btn btn-success">
-											<img src="https://img-api.neople.co.kr/df/servers/${chars.serverId}/characters/${chars.characterId}?zoom=1">
+										<button type="submit" class="btn btn-success" style="background-color: white;">
+											<img src="https://img-api.neople.co.kr/df/servers/${chars.serverId}/characters/${chars.characterId}?zoom=1" class="card-img-top">
 										</button>
+										
+									<div card-img-overlay>
+									<p class= "card-text"> ${chars.serverId}<br>${chars.characterName}</p>
+									</div>
+								</div>
 									</form:form>
-									이름 : ${chars.characterName}, 서버 : ${chars.serverId}
+								</div>
 								</div>
 							</c:forEach>
 						</div>
