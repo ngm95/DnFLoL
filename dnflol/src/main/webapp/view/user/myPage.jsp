@@ -24,6 +24,7 @@
 					<c:when test="${empty mylolChars}">
 						<p>연동된 LOL 계정이 없습니다.</p>
 					</c:when>
+					
 					<c:otherwise>
 						<c:forEach var="chars" items="${mylolChars}">
 							<div class="row">
