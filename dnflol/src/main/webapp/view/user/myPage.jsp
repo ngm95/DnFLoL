@@ -24,6 +24,7 @@
 					<c:when test="${empty mylolChars}">
 						<p>연동된 LOL 계정이 없습니다.</p>
 					</c:when>
+					
 					<c:otherwise>
 						<c:forEach var="chars" items="${mylolChars}">
 							<div class="row">
@@ -39,7 +40,35 @@
 			</div>
 		</div>
 
-		<%@ include file="/view/includes/09_footer.jsp"%>
+		<div class="jumbotron">
+			<button type="button" class="btn btn-style" onclick="location.href='/dnf/findcharacter'" style="float: right; background-color: SkyBlue; color: white">계정 추가하기</button>
+			<h3>
+				<b>내 DNF 캐릭터</b>
+			</h3>
+			<div class="jumbotron-board">
+				<c:choose>
+					<c:when test="${empty mydnfChars}">
+						<p>연동된 캐릭터가 없습니다.</p>
+					</c:when>
+					<c:otherwise>
+						<c:forEach var="chars" items="${mydnfChars}">
+							<div class="row">
+								<div>
+									<form style="display: inline-block" action="${pageContext.request.contextPath}/dnf/deletecharacter/${chars.dcname}" method="get">
+										<p>
+											계정명 : ${chars.dcname}
+											<button type="submit" class="btn btn-style" style="background-color: pink; color: white; margin-left: 15px">연동 해제</button>
+									</form>
+								</div>
+							</div>
+						</c:forEach>
+					</c:otherwise>
+				</c:choose>
+			</div>
+		</div>
+	
+	
+	<%@ include file="/view/includes/09_footer.jsp"%>
 	</div>
 	
 </body>

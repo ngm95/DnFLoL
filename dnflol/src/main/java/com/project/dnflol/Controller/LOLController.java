@@ -506,18 +506,14 @@ public class LOLController {
 	@RequestMapping("/acceptApply/{lapplyId}&{lgroupId}")
 	public String acceptApply(HttpServletRequest request, @PathVariable("lapplyId") int lapplyId, @PathVariable("lgroupId") int lgroupId) {
 		LApplyDTO applyForm = new LApplyDTO(lapplyId, lgroupId, "ACCEPTED");
-		System.out.println(applyForm);
 		laServ.updateResult(applyForm);
-		System.out.println(request.getHeader("Referer"));
 		return "redirect:" + request.getHeader("Referer");
 	}
 	
 	@RequestMapping("/denyApply/{lapplyId}&{lgroupId}")
 	public String denyApply(HttpServletRequest request, @PathVariable("lapplyId") int lapplyId, @PathVariable("lgroupId") int lgroupId) {
 		LApplyDTO applyForm = new LApplyDTO(lapplyId, lgroupId, "ACCEPTED");
-		System.out.println(applyForm);
 		laServ.updateResult(applyForm);
-		System.out.println(request.getHeader("Referer"));
 		return "redirect:" + request.getHeader("Referer");
 	}
 }

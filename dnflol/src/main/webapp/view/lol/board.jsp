@@ -15,7 +15,7 @@
 		<div class="jumbotron">
 		
 			<button type="button" class="btn btn-info" onclick="location.href='/lol/board/newPostGET'" style="float:right">새로운 글 작성</button>
-			<h3>게시판</h3>
+			<h3><b>게시판</b></h3>
 			<div class="jumbotron-board" style="margin-top:45px">
 
 				<table class="table table-striped">
@@ -36,7 +36,7 @@
 									<td colspan="4">작성된 혹은 해당되는 글이 없습니다.</td>
 								</tr>
 								<c:forEach begin="0" end="8" step="1">
-									<tr>
+									<tr> 
 										<th scope="row">#</th>
 										<td colspan="4"></td>
 									</tr>

@@ -14,40 +14,40 @@
 	<div class="container contents-wrap" style="height: 100%">
 		<%@ include file="/view/includes/03_header.jsp"%>
 		<div class="jumbotron">
-			<button type="button" class="btn btn-success" onclick="location.href='/lol/board'" style="float:right">목록</button>
+			<button type="button" class="btn btn-success" onclick="location.href='/dnf/board'" style="float:right">목록</button>
 			<h3><b>게시글 상세</b></h3>
 			<div class="jumbotron-board" style="margin-top:45px">
 				<div class="input-group mb-3" style="margin-bottom: 15px">
 					<span class="input-group-text">제목</span>
-					<input class="form-control" type="text" value="${lgroupDto.lgroupName}" readonly/>
+					<input class="form-control" type="text" value="${dgroupDto.dgroupName}" readonly/>
 				</div>
 				<div class="input-group" style="margin-bottom: 15px">
 					<select class="form-select" disabled>
-						<option value="${lgroupDto.lgroupOwner}">${lgroupDto.lgroupOwner}</option>
+						<option value="${dgroupDto.dgroupOwner}">${dgroupDto.dgroupOwner}</option>
 					</select>
 					<select class="form-select" disabled>
-						<option value="${lgroupDto.lgroupType}">${lgroupDto.lgroupType}</option>
+						<option value="${dgroupDto.dgroupType}">${dgroupDto.dgroupType}</option>
 					</select>
 				</div>
 				<div class="input-group mb-3" style="margin-bottom: 5px">
 					<span class="input-group-text">설명</span>
-					<textarea class="form-control" rows="5" readonly>${lgroupDto.lgroupDetail}</textarea>
+					<textarea class="form-control" rows="5" readonly>${dgroupDto.dgroupDetail}</textarea>
 				</div>
 			</div>
 
 			<div class="jumbotron-board" style="margin-top:45px">
-				<h3>참가 인원 수 : ${fn:length(acceptedList)+1} / ${lgroupDto.lgroupMax}</h3>
+				<h3>참가 인원 수 : ${fn:length(acceptedList)+1} / ${dgroupDto.dgroupMax}</h3>
 				<c:choose>
 					<c:when test="${empty acceptedList}">
 						<p>아직 수락된 신청이 없습니다.</p>
 					</c:when>
 					<c:otherwise>
 						<h4>수락된 신청</h4>
-						<c:forEach var="accepted" items="${acceptedList}">
-							<div class="row">
-								<button class="btn btn-info" onclick="location.href='/lol/charDetail/${accepted.lcharName}'">${accepted.lcharName}</button>
-							</div>
-						</c:forEach>
+						<div class="row">
+							<c:forEach var="accepted" items="${acceptedList}">
+									<button class="btn btn-info" onclick="location.href='/dnf/charDetail/${accepted.dcharName}'">${accepted.dcharName}</button>
+							</c:forEach>
+						</div>
 					</c:otherwise>
 				</c:choose>
 			</div>
@@ -62,7 +62,7 @@
 					</c:when>
 					<c:otherwise>
 						<c:forEach var="chars" items="${allAppliedChars}">
-							<a href="/lol/charDetail/${chars.lcharName}">${chars.lcharName}</a>
+							<a href="/dnf/charDetail/${chars.dcharName}">${chars.dcharName}</a>
 						</c:forEach>
 					</c:otherwise>
 				</c:choose>
@@ -80,19 +80,20 @@
 					<c:otherwise>
 						<c:forEach var="chars" items="${myNotAppliedChars}">
 							<div>
-								<form:form modelAttribute="applyForm" style="display: inline-block" action="${pageContext.request.contextPath}/lol/submit/" method="post">
-									<p>계정명 : ${chars.lcharName} 
-									<input type="hidden" id="lgroupId" name="lgroupId" value="${lgroupDto.lgroupId}"> 
-									<input type="hidden" id="lcharName" name="lcharName" value="${chars.lcharName}"> 
-									<input type="hidden" id="lgroupName" name="lgroupName" value="${lgroupDto.lgroupName}">
+								<form:form modelAttribute="applyForm" style="display: inline-block" action="${pageContext.request.contextPath}/dnf/submit/" method="post">
+									<p>계정명 : ${chars.dcharName} 
+									<input type="hidden" id="dcharId" name="dcharId" value="${chars.dcharId}"> 
+									<input type="hidden" id="dcname" name="dcname" value="${dgroupDto.dcname}"> 
+									<input type="hidden" id="dgroupId" name="dgroupId" value="${dgroupDto.dgroupId}"> 
+									<input type="hidden" id="dgroupName" name="dgroupName" value="${dgroupDto.dgroupName}">
 									<input type="submit" value="신청하기">
 								</form:form>
 							</div>
 						</c:forEach>
 						<c:forEach var="chars" items="${myAppliedChars}">
 							<div>
-								<form:form modelAttribute="applyForm" style="display: inline-block" action="${pageContext.request.contextPath}/lol/submit/" method="post">
-									<p>계정명 : ${chars.lcharName} 
+								<form:form modelAttribute="applyForm" style="display: inline-block" action="${pageContext.request.contextPath}/dnf/submit/" method="post">
+									<p>계정명 : ${chars.dcharName} 
 									<input type="submit" value="신청하기" disabled>
 								</form:form>
 							</div>
