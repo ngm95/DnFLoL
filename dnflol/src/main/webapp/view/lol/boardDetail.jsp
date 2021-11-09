@@ -61,9 +61,13 @@
 						<p>아직 신청이 없습니다.</p>
 					</c:when>
 					<c:otherwise>
-						<c:forEach var="chars" items="${allAppliedChars}">
-							<a href="/lol/charDetail/${chars.lcharName}">${chars.lcharName}</a>
-						</c:forEach>
+						<div class="row row-cols-6">
+							<c:forEach var="chars" items="${allAppliedChars}">
+								<div class="col-6 col-md-4">
+									<a href="/lol/charDetail/${chars.lcharName}">${chars.lcharName}</a>
+								</div>
+							</c:forEach>
+						</div>
 					</c:otherwise>
 				</c:choose>
 			</div>

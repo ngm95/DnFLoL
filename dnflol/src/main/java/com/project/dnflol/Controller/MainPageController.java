@@ -97,7 +97,6 @@ public class MainPageController {
 		if (authInfo != null) 
 			applyList = laServ.readAllMyApply(authInfo.getUid());
 			
-		
 		json = gson.toJson(applyList);
 		return json;
 	}
@@ -108,6 +107,7 @@ public class MainPageController {
 		String json = null;
 		Gson gson = new Gson();
 		AuthInfo authInfo = (AuthInfo)model.getAttribute("authInfo");
+		
 		List<DApplyDTO> applyList = null;
 		if (authInfo != null) 
 			applyList = daServ.readAllMyApply(authInfo.getUid());

@@ -43,9 +43,11 @@
 					</c:when>
 					<c:otherwise>
 						<h4>수락된 신청</h4>
-						<div class="row">
+						<div class="row row-cols-6">
 							<c:forEach var="accepted" items="${acceptedList}">
+								<div class="col-6 col-md-4">
 									<button class="btn btn-info" onclick="location.href='/dnf/charDetail/${accepted.dcharName}'">${accepted.dcharName}</button>
+								</div>
 							</c:forEach>
 						</div>
 					</c:otherwise>
