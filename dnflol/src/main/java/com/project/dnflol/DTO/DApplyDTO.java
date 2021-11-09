@@ -11,8 +11,9 @@ public class DApplyDTO {
 	int dgroupId;
 	String dapplyResult;
 	
-	public DApplyDTO(String dcharId, int dgroupId) {
-		this.dcharId = dcharId;
+	public DApplyDTO(int dapplyId, int dgroupId, String dapplyResult) {
+		this.dapplyId = dapplyId;
 		this.dgroupId = dgroupId;
+		this.dapplyResult = dapplyResult;
 	}
 }

@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 public class DGroupDTO {
 	int dgroupId;
-	int dgroupOwner;
+	String dgroupOwner;
 	int dgroupType;
 	int dgroupMax;
 	String dgroupName;
