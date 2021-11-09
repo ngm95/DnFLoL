@@ -234,65 +234,65 @@ public class DNFController {
 		return mv;
 	}
 	
-	@GetMapping(value="/board/newPostGET")
-	public String newPostGet(Model model) {
-		List<LCharDTO> mylolChars = dcServ.readAllByUid(((AuthInfo)model.getAttribute("authInfo")).getUid());	// DB접근을 통해 계정과 연동된 내 LOL 계정 정보를 받아 옴
-		model.addAttribute("mylolChars", mylolChars); 					// 모델에 계정과 연동된 내 LOL 계정 정보 저장
-		model.addAttribute("post", new LGroupDTO());					// 모델에 글 작성 양식 저장
-		return "/lol/newPost";
-	}
-
-	@PostMapping(value="/board/newPostPOST")
-	public String newPostPost(@Valid @ModelAttribute("post") DGroupDTO dgroupDto, BindingResult br) throws Exception {
-		if (br.hasErrors())													// 필요한 정보가 정한 폼에 맞지 않으면 이전 단계로 돌아감
-			return "redirect:/dnf/board/newPostGET";
-
-		if (dgroupDto.getDgroupOwner() == null)								
-			return "redirect:/dnf/board/newPostGET";
-		
-		if (dgroupDto.getDgroupType() == 1)						// 선택한 게임 타입에 따라 최대 인원수를 정함
-			dgroupDto.setDgroupMax(8);
-		else if (dgroupDto.getDgroupType() == 3)
-			dgroupDto.setDgroupMax(16);
-		else
-			dgroupDto.setDgroupMax(12);
-
-		DateFormat format = new SimpleDateFormat("yy.MM.dd kk:mm:ss");		// '연.월.일 시간:분:초' 형식으로 시간을 구함
-		String dateStr = format.format(Calendar.getInstance().getTime());
-		Date date = new Date(System.currentTimeMillis());
-		dgroupDto.setDgroupDate(date);
-		
-		dgServ.create(dgroupDto);											// DB접근을 통해 게시글 생성 
-		
-		Integer dgroupId = dgServ.readDgroupId(dgroupDto);					// 생성한 게시글의 고유 번호를 받아 옴
-		return "redirect:/dnf/boardDetail/" + dgroupId;						// 생성한 게시글로 리다이렉트
-	}
-
-	/**
-	 * 그룹의 세부 정보를 보여주는 페이지
-	 * - 그룹 생성자와 현재까지의 멤버 목록을 보여줌
-	 * - 그룹 멤버를 클릭하면 그 멤버의 세부 전적/티어를 볼 수 있는 페이지로 이동
-	 * - 페이지 하단에는 메인 게시판으로 되돌아가는 버튼과 신청 페이지로 이동할 수 있는 버튼이 존재
-	 */
-	@RequestMapping("/boardDetail/{dgroupId}")
-	public ModelAndView dnfGroupBoardDetail(Model model, @PathVariable(value="dgroupId") int dgroupId) {
-		DGroupDTO dgroupDto = dgServ.readById(dgroupId);										// 게시글 세부 정보
-		List<DCharDTO> acceptedList = dcServ.readAllAcceptedByGroupId(dgroupId);				// 수락된 멤버 목록
-		model.addAttribute("dgroupDto", dgroupDto);
-		model.addAttribute("acceptedList", acceptedList);
-		
-		List<DCharDTO> myAppliedChars = dcServ.readAllAppliedByUid(((AuthInfo)model.getAttribute("authInfo")).getUid(), dgroupId);			// 내 LOL 계정 중 해당 게시글에 이미 신청한 계정
-		List<DCharDTO> myNotAppliedChars = dcServ.readAllNotAppliedByUid(((AuthInfo)model.getAttribute("authInfo")).getUid(), dgroupId);	// 내 LOL 계정 중 해당 게시글에 아직 신청하지 않은 계정
-		model.addAttribute("myAppliedChars", myAppliedChars);
-		model.addAttribute("myNotAppliedChars", myNotAppliedChars);
-		
-		List<DCharDTO> allAppliedChars = dcServ.readAllAppliedByGroupId(dgroupId);				// 이 게시글에 신청한 모든 DnF 캐릭터
-		model.addAttribute("allAppliedChars", allAppliedChars);
-		
-		ModelAndView mv = new ModelAndView();
-		mv.setViewName("/dnf/boardDetail");
-		return mv;
-	}
+//	@GetMapping(value="/board/newPostGET")
+//	public String newPostGet(Model model) {
+//		List<LCharDTO> mylolChars = dcServ.readAllByUid(((AuthInfo)model.getAttribute("authInfo")).getUid());	// DB접근을 통해 계정과 연동된 내 LOL 계정 정보를 받아 옴
+//		model.addAttribute("mylolChars", mylolChars); 					// 모델에 계정과 연동된 내 LOL 계정 정보 저장
+//		model.addAttribute("post", new LGroupDTO());					// 모델에 글 작성 양식 저장
+//		return "/dnf/newPost";
+//	}
+//
+//	@PostMapping(value="/board/newPostPOST")
+//	public String newPostPost(@Valid @ModelAttribute("post") DGroupDTO dgroupDto, BindingResult br) throws Exception {
+//		if (br.hasErrors())													// 필요한 정보가 정한 폼에 맞지 않으면 이전 단계로 돌아감
+//			return "redirect:/dnf/board/newPostGET";
+//
+//		if (dgroupDto.getDgroupOwner() == null)								
+//			return "redirect:/dnf/board/newPostGET";
+//		
+//		if (dgroupDto.getDgroupType() == 1)						// 선택한 게임 타입에 따라 최대 인원수를 정함
+//			dgroupDto.setDgroupMax(8);
+//		else if (dgroupDto.getDgroupType() == 3)
+//			dgroupDto.setDgroupMax(16);
+//		else
+//			dgroupDto.setDgroupMax(12);
+//
+//		DateFormat format = new SimpleDateFormat("yy.MM.dd kk:mm:ss");		// '연.월.일 시간:분:초' 형식으로 시간을 구함
+//		String dateStr = format.format(Calendar.getInstance().getTime());
+//		Date date = new Date(System.currentTimeMillis());
+//		dgroupDto.setDgroupDate(date);
+//		
+//		dgServ.create(dgroupDto);											// DB접근을 통해 게시글 생성 
+//		
+//		Integer dgroupId = dgServ.readDgroupId(dgroupDto);					// 생성한 게시글의 고유 번호를 받아 옴
+//		return "redirect:/dnf/boardDetail/" + dgroupId;						// 생성한 게시글로 리다이렉트
+//	}
+//
+//	/**
+//	 * 그룹의 세부 정보를 보여주는 페이지
+//	 * - 그룹 생성자와 현재까지의 멤버 목록을 보여줌
+//	 * - 그룹 멤버를 클릭하면 그 멤버의 세부 전적/티어를 볼 수 있는 페이지로 이동
+//	 * - 페이지 하단에는 메인 게시판으로 되돌아가는 버튼과 신청 페이지로 이동할 수 있는 버튼이 존재
+//	 */
+//	@RequestMapping("/boardDetail/{dgroupId}")
+//	public ModelAndView dnfGroupBoardDetail(Model model, @PathVariable(value="dgroupId") int dgroupId) {
+//		DGroupDTO dgroupDto = dgServ.readById(dgroupId);										// 게시글 세부 정보
+//		List<DCharDTO> acceptedList = dcServ.readAllAcceptedByGroupId(dgroupId);				// 수락된 멤버 목록
+//		model.addAttribute("dgroupDto", dgroupDto);
+//		model.addAttribute("acceptedList", acceptedList);
+//		
+//		List<DCharDTO> myAppliedChars = dcServ.readAllAppliedByUid(((AuthInfo)model.getAttribute("authInfo")).getUid(), dgroupId);			// 내 LOL 계정 중 해당 게시글에 이미 신청한 계정
+//		List<DCharDTO> myNotAppliedChars = dcServ.readAllNotAppliedByUid(((AuthInfo)model.getAttribute("authInfo")).getUid(), dgroupId);	// 내 LOL 계정 중 해당 게시글에 아직 신청하지 않은 계정
+//		model.addAttribute("myAppliedChars", myAppliedChars);
+//		model.addAttribute("myNotAppliedChars", myNotAppliedChars);
+//		
+//		List<DCharDTO> allAppliedChars = dcServ.readAllAppliedByGroupId(dgroupId);				// 이 게시글에 신청한 모든 DnF 캐릭터
+//		model.addAttribute("allAppliedChars", allAppliedChars);
+//		
+//		ModelAndView mv = new ModelAndView();
+//		mv.setViewName("/dnf/boardDetail");
+//		return mv;
+//	}
 	
 	/**
 	 * 그룹 신청 페이지에서 아이디를 클릭하면 신청을 넣고 게시판 페이지로 돌아감
@@ -353,18 +353,14 @@ public class DNFController {
 	@RequestMapping("/acceptApply/{lapplyId}&{dgroupId}")
 	public String acceptApply(HttpServletRequest request, @PathVariable("dapplyId") int lapplyId, @PathVariable("dgroupId") int dgroupId) {
 		DApplyDTO applyForm = new DApplyDTO(lapplyId, dgroupId, "ACCEPTED");
-		System.out.println(applyForm);
 		daServ.updateResult(applyForm);
-		System.out.println(request.getHeader("Referer"));
 		return "redirect:" + request.getHeader("Referer");
 	}
 	
 	@RequestMapping("/denyApply/{lapplyId}&{dgroupId}")
 	public String denyApply(HttpServletRequest request, @PathVariable("lapplyId") int lapplyId, @PathVariable("dgroupId") int dgroupId) {
 		DApplyDTO applyForm = new DApplyDTO(lapplyId, dgroupId, "ACCEPTED");
-		System.out.println(applyForm);
 		daServ.updateResult(applyForm);
-		System.out.println(request.getHeader("Referer"));
 		return "redirect:" + request.getHeader("Referer");
 	}
 }

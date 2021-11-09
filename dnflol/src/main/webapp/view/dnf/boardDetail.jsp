@@ -82,8 +82,9 @@
 							<div>
 								<form:form modelAttribute="applyForm" style="display: inline-block" action="${pageContext.request.contextPath}/dnf/submit/" method="post">
 									<p>계정명 : ${chars.dcharName} 
+									<input type="hidden" id="dcharId" name="dcharId" value="${chars.dcharId}"> 
+									<input type="hidden" id="dcname" name="dcname" value="${dgroupDto.dcname}"> 
 									<input type="hidden" id="dgroupId" name="dgroupId" value="${dgroupDto.dgroupId}"> 
-									<input type="hidden" id="dcharName" name="dcharName" value="${chars.dcharName}"> 
 									<input type="hidden" id="dgroupName" name="dgroupName" value="${dgroupDto.dgroupName}">
 									<input type="submit" value="신청하기">
 								</form:form>

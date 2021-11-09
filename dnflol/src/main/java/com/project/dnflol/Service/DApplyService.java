@@ -33,6 +33,10 @@ public class DApplyService {
 		return dapplyDao.readAllByGroupId(groupId);
 	}
 	
+	public List<DApplyDTO> readAllMyApply(String uid) {
+		return dapplyDao.readAllMyApply(uid);
+	}
+	
 	public void updateResult(DApplyDTO dapplyDto) {
 		dapplyDao.updateLapplyResult(dapplyDto);
 	}

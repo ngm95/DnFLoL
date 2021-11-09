@@ -8,7 +8,9 @@ import lombok.NoArgsConstructor;
 public class DApplyDTO {
 	int dapplyId;
 	String dcharId;
+	String dcname;
 	int dgroupId;
+	String dgroupName;
 	String dapplyResult;
 	
 	public DApplyDTO(int dapplyId, int dgroupId, String dapplyResult) {

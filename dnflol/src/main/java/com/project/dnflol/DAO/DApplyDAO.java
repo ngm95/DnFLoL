@@ -27,6 +27,10 @@ public class DApplyDAO {
 		return template.selectList(MAPPER + ".readAllByGroupId", groupId);
 	}
 	
+	public List<DApplyDTO> readAllMyApply(String uid) {
+		return template.selectList(MAPPER + ".readAllMyApply", uid);
+	}
+	
 	public void updateLapplyResult(DApplyDTO dapplyDto) {
 		template.update(MAPPER + ".updatedapplyResult", dapplyDto);
 	}

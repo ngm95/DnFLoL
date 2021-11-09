@@ -28,6 +28,17 @@
 	]]>
 	</select>
 	
+	<select id="readAllMyApply" resultType="com.project.dnflol.DTO.DApplyDTO">
+		SELECT *
+		FROM DApply
+		WHERE dapplyResult = 'NO' AND dgroupId IN (SELECT dgroupId
+												   FROM DGroup
+												   WHERE dgroupOwner IN (SELECT dcharId
+																		 FROM DChar, User
+																		 WHERE DChar.uid = User.uid And user.uid = #{uid}))
+		ORDER BY DapplyId DESC
+	</select>
+	
 	<update id="updatelapplyResult">
 		UPDATE DApply
 		SET lapplyResult = #{lapplyResult}
