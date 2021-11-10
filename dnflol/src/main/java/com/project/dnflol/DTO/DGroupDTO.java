@@ -10,7 +10,8 @@ public class DGroupDTO {
 	int dgroupType;
 	int dgroupMax;
 	String dgroupName;
-	Date dgroupDate;
+	String dgroupDate;
 	String dgroupDetail;
+	String dgroupOwnerName;
 }
 

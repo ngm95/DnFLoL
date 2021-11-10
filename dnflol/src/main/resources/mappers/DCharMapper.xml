@@ -19,6 +19,12 @@
 		WHERE dcname = #{dcname}
 	</select>
 	
+	<select id="readByNametocid" resultType="com.project.dnflol.DTO.DCharDTO">
+		SELECT *
+		FROM DChar
+		WHERE dcharId = #{dcharId}
+	</select>
+	
 	<select id="readAllByUId" resultType="com.project.dnflol.DTO.DCharDTO">
 	<![CDATA[
 		SELECT *
@@ -27,12 +33,41 @@
 	]]>
 	</select>
 	
+	
+	
 	<select id="readAllAcceptedByGroupId" resultType="com.project.dnflol.DTO.DCharDTO">
-		SELECT uid, dcname
+		SELECT *
 		FROM DChar
 		WHERE dcharId IN (SELECT DApply.dcharId
 						  FROM DApply, DGroup
-						  WHERE DApply.dgroupId = DGroup.dgroupId AND DApply.dapplyResult = 'ACCEPTED' AND dgroupId = #{dgroupId})
+						  WHERE DApply.dgroupId = DGroup.dgroupId AND DApply.dapplyResult = 'ACCEPTED' AND DGroup.dgroupId = #{dgroupId})
+	</select>
+	
+	<select id="readAllAppliedByUid" resultType="com.project.dnflol.DTO.DCharDTO">
+		SELECT uid, dcname
+		FROM DChar
+		WHERE uid = #{uid} AND dcname IN (SELECT DApply.dcname
+											FROM DApply, DGroup
+											WHERE DApply.dgroupId = DGroup.dgroupId AND DApply.dgroupId = #{groupId} AND DGroup.dgroupId = #{groupId})
+		ORDER BY dcname
+	</select>
+	
+	<select id="readAllNotAppliedByUid" resultType="com.project.dnflol.DTO.DCharDTO">
+		SELECT uid, dcname
+		FROM DChar
+		WHERE uid = #{uid} AND dcname NOT IN (SELECT DApply.dcname
+												FROM DApply, DGroup
+												WHERE DApply.dgroupId = DGroup.dgroupId AND DApply.dgroupId = #{groupId} AND DGroup.dgroupId = #{groupId})
+		ORDER BY dcname
+	</select>
+	
+	<select id = "readAllAppliedByGroupId" resultType="com.project.dnflol.DTO.DCharDTO">
+		SELECT uid, dcname
+		FROM DChar
+		WHERE dcname IN (SELECT dcname
+							FROM DApply, DGroup
+							WHERE DApply.dgroupId = DGroup.dgroupId AND DApply.dgroupId = #{dgroupId} AND DGroup.dgroupId = #{dgroupId})
+		ORDER BY dcname	
 	</select>
 	
 	<delete id="deleteByName">

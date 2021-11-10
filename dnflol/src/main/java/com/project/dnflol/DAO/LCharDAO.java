@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import com.project.dnflol.DTO.LCharDTO;
 import com.project.dnflol.util.UidAndGroupId;
 
+
 @Repository
 public class LCharDAO {
 	private static final String MAPPER = "LCharMapper";
@@ -32,6 +33,7 @@ public class LCharDAO {
 		return template.selectList(MAPPER + ".readAllAcceptedByGroupId", lgroupId);
 	}
 	
+
 	public List<LCharDTO> readAllAppliedByUid(UidAndGroupId ulg) {
 		return template.selectList(MAPPER + ".readAllAppliedByUid", ulg);
 	}
@@ -39,6 +41,7 @@ public class LCharDAO {
 	public List<LCharDTO> readAllNotAppliedByUid(UidAndGroupId ulg) {
 		return template.selectList(MAPPER + ".readAllNotAppliedByUid", ulg);
 	}
+
 	
 	public List<LCharDTO> readAllAppliedByGroupId(int lgroupId) {
 		return template.selectList(MAPPER + ".readAllAppliedByGroupId", lgroupId);

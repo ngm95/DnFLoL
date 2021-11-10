@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.project.dnflol.DTO.DCharDTO;
+import com.project.dnflol.util.UidAndGroupId;
 
 @Repository
 public class DCharDAO {
@@ -22,6 +23,11 @@ public class DCharDAO {
 	public DCharDTO readByName(String dcharName) {
 		return template.selectOne(MAPPER + ".readByName", dcharName);
 	}
+	
+	public DCharDTO readByNametocid(String dcharId) {
+		return template.selectOne(MAPPER + ".readByNametocid", dcharId);
+	}
+	
 	public DCharDTO readById(String dcharId) {
 		return template.selectOne(MAPPER + ".readById", dcharId);
 	}
@@ -31,7 +37,20 @@ public class DCharDAO {
 	}
 	
 	public List<DCharDTO> readAllAcceptedByGroupId(int groupId) {
-		return template.selectList(MAPPER + ".readAllAcceptedByGruopId", groupId);
+		return template.selectList(MAPPER + ".readAllAcceptedByGroupId", groupId);
+	}
+	
+	public List<DCharDTO> readAllAppliedByUid(UidAndGroupId ulg) {
+		return template.selectList(MAPPER + ".readAllAppliedByUid", ulg);
+	}
+	
+	public List<DCharDTO> readAllNotAppliedByUid(UidAndGroupId ulg) {
+		return template.selectList(MAPPER + ".readAllNotAppliedByUid", ulg);
+	}
+	
+	
+	public List<DCharDTO> readAllAppliedByGroupId(int dgroupId) {
+		return template.selectList(MAPPER + ".readAllAppliedByGroupId", dgroupId);
 	}
 	
 	public void deleteByName(String dcharName) {

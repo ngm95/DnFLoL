@@ -47,13 +47,27 @@
 								<c:forEach var="dgroup" items="${dgroupList}">
 									<tr>
 										<th scope="row">${dgroup.dgroupId}</th>
-										<td><a href="/dnf/boardDetail/${dgroup.lgroupId}">${dgroup.dgroupName}</a></td>
-										<td>${dgroup.dgroupType}</td>
-										<td>${dgroup.dgroupOwner}</td>
+										<td><a href="/dnf/boardDetail/${dgroup.dgroupId}">${dgroup.dgroupName}</a></td>
+										<c:choose>
+										<c:when test="${dgroup.dgroupType == 1}">
+											<td>핀드워</td>
+										</c:when>
+										<c:when test="${dgroup.dgroupType == 2}">
+											<td>프레이-이시스</td>
+										</c:when>
+										<c:when test="${dgroup.dgroupType == 3}">
+											<td>무형의 시로코</td>
+										</c:when>
+										<c:when test="${dgroup.dgroupType == 4}">
+											<td>혼돈의 오즈마</td>
+										</c:when>
+										</c:choose>
+										
+										<td>${dgroup.dgroupOwnerName}</td>
 										<td>${dgroup.dgroupDate}</td>
 									</tr>
 								</c:forEach>
-								<c:forEach begin="${fn:length(lgroupList)+1}" end="10" step="1">
+								<c:forEach begin="${fn:length(dgroupList)+1}" end="10" step="1">
 									<tr>
 										<th scope="row">#</th>
 										<td colspan="4"></td>
@@ -106,7 +120,7 @@
 				<div class="input-group">
 					<form:select class="form-select" path="checkRadio">
 						<form:option value="groupName">제목</form:option>
-						<form:option value="groupOwner">작성자</form:option>
+						<form:option value="dgroupOwnerName">작성자</form:option>
 						<form:option value="detail">세부 내용</form:option>
 					</form:select>
 					<form:input class="form-control" type="text" path="findDetail" placeholder="검색할 내용"/>

@@ -23,7 +23,7 @@
 				</div>
 				<div class="input-group" style="margin-bottom: 15px">
 					<select class="form-select" disabled>
-						<option value="${dgroupDto.dgroupOwner}">${dgroupDto.dgroupOwner}</option>
+						<option value="${dgroupDto.dgroupOwnerName}">${dgroupDto.dgroupOwnerName}</option>
 					</select>
 					<select class="form-select" disabled>
 						<option value="${dgroupDto.dgroupType}">${dgroupDto.dgroupType}</option>
@@ -64,7 +64,7 @@
 					</c:when>
 					<c:otherwise>
 						<c:forEach var="chars" items="${allAppliedChars}">
-							<a href="/dnf/charDetail/${chars.dcharName}">${chars.dcharName}</a>
+							<a href="/dnf/charDetail/${chars.dcname}">${chars.dcname}</a>
 						</c:forEach>
 					</c:otherwise>
 				</c:choose>
@@ -83,9 +83,9 @@
 						<c:forEach var="chars" items="${myNotAppliedChars}">
 							<div>
 								<form:form modelAttribute="applyForm" style="display: inline-block" action="${pageContext.request.contextPath}/dnf/submit/" method="post">
-									<p>계정명 : ${chars.dcharName} 
+									<p>계정명 : ${chars.dcname} 
 									<input type="hidden" id="dcharId" name="dcharId" value="${chars.dcharId}"> 
-									<input type="hidden" id="dcname" name="dcname" value="${dgroupDto.dcname}"> 
+									<input type="hidden" id="dcname" name="dcname" value="${chars.dcname}"> 
 									<input type="hidden" id="dgroupId" name="dgroupId" value="${dgroupDto.dgroupId}"> 
 									<input type="hidden" id="dgroupName" name="dgroupName" value="${dgroupDto.dgroupName}">
 									<input type="submit" value="신청하기">
@@ -95,7 +95,7 @@
 						<c:forEach var="chars" items="${myAppliedChars}">
 							<div>
 								<form:form modelAttribute="applyForm" style="display: inline-block" action="${pageContext.request.contextPath}/dnf/submit/" method="post">
-									<p>계정명 : ${chars.dcharName} 
+									<p>계정명 : ${chars.dcname} 
 									<input type="submit" value="신청하기" disabled>
 								</form:form>
 							</div>

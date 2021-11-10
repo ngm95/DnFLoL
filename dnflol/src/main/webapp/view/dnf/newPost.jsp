@@ -7,7 +7,7 @@
 <head>
 <%@ include file="/view/includes/00_head.jsp"%>
 
-<title>LoL 글 작성하기</title>
+<title>DNF 글 작성하기</title>
 </head>
 <body class="board-pages">
 
@@ -20,8 +20,8 @@
 				
 				<c:choose>
 					<c:when test="${empty mydnfChars}">
-						<h3><b>내 LOL 계정 선택</b></h3>
-						<p>연동된 LOL 계정이 없어서 게시글 작성이 불가능합니다.</p>
+						<h3><b>내 캐릭터 선택</b></h3>
+						<p>연동된 캐릭터가 없어서 게시글 작성이 불가능합니다.</p>
 						<a href="/user/myPage">연동하러 가기</a>
 					</c:when>
 					
@@ -37,7 +37,7 @@
 								<div class="input-group" style="margin-bottom: 15px">
 									<form:select class="form-select" path="dgroupOwner">
 										<c:forEach var="chars" items="${mydnfChars}">
-											<form:option value="${chars.dcharName}">${chars.dcharName}</form:option>
+											<form:option value="${chars.dcharId}">${chars.dcname}</form:option>
 										</c:forEach>
 									</form:select>
 									<form:select class="form-select" path="dgroupType">

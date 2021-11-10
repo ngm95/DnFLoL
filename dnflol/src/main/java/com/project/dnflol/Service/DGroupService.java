@@ -24,6 +24,11 @@ public class DGroupService {
 		dgroupDao.create(dgroupDto);
 	}
 	
+
+	public Integer readDgroupId(DGroupDTO dgroupDto) {
+		return dgroupDao.readDgroupId(dgroupDto);
+	}
+	
 	public DGroupDTO readById(int dgroupId) {
 		return dgroupDao.readById(dgroupId);
 	}
