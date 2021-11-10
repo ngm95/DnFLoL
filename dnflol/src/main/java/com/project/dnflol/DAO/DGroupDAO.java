@@ -20,8 +20,8 @@ public class DGroupDAO {
 		template.insert(MAPPER + ".create", dgroupDto);
 	}
 	
-	public Integer readLgroupId(DGroupDTO dgroupDto) {
-		return template.selectOne(MAPPER + ".readdgroupId", dgroupDto);
+	public Integer readDgroupId(DGroupDTO dgroupDto) {
+		return template.selectOne(MAPPER + ".readDgroupId", dgroupDto);
 	}
 	
 	public DGroupDTO readById(int dgroupId) {

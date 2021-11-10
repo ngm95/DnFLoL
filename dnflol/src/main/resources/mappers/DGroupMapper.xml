@@ -7,9 +7,9 @@
 
 	<insert id="create">
 		INSERT INTO DGroup (
-			dgroupOwner, dgroupType, dgroupMax, dgroupName, dgroupDate, dgroupDetail
+			dgroupOwner, dgroupType, dgroupMax, dgroupName, dgroupDate, dgroupDetail, dgroupOwnerName
 		) VALUES (
-			#{dgroupOwner}, #{dgroupType}, #{dgroupMax}, #{dgroupName}, #{dgroupDate}, #{dgroupDetail}
+			#{dgroupOwner}, #{dgroupType}, #{dgroupMax}, #{dgroupName}, #{dgroupDate}, #{dgroupDetail}, #{dgroupOwnerName}
 		)
 	</insert>
 	
@@ -20,16 +20,18 @@
 		ORDER BY dgroupDate DESC
 	</select>
 	
-	<select id="readdgroupId" resultType="Integer">
+	<select id="readDgroupId" resultType="Integer">
 		SELECT dgroupId
 		FROM DGroup
-		WHERE dgroupOwner = #{dgroupOwner}, dgroupType = #{dgroupType}, dgroupName = #{dgroupName}, dgroupDetail = #{dgroupDetail}, dgroupDate = #{dgroupDate}
+		WHERE dgroupOwner = #{dgroupOwner} AND dgroupType = #{dgroupType} AND dgroupName = #{dgroupName} AND dgroupDate = #{dgroupDate}
 	</select>
+	
+	
 	<select id="readAllByOwnerName" resultType="com.project.dnflol.DTO.DGroupDTO">
 	<![CDATA[
-		SELECT dgroupId, dgroupOwner, dgrouptype, dgroupMax, dgroupName, dgroupDate, dgroupDetail
+		SELECT dgroupId, dgroupOwnerName, dgrouptype, dgroupMax, dgroupName, dgroupDate, dgroupDetail
 		FROM DGroup
-		WHERE dgroupOwner LIKE CONCAT('%',#{ownerName},'%')
+		WHERE dgroupOwnerName LIKE CONCAT('%',#{ownerName},'%')
 		ORDER BY dgroupDate DESC
 	]]>
 	</select>
@@ -54,9 +56,9 @@
 	
 	<select id="readAllByUId" resultType="com.project.dnflol.DTO.DGroupDTO">
 	<![CDATA[
-		SELECT dgroupId, dgroupOwner, dgroupType, dgroupMax, dgroupName, dgroupDate, dgroupDetail
+		SELECT dgroupId, dgroupOwner, dgroupType, dgroupMax, dgroupName, dgroupDate, dgroupDetail, dgroupOwnerName
 		FROM DGroup, DChar
-		WHERE DGroup.dgroupOwner = DChar.dcharName AND DChar.uid = #{uid}
+		WHERE DGroup.dgroupOwnerName = DChar.dcharName AND DChar.uid = #{uid}
 	]]>
 	</select>
 	
