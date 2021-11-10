@@ -44,7 +44,7 @@
 	</select>
 	
 	<select id="readAllAppliedByUid" resultType="com.project.dnflol.DTO.DCharDTO">
-		SELECT uid, dcname, dcserver
+		SELECT *
 		FROM DChar
 		WHERE uid = #{uid} AND dcname IN (SELECT DApply.dcname
 											FROM DApply, DGroup
@@ -55,7 +55,7 @@
 	<select id="readAllNotAppliedByUid" resultType="com.project.dnflol.DTO.DCharDTO">
 		SELECT *
 		FROM Dchar
-		WHERE uid = #{uid} and dcname NOT IN (SELECT DApply.dcname
+		WHERE uid = #{uid} AND dcname NOT IN (SELECT DApply.dcname
 												FROM DApply, DGroup
 												WHERE DApply.dgroupId = DGroup.dgroupId AND DApply.dgroupId = #{groupId})
 		ORDER BY dcname

@@ -7,24 +7,24 @@
 
 	<insert id="create">
 		INSERT INTO DApply (
-			dcharId, dgroupId
+			dcharId, dcname, dgroupId, dgroupName
 		) VALUES (
-			#{dcharId}, #{dgroupId}
+			#{dcharId}, #{dcname}, #{dgroupId}, #{dgroupName}
 		)
 	</insert>
 	
 	<select id="read" resultType="com.project.dnflol.DTO.DApplyDTO">
-		SELECT lapplyId, dcharId, dgroupId, lapplyResult
+		SELECT *
 		FROM DApply
 		WHERE dcharId = #{dcharId} AND dgroupId = #{dgroupId}
 	</select>
 	
 	<select id="readAllByGroupId" resultType="com.project.dnflol.DTO.DApplyDTO">
 	<![CDATA[
-		SELECT lapplyId, dcharId, dgroupId, lapplyResult
+		SELECT *
 		FROM DApply
 		WHERE dgroupId = #{dgroupId}
-		ORDER BY lapplyID DESC
+		ORDER BY dapplyID DESC
 	]]>
 	</select>
 	
@@ -41,13 +41,13 @@
 	
 	<update id="updatelapplyResult">
 		UPDATE DApply
-		SET lapplyResult = #{lapplyResult}
-		WHERE lapplyId = #{lapplyId} AND dgroupId = #{dgroupId}
+		SET dapplyResult = #{dapplyResult}
+		WHERE dapplyId = #{dapplyId} AND dgroupId = #{dgroupId}
 	</update>
 	
 	<delete id="delete">
 		DELETE FROM DApply
-		WHERE lapplyId = #{lapplyId} AND dgroupId = #{dgroupId}
+		WHERE dapplyId = #{dapplyId} AND dgroupId = #{dgroupId}
 	</delete>
 
 </mapper>

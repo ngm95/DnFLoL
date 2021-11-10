@@ -14,8 +14,8 @@ $(document).ready(function() {
 						var lgroupName = data[i].lgroupName;
 						
 						var notice1 = "<li><b>" + lcharName + "</b>가 <b>" + lgroupName + "</b>에 신청했습니다.<br /> ";
-						var	notice2 = "<button class=\"btn btn-sm btn-danger\" type=\"button\" style=\"float:left\" onclick=\"location.href='lol/denyApply/" + lapplyId + "&" + lgroupId + "'\">거절</button>";
-						var	notice3 = "<button class=\"btn btn-sm btn-success\" type=\"button\" style=\"float:right\" onclick=\"location.href='lol/acceptApply/" + lapplyId + "&" + lgroupId + "'\">수락</button>";
+						var	notice2 = "<button class=\"btn btn-sm btn-danger\" type=\"button\" style=\"float:left\" onclick=\"location.href='/lol/denyApply/" + lapplyId + "&" + lgroupId + "'\">거절</button>";
+						var	notice3 = "<button class=\"btn btn-sm btn-success\" type=\"button\" style=\"float:right\" onclick=\"location.href='/lol/acceptApply/" + lapplyId + "&" + lgroupId + "'\">수락</button>";
 						var notice4 = "</li><li><hr class=\"dropdown-divider\" style=\"margin-top: 45px\"></li>";
 						$("#lolNotice").append(notice1+notice2+notice3+notice4);
 					}
@@ -51,8 +51,8 @@ $(document).ready(function() {
 						var dgroupName = data[i].dgroupName;
 						
 						var notice1 = "<li><b>" + dcname + "</b>가 <b>" + dgroupName + "</b>에 신청했습니다.<br /> ";
-						var	notice2 = "<button class=\"btn btn-sm btn-danger\" type=\"button\" style=\"float:left\" onclick=\"location.href='lol/denyApply/" + dapplyId + "&" + dgroupId + "'\">거절</button>";
-						var	notice3 = "<button class=\"btn btn-sm btn-success\" type=\"button\" style=\"float:right\" onclick=\"location.href='lol/acceptApply/" + dapplyId + "&" + dgroupId + "'\">수락</button>";
+						var	notice2 = "<button class=\"btn btn-sm btn-danger\" type=\"button\" style=\"float:left\" onclick=\"location.href='/dnf/denyApply/" + dapplyId + "&" + dgroupId + "'\">거절</button>";
+						var	notice3 = "<button class=\"btn btn-sm btn-success\" type=\"button\" style=\"float:right\" onclick=\"location.href='/dnf/acceptApply/" + dapplyId + "&" + dgroupId + "'\">수락</button>";
 						var notice4 = "</li><li><hr class=\"dropdown-divider\" style=\"margin-top: 45px\"></li>";
 						$("#dnfNotice").append(notice1+notice2+notice3+notice4);
 					}

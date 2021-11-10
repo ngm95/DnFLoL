@@ -26,7 +26,21 @@
 						<option value="${dgroupDto.dgroupOwnerName}">${dgroupDto.dgroupOwnerName}</option>
 					</select>
 					<select class="form-select" disabled>
-						<option value="${dgroupDto.dgroupType}">${dgroupDto.dgroupType}</option>
+						<c:choose>
+							<c:when test="${dgroupDto.dgroupType == 1}">
+								<option value="핀드워">핀드워</option>
+							</c:when>
+							<c:when test="${dgroupDto.dgroupType == 2}">
+								<option value="프레이-이시스">프레이-이시스</option>
+								<td>프레이-이시스</td>
+							</c:when>
+							<c:when test="${dgroupDto.dgroupType == 3}">
+								<option value="무형의 시로코">무형의 시로코</option>
+							</c:when>
+							<c:when test="${dgroupDto.dgroupType == 4}">
+								<option value="혼돈의 오즈마">혼돈의 오즈마</option>
+							</c:when>
+						</c:choose>
 					</select>
 				</div>
 				<div class="input-group mb-3" style="margin-bottom: 5px">

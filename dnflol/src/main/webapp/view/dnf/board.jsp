@@ -49,18 +49,18 @@
 										<th scope="row">${dgroup.dgroupId}</th>
 										<td><a href="/dnf/boardDetail/${dgroup.dgroupId}">${dgroup.dgroupName}</a></td>
 										<c:choose>
-										<c:when test="${dgroup.dgroupType == 1}">
-											<td>핀드워</td>
-										</c:when>
-										<c:when test="${dgroup.dgroupType == 2}">
-											<td>프레이-이시스</td>
-										</c:when>
-										<c:when test="${dgroup.dgroupType == 3}">
-											<td>무형의 시로코</td>
-										</c:when>
-										<c:when test="${dgroup.dgroupType == 4}">
-											<td>혼돈의 오즈마</td>
-										</c:when>
+											<c:when test="${dgroup.dgroupType == 1}">
+												<td>핀드워</td>
+											</c:when>
+											<c:when test="${dgroup.dgroupType == 2}">
+												<td>프레이-이시스</td>
+											</c:when>
+											<c:when test="${dgroup.dgroupType == 3}">
+												<td>무형의 시로코</td>
+											</c:when>
+											<c:when test="${dgroup.dgroupType == 4}">
+												<td>혼돈의 오즈마</td>
+											</c:when>
 										</c:choose>
 										
 										<td>${dgroup.dgroupOwnerName}</td>
