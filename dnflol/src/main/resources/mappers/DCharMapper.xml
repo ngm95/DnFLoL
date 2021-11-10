@@ -62,12 +62,12 @@
 	</select>
 	
 	<select id = "readAllAppliedByGroupId" resultType="com.project.dnflol.DTO.DCharDTO">
-		SELECT uid, dcname, dcserver
+		SELECT *
 		FROM DChar
-		WHERE dcname IN (SELECT dcname
+		WHERE dcharId IN (SELECT DApply.dcharId
 							FROM DApply, DGroup
 							WHERE DApply.dgroupId = DGroup.dgroupId AND DApply.dgroupId = #{dgroupId} AND DGroup.dgroupId = #{dgroupId})
-		ORDER BY dcname	
+		ORDER BY dcharId	
 	</select>
 	
 	<delete id="deleteByName">
