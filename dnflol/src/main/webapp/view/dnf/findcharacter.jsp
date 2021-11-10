@@ -46,25 +46,23 @@
 					<c:otherwise>
 						<div class="row row-cols-6">
 							<c:forEach var="chars" items="${characters}">
-							
+
 								<div class="col-6 col-md-4">
-								<div class="m-4">
-								<form:form modelAttribute="character" action="/dnf/addcharacter" method="post">
-								<div class="card" style="margin-bottom">
-									
-										<form:input type="hidden" path="characterName" value="${chars.characterName}" />
-										<form:input type="hidden" path="characterId" value="${chars.characterId}" />
-										<form:input type="hidden" path="serverId" value="${chars.serverId}" />
-										<button type="submit" class="btn btn-success" style="background-color: white;">
-											<img src="https://img-api.neople.co.kr/df/servers/${chars.serverId}/characters/${chars.characterId}?zoom=1" class="card-img-top">
-										</button>
-										
-									<div card-img-overlay>
-									<p class= "card-text"> ${chars.serverId}<br>${chars.characterName}</p>
+									<div class="m-4">
+										<form:form modelAttribute="character" action="/dnf/addcharacter" method="post">
+											<div class="card" style="margin-bottom: 25px">
+												<form:input type="hidden" path="characterName" value="${chars.characterName}" />
+												<form:input type="hidden" path="characterId" value="${chars.characterId}" />
+												<form:input type="hidden" path="serverId" value="${chars.serverId}" />
+												<button type="submit" class="btn btn-success" style="background-color: white;">
+													<img src="https://img-api.neople.co.kr/df/servers/${chars.serverId}/characters/${chars.characterId}?zoom=1" class="card-img-top">
+												</button>
+												<div class="card-body">
+													<p class="card-text">${chars.serverId}<br>${chars.characterName}</p>
+												</div>
+											</div>
+										</form:form>
 									</div>
-								</div>
-									</form:form>
-								</div>
 								</div>
 							</c:forEach>
 						</div>

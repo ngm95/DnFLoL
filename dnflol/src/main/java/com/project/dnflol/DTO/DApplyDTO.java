@@ -8,11 +8,15 @@ import lombok.NoArgsConstructor;
 public class DApplyDTO {
 	int dapplyId;
 	String dcharId;
+	String dcname;
 	int dgroupId;
+	String dgroupName;
 	String dapplyResult;
+	String lgroupDetail;
 	
-	public DApplyDTO(String dcharId, int dgroupId) {
-		this.dcharId = dcharId;
+	public DApplyDTO(int dapplyId, int dgroupId, String dapplyResult) {
+		this.dapplyId = dapplyId;
 		this.dgroupId = dgroupId;
+		this.dapplyResult = dapplyResult;
 	}
 }

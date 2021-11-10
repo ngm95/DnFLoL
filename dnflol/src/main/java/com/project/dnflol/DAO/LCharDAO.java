@@ -7,7 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.project.dnflol.DTO.LCharDTO;
-import com.project.dnflol.util.UidAndLGroupid;
+import com.project.dnflol.util.UidAndGroupId;
+
 
 @Repository
 public class LCharDAO {
@@ -32,13 +33,15 @@ public class LCharDAO {
 		return template.selectList(MAPPER + ".readAllAcceptedByGroupId", lgroupId);
 	}
 	
-	public List<LCharDTO> readAllAppliedByUid(UidAndLGroupid ulg) {
+
+	public List<LCharDTO> readAllAppliedByUid(UidAndGroupId ulg) {
 		return template.selectList(MAPPER + ".readAllAppliedByUid", ulg);
 	}
 	
-	public List<LCharDTO> readAllNotAppliedByUid(UidAndLGroupid ulg) {
+	public List<LCharDTO> readAllNotAppliedByUid(UidAndGroupId ulg) {
 		return template.selectList(MAPPER + ".readAllNotAppliedByUid", ulg);
 	}
+
 	
 	public List<LCharDTO> readAllAppliedByGroupId(int lgroupId) {
 		return template.selectList(MAPPER + ".readAllAppliedByGroupId", lgroupId);

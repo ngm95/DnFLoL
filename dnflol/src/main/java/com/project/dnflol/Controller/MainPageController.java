@@ -20,11 +20,10 @@ import com.project.dnflol.DTO.DCharDTO;
 import com.project.dnflol.DTO.LApplyDTO;
 import com.project.dnflol.DTO.LCharDTO;
 import com.project.dnflol.DTO.UserDTO;
+import com.project.dnflol.Service.DApplyService;
 import com.project.dnflol.Service.DCharService;
-import com.project.dnflol.Service.DGroupService;
 import com.project.dnflol.Service.LApplyService;
 import com.project.dnflol.Service.LCharService;
-import com.project.dnflol.Service.LGroupService;
 import com.project.dnflol.Service.UserService;
 import com.project.dnflol.util.AuthInfo;
 
@@ -37,16 +36,13 @@ public class MainPageController {
 	private LCharService lcServ;
 	
 	@Autowired
-	private LGroupService lgServ;
-	
-	@Autowired
 	private LApplyService laServ;
 	
 	@Autowired
-	private DGroupService dgServ;
+	private DCharService dcServ;
 	
 	@Autowired
-	private DCharService dcServ;
+	private DApplyService daServ;
 	
 	@ModelAttribute("authInfo")
 	public AuthInfo authInfo(Authentication auth) {
@@ -90,7 +86,7 @@ public class MainPageController {
 		return mv;
 	} 
 	
-	@RequestMapping("/user/myLoLNotice")
+	@RequestMapping("/myLoLNotice")
 	@ResponseBody
 	public String myLoLNotice(Model model) {
 		String json = null;
@@ -98,14 +94,14 @@ public class MainPageController {
 		AuthInfo authInfo = (AuthInfo)model.getAttribute("authInfo");
 		
 		List<LApplyDTO> applyList = null;
-		if (authInfo != null)
+		if (authInfo != null) 
 			applyList = laServ.readAllMyApply(authInfo.getUid());
-
+			
 		json = gson.toJson(applyList);
 		return json;
 	}
 	
-	@RequestMapping("/user/myDnFNotice")
+	@RequestMapping("/myDnFNotice")
 	@ResponseBody
 	public String myDnFNotice(Model model) {
 		String json = null;
@@ -113,10 +109,9 @@ public class MainPageController {
 		AuthInfo authInfo = (AuthInfo)model.getAttribute("authInfo");
 		
 		List<DApplyDTO> applyList = null;
-		// 현재 로그인된 uid가 만든 게시글에 달린 신청을 찾아서 리스트에 넣어야돼
-		// if (authInfo != null)
-		//	applyList = daServ.readAllMyApply(authInfo.getUid());
-		
+		if (authInfo != null) 
+			applyList = daServ.readAllMyApply(authInfo.getUid());
+			
 		json = gson.toJson(applyList);
 		return json;
 	}
