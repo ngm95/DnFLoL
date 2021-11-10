@@ -341,7 +341,7 @@ public class DNFController {
 				
 				// -- 캐릭터의 상세 정보를 담아서 model에 넣음 --
 			}
-			
+			//asdf
 			
 		} catch(Exception e) {
 			model.addAttribute("exception", e);
