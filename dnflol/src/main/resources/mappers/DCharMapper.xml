@@ -44,25 +44,25 @@
 	</select>
 	
 	<select id="readAllAppliedByUid" resultType="com.project.dnflol.DTO.DCharDTO">
-		SELECT uid, dcname
+		SELECT uid, dcname, dcserver
 		FROM DChar
 		WHERE uid = #{uid} AND dcname IN (SELECT DApply.dcname
 											FROM DApply, DGroup
-											WHERE DApply.dgroupId = DGroup.dgroupId AND DApply.dgroupId = #{groupId} AND DGroup.dgroupId = #{groupId})
+											WHERE DApply.dgroupId = DGroup.dgroupId AND DApply.dgroupId = #{groupId})
 		ORDER BY dcname
 	</select>
 	
 	<select id="readAllNotAppliedByUid" resultType="com.project.dnflol.DTO.DCharDTO">
-		SELECT uid, dcname
-		FROM DChar
-		WHERE uid = #{uid} AND dcname NOT IN (SELECT DApply.dcname
+		SELECT *
+		FROM Dchar
+		WHERE uid = #{uid} and dcname NOT IN (SELECT DApply.dcname
 												FROM DApply, DGroup
-												WHERE DApply.dgroupId = DGroup.dgroupId AND DApply.dgroupId = #{groupId} AND DGroup.dgroupId = #{groupId})
+												WHERE DApply.dgroupId = DGroup.dgroupId AND DApply.dgroupId = #{groupId})
 		ORDER BY dcname
 	</select>
 	
 	<select id = "readAllAppliedByGroupId" resultType="com.project.dnflol.DTO.DCharDTO">
-		SELECT uid, dcname
+		SELECT uid, dcname, dcserver
 		FROM DChar
 		WHERE dcname IN (SELECT dcname
 							FROM DApply, DGroup

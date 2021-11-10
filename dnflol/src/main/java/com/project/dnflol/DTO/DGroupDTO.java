@@ -1,6 +1,4 @@
 package com.project.dnflol.DTO;
-import java.sql.Date;
-
 import lombok.Data;
 
 @Data

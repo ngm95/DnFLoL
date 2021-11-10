@@ -1,11 +1,8 @@
 package com.project.dnflol.Controller;
 
 
-import java.sql.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
@@ -31,20 +28,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.dnflol.DTO.DAdventureDTO;
 import com.project.dnflol.DTO.DApplyDTO;
 import com.project.dnflol.DTO.DCharDTO;
 import com.project.dnflol.DTO.DGroupDTO;
-import com.project.dnflol.DTO.InfoDTO;
-import com.project.dnflol.DTO.LApplyDTO;
-import com.project.dnflol.DTO.LCharDTO;
-import com.project.dnflol.DTO.LGroupDTO;
-import com.project.dnflol.DTO.LeagueDTO;
-import com.project.dnflol.DTO.ParticipantDTO;
-import com.project.dnflol.DTO.SummonerDTO;
 import com.project.dnflol.DTO.UserDTO;
 import com.project.dnflol.Exception.AlreadyExistedApplyException;
 import com.project.dnflol.Service.DApplyService;
@@ -56,7 +45,6 @@ import com.project.dnflol.util.AuthInfo;
 import com.project.dnflol.util.BoardMinMax;
 import com.project.dnflol.util.DSearchForm;
 import com.project.dnflol.util.LSearchForm;
-import com.project.dnflol.util.SummonerMatchDetails;
 
 @Controller
 @RequestMapping("/dnf")
@@ -112,7 +100,7 @@ public class DNFController {
 	public ModelAndView dnfBoard() {
 		ModelAndView mv = new ModelAndView();
 		bmm = new BoardMinMax(dgServ.readMaxCount());		// 새로운 bmm 객체를 만들어 둠
-		dgroupList = dgServ.readLimitList(bmm);				// 최신 글 리스트(100개)를 불러옴 
+		dgroupList = dgServ.readLimitList(bmm);				// 최신 글 리스트(100개)를 불러옴
 		
 		mv.setViewName("redirect:/dnf/board/" + bmm.getPaging());	// 첫 번째 페이지로 리다이렉트
 		return mv;
@@ -284,13 +272,11 @@ public class DNFController {
 
 		List<DCharDTO> myAppliedChars = dcServ.readAllAppliedByUid(((AuthInfo)model.getAttribute("authInfo")).getUid(), dgroupId);			// 내 LOL 계정 중 해당 게시글에 이미 신청한 계정
 		List<DCharDTO> myNotAppliedChars = dcServ.readAllNotAppliedByUid(((AuthInfo)model.getAttribute("authInfo")).getUid(), dgroupId);	// 내 LOL 계정 중 해당 게시글에 아직 신청하지 않은 계정
-
 		model.addAttribute("myAppliedChars", myAppliedChars);
 		model.addAttribute("myNotAppliedChars", myNotAppliedChars);
 
 		List<DCharDTO> allAppliedChars = dcServ.readAllAppliedByGroupId(dgroupId);				// 이 게시글에 신청한 모든 DnF 캐릭터
 		model.addAttribute("allAppliedChars", allAppliedChars);
-		System.out.print("3");
 		ModelAndView mv = new ModelAndView();
 		mv.setViewName("/dnf/boardDetail");
 		return mv;

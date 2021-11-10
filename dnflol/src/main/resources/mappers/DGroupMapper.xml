@@ -14,7 +14,7 @@
 	</insert>
 	
 	<select id="readById" resultType="com.project.dnflol.DTO.DGroupDTO">
-		SELECT dgroupId, dgroupOwner, dgroupType, dgroupMax, dgroupName, dgroupDate, dgroupDetail
+		SELECT dgroupId, dgroupOwner, dgroupType, dgroupMax, dgroupName, dgroupDate, dgroupDetail, dgroupOwnerName
 		FROM DGroup
 		WHERE dgroupId = #{dgroupId}
 		ORDER BY dgroupDate DESC
@@ -29,7 +29,7 @@
 	
 	<select id="readAllByOwnerName" resultType="com.project.dnflol.DTO.DGroupDTO">
 	<![CDATA[
-		SELECT dgroupId, dgroupOwnerName, dgrouptype, dgroupMax, dgroupName, dgroupDate, dgroupDetail
+		SELECT dgroupId, dgroupOwnerName, dgrouptype, dgroupMax, dgroupName, dgroupDate, dgroupDetail, dgroupOwnerName
 		FROM DGroup
 		WHERE dgroupOwnerName LIKE CONCAT('%',#{ownerName},'%')
 		ORDER BY dgroupDate DESC
@@ -38,7 +38,7 @@
 	
 	<select id="readAllByDetail" resultType="com.project.dnflol.DTO.DGroupDTO">
 	<![CDATA[
-		SELECT dgroupId, dgroupOwner, dgroupType, dgroupMax, dgroupName, dgroupDate, dgroupDetail
+		SELECT dgroupId, dgroupOwner, dgroupType, dgroupMax, dgroupName, dgroupDate, dgroupDetail, dgroupOwnerName
 		FROM DGroup
 		WHERE dgroupDetail LIKE CONCAT('%',#{dgroupDetail},'%')
 		ORDER BY dgroupDate DESC
@@ -47,7 +47,7 @@
 	
 	<select id="readAllByGroupName" resultType="com.project.dnflol.DTO.DGroupDTO">
 	<![CDATA[
-		SELECT dgroupId, dgroupOwner, dgroupType, dgroupMax, dgroupName, dgroupDate, dgroupDetail
+		SELECT dgroupId, dgroupOwner, dgroupType, dgroupMax, dgroupName, dgroupDate, dgroupDetail, dgroupOwnerName
 		FROM DGroup
 		WHERE dgroupName Like CONCAT('%',#{dgroupName},'%')
 		ORDER BY dgroupDate DESC
@@ -64,7 +64,7 @@
 	
 	<select id="readLimitList" resultType="com.project.dnflol.DTO.DGroupDTO">
 	<![CDATA[
-		SELECT dgroupId, dgroupOwner, dgroupType, dgroupMax, dgroupName, dgroupDate, dgroupDetail
+		SELECT dgroupId, dgroupOwner, dgroupType, dgroupMax, dgroupName, dgroupDate, dgroupDetail, dgroupOwnerName
 		FROM DGroup
 		ORDER BY dgroupDate DESC
 		LIMIT #{min}, #{max}
