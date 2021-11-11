@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.project.dnflol.DAO.LApplyDAO;
 import com.project.dnflol.DAO.LGroupDAO;
 import com.project.dnflol.DTO.LApplyDTO;
+import com.project.dnflol.DTO.LCharDTO;
 import com.project.dnflol.Exception.AlreadyExistedApplyException;
 import com.project.dnflol.Exception.TooManyApplyException;
 
@@ -46,6 +47,10 @@ public class LApplyService {
 	
 	public LApplyDTO read(LApplyDTO lapplyDto) {
 		return lapplyDao.read(lapplyDto);
+	}
+	
+	public List<LApplyDTO> readAllAcceptedByGroupId(int lgroupId) {
+		return lapplyDao.readAllAcceptedByGroupId(lgroupId);
 	}
 	
 	public List<LApplyDTO> readAllByGroupId(int groupId) {

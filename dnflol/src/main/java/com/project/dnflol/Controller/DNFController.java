@@ -36,6 +36,7 @@ import com.project.dnflol.DTO.DCharDTO;
 import com.project.dnflol.DTO.DGroupDTO;
 import com.project.dnflol.DTO.UserDTO;
 import com.project.dnflol.Exception.AlreadyExistedApplyException;
+import com.project.dnflol.Exception.NoSuchGroupException;
 import com.project.dnflol.Service.DApplyService;
 import com.project.dnflol.Service.DCharService;
 import com.project.dnflol.Service.DGroupService;
@@ -278,12 +279,23 @@ public class DNFController {
 		List<DCharDTO> myNotAppliedChars = dcServ.readAllNotAppliedByUid(((AuthInfo)model.getAttribute("authInfo")).getUid(), dgroupId);	// 내 LOL 계정 중 해당 게시글에 아직 신청하지 않은 계정
 		model.addAttribute("myAppliedChars", myAppliedChars);
 		model.addAttribute("myNotAppliedChars", myNotAppliedChars);
-
-		List<DCharDTO> allAppliedChars = dcServ.readAllAppliedByGroupId(dgroupId);				// 이 게시글에 신청한 모든 DnF 캐릭터
-		model.addAttribute("allAppliedChars", allAppliedChars);
+		
+		DCharDTO dcharDto = dcServ.readById(dgroupDto.getDgroupOwnerName());
+		model.addAttribute("ownerUid", dcharDto.getUid());
+		
 		ModelAndView mv = new ModelAndView();
 		mv.setViewName("/dnf/boardDetail");
 		return mv;
+	}
+	
+	@GetMapping("/board/delete/{dgroupId}")
+	public String deletePost(@PathVariable("dgroupId") int dgroupId) {
+		try {
+			dgServ.deleteById(dgroupId);		
+		} catch(NoSuchGroupException nsge) {
+			return "redirect:/lol/board";
+		}
+		return "redirect:/lol/board";
 	}
 	
 	/**

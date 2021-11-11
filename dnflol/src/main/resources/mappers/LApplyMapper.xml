@@ -33,6 +33,13 @@
 		WHERE LGroup.lgroupId = LApply.lgroupId AND LGroup.lgroupId = #{lgroupId} AND lapplyResult = 'ACCEPTED'
 	</select>
 	
+	
+	<select id="readAllAcceptedByGroupId" resultType="com.project.dnflol.DTO.LApplyDTO">
+		SELECT LApply.*
+		FROM LApply, LGroup
+		WHERE LApply.lgroupId = LGroup.lgroupId AND LGroup.lgroupId = #{lgroupId} AND lapplyResult = 'ACCEPTED'
+	</select>
+	
 	<select id="readAllByGroupId" resultType="com.project.dnflol.DTO.LApplyDTO">
 	<![CDATA[
 		SELECT *

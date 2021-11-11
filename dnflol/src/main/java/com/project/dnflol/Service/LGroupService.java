@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.project.dnflol.DAO.LGroupDAO;
 import com.project.dnflol.DTO.LGroupDTO;
+import com.project.dnflol.Exception.NoSuchGroupException;
 import com.project.dnflol.util.BoardMinMax;
 
 @Service
@@ -55,7 +56,9 @@ public class LGroupService {
 		return lgroupDao.readMaxCount();
 	}
 	
-	public void deleteById(int groupId) {
-		lgroupDao.deleteById(groupId);
+	public void deleteById(int lgroupId) {
+		if (lgroupDao.readById(lgroupId) == null)
+			throw new NoSuchGroupException("게시글이 존재하지 않습니다.");
+		lgroupDao.deleteById(lgroupId);
 	}
 }

@@ -14,6 +14,7 @@
 	<div class="container contents-wrap" style="height: 100%">
 		<%@ include file="/view/includes/03_header.jsp"%>
 		<div class="jumbotron">
+			<button type="button" class="btn btn-warning" onclick="location.href='/dnf/board/delete/${dgroupDto.dgroupId}'" style="float:right">글 삭제</button>
 			<button type="button" class="btn btn-success" onclick="location.href='/dnf/board'" style="float:right">목록</button>
 			<h3><b>게시글 상세</b></h3>
 			<div class="jumbotron-board" style="margin-top:45px">
@@ -45,7 +46,7 @@
 				</div>
 				<div class="input-group mb-3" style="margin-bottom: 5px">
 					<span class="input-group-text">설명</span>
-					<textarea class="form-control" rows="5" readonly>${dgroupDto.dgroupDetail}</textarea>
+					<textarea class="form-control" readonly>${dgroupDto.dgroupDetail}</textarea>
 				</div>
 			</div>
 
@@ -61,25 +62,12 @@
 							<c:forEach var="accepted" items="${acceptedList}">
 								<div class="col-6 col-md-4">
 									<button class="btn btn-info" onclick="location.href='/dnf/charDetail/${accepted.dcname}'">${accepted.dcname}</button>
+										<c:if test="${authInfo.uid eq ownerUid}">
+											<button class="btn btn-danger" onclick="location.href='/lol/denyApply/${accepted.lapplyId}&${accepted.lgroupId}'">수락 거절</button>
+										</c:if>
 								</div>
 							</c:forEach>
 						</div>
-					</c:otherwise>
-				</c:choose>
-			</div>
-		</div>
-
-		<div class="jumbotron">
-			<h3>신청 중인 계정</h3>
-			<div class="jumbotron-board">
-				<c:choose>
-					<c:when test="${empty allAppliedChars}">
-						<p>아직 신청이 없습니다.</p>
-					</c:when>
-					<c:otherwise>
-						<c:forEach var="chars" items="${allAppliedChars}">
-							<a href="/dnf/charDetail/${chars.dcname}">${chars.dcname}</a>
-						</c:forEach>
 					</c:otherwise>
 				</c:choose>
 			</div>

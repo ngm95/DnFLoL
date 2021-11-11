@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.project.dnflol.DTO.LApplyDTO;
+import com.project.dnflol.DTO.LCharDTO;
 
 @Repository
 public class LApplyDAO {
@@ -29,6 +30,10 @@ public class LApplyDAO {
 	
 	public int readAcceptedCountByGroupId(int groupId) {
 		return template.selectOne(MAPPER + ".readAcceptedCountByGroupId", groupId);
+	}
+	
+	public List<LApplyDTO> readAllAcceptedByGroupId(int lgroupId) {
+		return template.selectList(MAPPER + ".readAllAcceptedByGroupId", lgroupId);
 	}
 
 	public List<LApplyDTO> readAllByGroupId(int groupId) {

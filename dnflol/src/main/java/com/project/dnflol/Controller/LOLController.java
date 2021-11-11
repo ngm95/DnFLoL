@@ -42,6 +42,7 @@ import com.project.dnflol.DTO.ParticipantDTO;
 import com.project.dnflol.DTO.SummonerDTO;
 import com.project.dnflol.DTO.UserDTO;
 import com.project.dnflol.Exception.AlreadyExistedApplyException;
+import com.project.dnflol.Exception.NoSuchGroupException;
 import com.project.dnflol.Service.LApplyService;
 import com.project.dnflol.Service.LCharService;
 import com.project.dnflol.Service.LGroupService;
@@ -211,6 +212,20 @@ public class LOLController {
 		return "redirect:/lol/boardDetail/" + lgroupId;						// 생성한 게시글로 리다이렉트
 	}
 
+	@GetMapping("/board/delete/{lgroupId}")
+	public String deletePost(@PathVariable("lgroupId") int lgroupId, Model model) {
+		if (((String)model.getAttribute("ownerUid")).equals(((AuthInfo)model.getAttribute("authInfo")).getUid())) {
+			// 생성한 계정과 다를 때 작업
+		})
+		
+		try {
+			lgServ.deleteById(lgroupId);		
+		} catch(NoSuchGroupException nsge) {
+			return "redirect:/lol/board";
+		}
+		return "redirect:/lol/board";
+	}
+	
 	/**
 	 * 그룹의 세부 정보를 보여주는 페이지
 	 * - 그룹 생성자와 현재까지의 멤버 목록을 보여줌
@@ -220,7 +235,7 @@ public class LOLController {
 	@RequestMapping("/boardDetail/{lgroupId}")
 	public ModelAndView lolGroupBoardDetail(Model model, @PathVariable(value="lgroupId") int lgroupId) {
 		LGroupDTO lgroupDto = lgServ.readById(lgroupId);										// 게시글 세부 정보
-		List<LCharDTO> acceptedList = lcServ.readAllAcceptedByGroupId(lgroupId);				// 수락된 멤버 목록
+		List<LApplyDTO> acceptedList = laServ.readAllAcceptedByGroupId(lgroupId);				// 수락된 멤버 목록
 		model.addAttribute("lgroupDto", lgroupDto);
 		model.addAttribute("acceptedList", acceptedList);
 		
@@ -228,9 +243,9 @@ public class LOLController {
 		List<LCharDTO> myNotAppliedChars = lcServ.readAllNotAppliedByUid(((AuthInfo)model.getAttribute("authInfo")).getUid(), lgroupId);	// 내 LOL 계정 중 해당 게시글에 아직 신청하지 않은 계정
 		model.addAttribute("myAppliedChars", myAppliedChars);
 		model.addAttribute("myNotAppliedChars", myNotAppliedChars);
-		
-		List<LCharDTO> allAppliedChars = lcServ.readAllAppliedByGroupId(lgroupId);				// 이 게시글에 신청한 모든 LOL 계정
-		model.addAttribute("allAppliedChars", allAppliedChars);
+
+		LCharDTO lcharDto = lcServ.readByName(lgroupDto.getLgroupOwner());
+		model.addAttribute("ownerUid", lcharDto.getUid());
 		
 		ModelAndView mv = new ModelAndView();
 		mv.setViewName("/lol/boardDetail");

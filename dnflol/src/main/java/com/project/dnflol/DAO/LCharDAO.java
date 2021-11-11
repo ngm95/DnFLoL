@@ -29,10 +29,6 @@ public class LCharDAO {
 		return template.selectList(MAPPER + ".readAllByUId", uid);
 	}
 	
-	public List<LCharDTO> readAllAcceptedByGroupId(int lgroupId) {
-		return template.selectList(MAPPER + ".readAllAcceptedByGroupId", lgroupId);
-	}
-	
 
 	public List<LCharDTO> readAllAppliedByUid(UidAndGroupId ulg) {
 		return template.selectList(MAPPER + ".readAllAppliedByUid", ulg);

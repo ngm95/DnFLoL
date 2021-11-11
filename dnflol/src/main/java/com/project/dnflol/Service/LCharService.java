@@ -36,11 +36,6 @@ public class LCharService {
 	public List<LCharDTO> readAllByUid(String uid) {
 		return lcharDao.readAllByUid(uid);
 	}
-	
-	public List<LCharDTO> readAllAcceptedByGroupId(int lgroupId) {
-		return lcharDao.readAllAcceptedByGroupId(lgroupId);
-	}
-	
 
 	public List<LCharDTO> readAllAppliedByUid(String uid, int lgroupId) {
 		return lcharDao.readAllAppliedByUid(new UidAndGroupId(uid, lgroupId));

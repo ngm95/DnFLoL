@@ -28,13 +28,6 @@
 	]]>
 	</select>
 	
-	<select id="readAllAcceptedByGroupId" resultType="com.project.dnflol.DTO.LCharDTO">
-		SELECT uid, lcharName
-		FROM LChar
-		WHERE lcharName IN (SELECT LApply.lcharName
-						  FROM LApply, LGroup
-						  WHERE LApply.lgroupId = LGroup.lgroupId AND LApply.lapplyResult = 'ACCEPTED' AND Lgroup.lgroupId = #{lgroupId})
-	</select>
 	
 	<select id="readAllAppliedByUid" resultType="com.project.dnflol.DTO.LCharDTO">
 		SELECT uid, lcharName
