@@ -18,4 +18,11 @@ public class DApplyDTO {
 		this.dgroupId = dgroupId;
 		this.dapplyResult = dapplyResult;
 	}
+	
+	public DApplyDTO(String dcharId, String dcname, int dgroupId, String dgroupName) {
+		this.dcharId = dcharId;
+		this.dcname = dcname;
+		this.dgroupId = dgroupId;
+		this.dgroupName = dgroupName;
+	}
 }

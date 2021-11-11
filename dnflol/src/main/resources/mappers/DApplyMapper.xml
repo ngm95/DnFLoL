@@ -13,10 +13,24 @@
 		)
 	</insert>
 	
+	<insert id="createToAccepted">
+		INSERT INTO DApply (
+			dcharId, dcname, dgroupId, dgroupName, dapplyResult
+		) VALUES (
+			#{dcharId}, #{dcname}, #{dgroupId}, #{dgroupName}, 'ACCEPTED'
+		)
+	</insert>
+	
 	<select id="read" resultType="com.project.dnflol.DTO.DApplyDTO">
 		SELECT *
 		FROM DApply
 		WHERE dcharId = #{dcharId} AND dgroupId = #{dgroupId}
+	</select>
+	
+	<select id="readAcceptedCountByGroupId" resultType="int">
+		SELECT Count(*)
+		FROM DGroup, DApply
+		WHERE DGroup.dgroupId = DApply.dgroupId AND DGroup.dgroupId = #{dgroupId} AND dapplyResult = 'ACCEPTED'
 	</select>
 	
 	<select id="readAllByGroupId" resultType="com.project.dnflol.DTO.DApplyDTO">

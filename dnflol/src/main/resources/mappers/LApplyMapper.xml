@@ -13,10 +13,24 @@
 		)
 	</insert>
 	
+	<insert id="createToAccepted">
+		INSERT INTO LApply (
+			lcharName, lgroupId, lgroupName, lapplyResult
+		) VALUES (
+			#{lcharName}, #{lgroupId}, #{lgroupName}, 'ACCEPTED'
+		)
+	</insert>
+	
 	<select id="read" resultType="com.project.dnflol.DTO.LApplyDTO">
 		SELECT *
 		FROM LApply
 		WHERE lcharName = #{lcharName} AND lgroupId = #{lgroupId}
+	</select>
+	
+	<select id="readAcceptedCountByGroupId" resultType="int">
+		SELECT Count(*)
+		FROM LGroup, LApply
+		WHERE LGroup.lgroupId = LApply.lgroupId AND LGroup.lgroupId = #{lgroupId} AND lapplyResult = 'ACCEPTED'
 	</select>
 	
 	<select id="readAllByGroupId" resultType="com.project.dnflol.DTO.LApplyDTO">

@@ -203,8 +203,11 @@ public class LOLController {
 		lgroupDto.setLgroupDate(dateStr);
 		
 		lgServ.create(lgroupDto);											// DB접근을 통해 게시글 생성 
+		int lgroupId = lgServ.readlgroupId(lgroupDto);					// 생성한 게시글의 고유 번호를 받아 옴
 		
-		Integer lgroupId = lgServ.readlgroupId(lgroupDto);					// 생성한 게시글의 고유 번호를 받아 옴
+		LApplyDTO ownerApply = new LApplyDTO(lgroupDto.getLgroupOwner(), lgroupId, lgroupDto.getLgroupName());
+		laServ.createToAccepted(ownerApply);								// 게시물을 생성한 사람을 수락 상태로 초대 추가함
+		
 		return "redirect:/lol/boardDetail/" + lgroupId;						// 생성한 게시글로 리다이렉트
 	}
 

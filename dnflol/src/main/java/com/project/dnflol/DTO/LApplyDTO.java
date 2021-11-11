@@ -17,4 +17,10 @@ public class LApplyDTO {
 		this.lgroupId = lgroupId;
 		this.lapplyResult = lapplyResult;
 	}
+	
+	public LApplyDTO(String lcharName, int lgroupId, String lgroupName) {
+		this.lcharName = lcharName;
+		this.lgroupId = lgroupId;
+		this.lgroupName = lgroupName;
+	}
 }

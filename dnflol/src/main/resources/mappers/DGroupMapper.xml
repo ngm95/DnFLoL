@@ -20,6 +20,12 @@
 		ORDER BY dgroupDate DESC
 	</select>
 	
+	<select id="readGroupMaxByGroupId" resultType="int">
+		SELECT DGroupMax
+		FROM DGroup
+		WHERE dgroupId = #{groupId}
+	</select>
+	
 	<select id="readDgroupId" resultType="Integer">
 		SELECT dgroupId
 		FROM DGroup

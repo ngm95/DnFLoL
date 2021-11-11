@@ -20,7 +20,13 @@
 		ORDER BY lgroupDate DESC
 	</select>
 	
-	<select id="readlgroupId" resultType="Integer">
+	<select id="readGroupMaxByGroupId" resultType="int">
+		SELECT LGroupMax
+		FROM LGroup
+		WHERE lgroupId = #{groupId}
+	</select>
+	
+	<select id="readlgroupId" resultType="int">
 		SELECT lgroupId
 		FROM LGroup
 		WHERE lgroupOwner = #{lgroupOwner} AND lgroupType = #{lgroupType} AND lgroupName = #{lgroupName} AND lgroupDate = #{lgroupDate}

@@ -20,8 +20,12 @@ public class LGroupDAO {
 		template.insert(MAPPER + ".create", lgroupDto);
 	}
 	
-	public Integer readLgroupId(LGroupDTO lgroupDto) {
+	public int readLgroupId(LGroupDTO lgroupDto) {
 		return template.selectOne(MAPPER + ".readlgroupId", lgroupDto);
+	}
+	
+	public int readGroupMaxByGroupId(int groupId) {
+		return template.selectOne(MAPPER + ".readGroupMaxByGroupId", groupId);
 	}
 	
 	public LGroupDTO readById(int lgroupId) {

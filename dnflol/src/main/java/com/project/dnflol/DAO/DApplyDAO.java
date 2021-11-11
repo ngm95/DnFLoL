@@ -18,9 +18,17 @@ public class DApplyDAO {
 	public void create(DApplyDTO dapplyDto) {
 		template.insert(MAPPER + ".create", dapplyDto);
 	}
+	
+	public void createToAccepted(DApplyDTO dapplyDto) {
+		template.insert(MAPPER + ".createToAccepted", dapplyDto);
+	}
 
 	public DApplyDTO read(DApplyDTO dapplyDto) {
 		return template.selectOne(MAPPER + ".read", dapplyDto);
+	}
+	
+	public int readAcceptedCountByGroupId(int groupId) {
+		return template.selectOne(MAPPER + ".readAcceptedCountByGroupId", groupId);
 	}
 
 	public List<DApplyDTO> readAllByGroupId(int groupId) {

@@ -35,8 +35,8 @@
 				</div>
 			</div>
 
+			<h3>참가 인원 수 : ${fn:length(acceptedList)} / ${lgroupDto.lgroupMax}</h3>
 			<div class="jumbotron-board" style="margin-top:45px">
-				<h3>참가 인원 수 : ${fn:length(acceptedList)+1} / ${lgroupDto.lgroupMax}</h3>
 				<c:choose>
 					<c:when test="${empty acceptedList}">
 						<p>아직 수락된 신청이 없습니다.</p>

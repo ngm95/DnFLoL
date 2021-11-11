@@ -49,8 +49,8 @@
 				</div>
 			</div>
 
+			<h3>참가 인원 수 : ${fn:length(acceptedList)} / ${dgroupDto.dgroupMax}</h3>
 			<div class="jumbotron-board" style="margin-top:45px">
-				<h3>참가 인원 수 : ${fn:length(acceptedList)+1} / ${dgroupDto.dgroupMax}</h3>
 				<c:choose>
 					<c:when test="${empty acceptedList}">
 						<p>아직 수락된 신청이 없습니다.</p>
@@ -60,7 +60,7 @@
 						<div class="row row-cols-6">
 							<c:forEach var="accepted" items="${acceptedList}">
 								<div class="col-6 col-md-4">
-									<button class="btn btn-info" onclick="location.href='/dnf/charDetail/${accepted.dcharName}'">${accepted.dcharName}</button>
+									<button class="btn btn-info" onclick="location.href='/dnf/charDetail/${accepted.dcname}'">${accepted.dcname}</button>
 								</div>
 							</c:forEach>
 						</div>

@@ -253,7 +253,11 @@ public class DNFController {
 
 		dgServ.create(dgroupDto);											// DB접근을 통해 게시글 생성 
 		
-		Integer dgroupId = dgServ.readDgroupId(dgroupDto);					// 생성한 게시글의 고유 번호를 받아 옴
+		int dgroupId = dgServ.readDgroupId(dgroupDto);					// 생성한 게시글의 고유 번호를 받아 옴
+		
+		DApplyDTO ownerApply = new DApplyDTO(dgroupDto.getDgroupOwner(), dgroupDto.getDgroupOwnerName(), dgroupId, dgroupDto.getDgroupName());
+		daServ.createToAccepted(ownerApply);								// 게시물을 생성한 사람을 수락 상태로 초대 추가함
+		
 		return "redirect:/dnf/boardDetail/" + dgroupId;						// 생성한 게시글로 리다이렉트
 	}
 
