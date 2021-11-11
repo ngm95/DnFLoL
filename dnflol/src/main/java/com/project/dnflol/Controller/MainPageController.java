@@ -74,11 +74,6 @@ public class MainPageController {
 		List<LCharDTO> mylolChars = lcServ.readAllByUid(auth.getUid());	// LoL 연동 계정 정보
 		model.addAttribute("mylolChars", mylolChars);
 		
-		
-		/*
-		 * DnF 연동 계정 정보와 작성한 글 정보를 model에 담는 작업 필요
-		 */
-		
 		List<DCharDTO> mydnfChars = dcServ.readAllByUid(auth.getUid());	// LoL 연동 계정 정보
 		model.addAttribute("mydnfChars", mydnfChars);
 		

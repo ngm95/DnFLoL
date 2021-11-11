@@ -13,6 +13,7 @@
 
 	<div class="container contents-wrap" style="height: 100%">
 		<%@ include file="/view/includes/03_header.jsp"%>
+		<jsp:include page="/view/includes/errorModal.jsp"></jsp:include>
 		<div class="jumbotron">
 			<h3>아이디 검색</h3>
 			<form:form modelAttribute="summoner" action="/lol/findSummoner" method="post" style="margin-top:15px">

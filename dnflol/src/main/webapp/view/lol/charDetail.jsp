@@ -13,7 +13,7 @@
 
 	<div class="container contents-wrap" style="height: 100%">
 		<%@ include file="/view/includes/03_header.jsp"%>
-		
+		<jsp:include page="/view/includes/errorModal.jsp"></jsp:include>
 		<div class="jumbotron">
 			<h3>계정 상세정보</h3>
 			<div class="jumbotron-board">

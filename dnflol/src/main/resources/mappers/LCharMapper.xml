@@ -34,7 +34,7 @@
 		FROM LChar
 		WHERE uid = #{uid} AND lcharName IN (SELECT LApply.lcharName
 											FROM LApply, LGroup
-											WHERE LApply.lgroupId = LGroup.lgroupId AND LApply.lgroupId = #{groupId} AND LGroup.lgroupId = #{groupId})
+											WHERE LApply.lgroupId = LGroup.lgroupId AND LGroup.lgroupId = #{groupId})
 		ORDER BY lcharName
 	</select>
 	
@@ -43,7 +43,7 @@
 		FROM LChar
 		WHERE uid = #{uid} AND lcharName NOT IN (SELECT LApply.lcharName
 												FROM LApply, LGroup
-												WHERE LApply.lgroupId = LGroup.lgroupId AND LApply.lgroupId = #{groupId} AND LGroup.lgroupId = #{groupId})
+												WHERE LApply.lgroupId = LGroup.lgroupId AND LGroup.lgroupId = #{groupId})
 		ORDER BY lcharName
 	</select>
 	
@@ -52,7 +52,7 @@
 		FROM LChar
 		WHERE lcharName IN (SELECT lcharName
 							FROM LApply, LGroup
-							WHERE LApply.lgroupId = LGroup.lgroupId AND LApply.lgroupId = #{lgroupId} AND LGroup.lgroupId = #{lgroupId})
+							WHERE LApply.lgroupId = LGroup.lgroupId AND LGroup.lgroupId = #{lgroupId})
 		ORDER BY lcharName	
 	</select>
 	

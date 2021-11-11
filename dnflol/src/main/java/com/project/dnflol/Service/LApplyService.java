@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import com.project.dnflol.DAO.LApplyDAO;
 import com.project.dnflol.DAO.LGroupDAO;
 import com.project.dnflol.DTO.LApplyDTO;
-import com.project.dnflol.DTO.LCharDTO;
 import com.project.dnflol.Exception.AlreadyExistedApplyException;
 import com.project.dnflol.Exception.TooManyApplyException;
 
@@ -26,9 +25,6 @@ public class LApplyService {
 	private LGroupDAO lgroupDao;
 	
 	public void create(LApplyDTO lapplyDto) {
-		if (lapplyDao.readAcceptedCountByGroupId(lapplyDto.getLapplyId()) >= lgroupDao.readGroupMaxByGroupId(lapplyDto.getLgroupId()))
-			throw new TooManyApplyException("이미 모든 자리가 다 찼습니다.");
-		
 		if (lapplyDao.read(lapplyDto) != null)
 			throw new AlreadyExistedApplyException(lapplyDto.getLcharName() + "은/는 이미 해당 그룹에 지원한 상태입니다.");
 		
@@ -36,9 +32,6 @@ public class LApplyService {
 	}
 	
 	public void createToAccepted(LApplyDTO lapplyDto) {
-		if (lapplyDao.readAcceptedCountByGroupId(lapplyDto.getLapplyId()) >= lgroupDao.readGroupMaxByGroupId(lapplyDto.getLgroupId()))
-			throw new TooManyApplyException("이미 모든 자리가 다 찼습니다.");
-		
 		if (lapplyDao.read(lapplyDto) != null)
 			throw new AlreadyExistedApplyException(lapplyDto.getLcharName() + "은/는 이미 해당 그룹에 지원한 상태입니다.");
 		
@@ -62,9 +55,8 @@ public class LApplyService {
 	}
 	
 	public void updateResult(LApplyDTO lapplyDto) {
-		if (lapplyDao.readAcceptedCountByGroupId(lapplyDto.getLapplyId()) >= lgroupDao.readGroupMaxByGroupId(lapplyDto.getLapplyId()))
+		if (lapplyDto.getLapplyResult().equals("ACCEPTED") && lapplyDao.readAcceptedCountByGroupId(lapplyDto.getLgroupId()) >= lgroupDao.readGroupMaxByGroupId(lapplyDto.getLgroupId()))
 			throw new TooManyApplyException("이미 모든 자리가 다 찼습니다.");
-		
 		lapplyDao.updateLapplyResult(lapplyDto);
 	}
 	

@@ -12,10 +12,14 @@
 
 	<div class="container contents-wrap" style="height: 100%">
 		<%@ include file="/view/includes/03_header.jsp"%>
-		<div class="jumbotron">
+		<c:if test="${not empty error}">
+			<jsp:include page="/view/includes/errorModal.jsp"></jsp:include>
+		</c:if>
 		
-			<button type="button" class="btn btn-info" onclick="location.href='/dnf/board/newPostGET'" style="float:right">새로운 글 작성</button>
-			<h3>게시판</h3>
+		<div class="jumbotron">
+			<jsp:include page="/view/dnf/newPostModal.jsp"></jsp:include>
+			<button id="createBtn" type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#postModal" style="float:right">새로운 글 작성</button>
+			<h3><b>게시판</b></h3>
 			<div class="jumbotron-board" style="margin-top:45px">
 
 				<table class="table table-striped">

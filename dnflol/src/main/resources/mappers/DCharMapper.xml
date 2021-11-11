@@ -14,9 +14,15 @@
 	</insert>
 	
 	<select id="readByName" resultType="com.project.dnflol.DTO.DCharDTO">
-		SELECT uid, dcname
+		SELECT *
 		FROM DChar
 		WHERE dcname = #{dcname}
+	</select>
+	
+	<select id="readById" resultType="com.project.dnflol.DTO.DCharDTO">
+		SELECT *
+		FROM DChar
+		WHERE dcharId = #{dcharId}
 	</select>
 	
 	<select id="readByNametocid" resultType="com.project.dnflol.DTO.DCharDTO">
@@ -31,16 +37,6 @@
 		FROM DChar
 		WHERE uid = #{uid}
 	]]>
-	</select>
-	
-	
-	
-	<select id="readAllAcceptedByGroupId" resultType="com.project.dnflol.DTO.DCharDTO">
-		SELECT *
-		FROM DChar
-		WHERE dcharId IN (SELECT DApply.dcharId
-						  FROM DApply, DGroup
-						  WHERE DApply.dgroupId = DGroup.dgroupId AND DApply.dapplyResult = 'ACCEPTED' AND DGroup.dgroupId = #{dgroupId})
 	</select>
 	
 	<select id="readAllAppliedByUid" resultType="com.project.dnflol.DTO.DCharDTO">

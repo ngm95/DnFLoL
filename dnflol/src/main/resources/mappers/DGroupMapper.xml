@@ -23,7 +23,7 @@
 	<select id="readGroupMaxByGroupId" resultType="int">
 		SELECT DGroupMax
 		FROM DGroup
-		WHERE dgroupId = #{groupId}
+		WHERE dgroupId = #{dgroupId}
 	</select>
 	
 	<select id="readDgroupId" resultType="Integer">

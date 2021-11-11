@@ -23,7 +23,7 @@
 	<select id="readGroupMaxByGroupId" resultType="int">
 		SELECT LGroupMax
 		FROM LGroup
-		WHERE lgroupId = #{groupId}
+		WHERE lgroupId = #{lgroupId}
 	</select>
 	
 	<select id="readlgroupId" resultType="int">

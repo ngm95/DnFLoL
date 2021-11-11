@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -36,7 +37,10 @@ import com.project.dnflol.DTO.DCharDTO;
 import com.project.dnflol.DTO.DGroupDTO;
 import com.project.dnflol.DTO.UserDTO;
 import com.project.dnflol.Exception.AlreadyExistedApplyException;
+import com.project.dnflol.Exception.AlreadyExistedLCharNameException;
+import com.project.dnflol.Exception.NoSuchCharException;
 import com.project.dnflol.Exception.NoSuchGroupException;
+import com.project.dnflol.Exception.TooManyApplyException;
 import com.project.dnflol.Service.DApplyService;
 import com.project.dnflol.Service.DCharService;
 import com.project.dnflol.Service.DGroupService;
@@ -89,6 +93,11 @@ public class DNFController {
 	@ModelAttribute("applyForm")
 	public DApplyDTO applyForm() {
 		return new DApplyDTO();
+	}
+	
+	@ModelAttribute("post")
+	public DGroupDTO post() {
+		return new DGroupDTO();
 	}
 	
 	/**
@@ -146,6 +155,9 @@ public class DNFController {
 		model.addAttribute("dgroupList", dgroupList.subList(startIdx, endIdx));			// 현재 페이지에서 볼 수 있는 글만 담아서 모델에 담음
 		model.addAttribute("bmm", bmm);
 		
+		List<DCharDTO> mydnfChars = dcServ.readAllByUid(((AuthInfo)model.getAttribute("authInfo")).getUid());	// LoL 연동 계정 정보
+		model.addAttribute("mydnfChars", mydnfChars);
+		
 		return "/dnf/board";
 	}
 	
@@ -187,10 +199,13 @@ public class DNFController {
 	}
 	
 	@PostMapping("/addcharacter") 
-	public String addcharacter(Model model, @Valid @ModelAttribute("character") DAdventureDTO dadventureDto, BindingResult br) {
+	public String addcharacter(Model model, RedirectAttributes rdAttributes, @Valid @ModelAttribute("character") DAdventureDTO dadventureDto, BindingResult br) {
 		DCharDTO dcharDto = new DCharDTO(((AuthInfo)model.getAttribute("authInfo")).getUid(), dadventureDto.getCharacterName(), dadventureDto.getCharacterId(), dadventureDto.getServerId());    // 새로운 던 캐릭 정보 생성
-		dcServ.create(dcharDto);					// 아이디를 계정에 연동
-		
+		try {
+			dcServ.create(dcharDto);					// 아이디를 계정에 연동
+		} catch(AlreadyExistedLCharNameException aelne) {
+			rdAttributes.addFlashAttribute("error", aelne);
+		}
 		return "redirect:/user/myPage";				// 마이페이지로 리다이렉트
 	}
 	
@@ -222,17 +237,9 @@ public class DNFController {
 		mv.setViewName("redirect:/dnf/board/" + bmm.getPaging());		//첫 번째 페이지로 리다이렉트
 		return mv;
 	}
-	
-	@GetMapping(value="/board/newPostGET")
-	public String newPostGet(Model model) {
-		List<DCharDTO> mydnfChars = dcServ.readAllByUid(((AuthInfo)model.getAttribute("authInfo")).getUid());	// DB접근을 통해 계정과 연동된 내 LOL 계정 정보를 받아 옴
-		model.addAttribute("mydnfChars", mydnfChars); 					// 모델에 계정과 연동된 내 LOL 계정 정보 저장
-		model.addAttribute("post", new DGroupDTO());					// 모델에 글 작성 양식 저장
-		return "/dnf/newPost";
-	}
 
-	@PostMapping(value="/board/newPostPOST")
-	public String newPostPost(@Valid @ModelAttribute("post") DGroupDTO dgroupDto, BindingResult br) throws Exception {
+	@PostMapping(value="/board/newPost")
+	public String newPost(@Valid @ModelAttribute("post") DGroupDTO dgroupDto, BindingResult br) throws Exception {
 		if (br.hasErrors())													// 필요한 정보가 정한 폼에 맞지 않으면 이전 단계로 돌아감
 			return "redirect:/dnf/board/newPostGET";
 
@@ -269,9 +276,16 @@ public class DNFController {
 	 * - 페이지 하단에는 메인 게시판으로 되돌아가는 버튼과 신청 페이지로 이동할 수 있는 버튼이 존재
 	 */
 	@RequestMapping("/boardDetail/{dgroupId}")
-	public ModelAndView dnfGroupBoardDetail(Model model, @PathVariable(value="dgroupId") int dgroupId) {
-		DGroupDTO dgroupDto = dgServ.readById(dgroupId);										// 게시글 세부 정보
-		List<DCharDTO> acceptedList = dcServ.readAllAcceptedByGroupId(dgroupId);				// 수락된 멤버 목록
+	public String dnfGroupBoardDetail(Model model, HttpServletRequest request, RedirectAttributes rdAttributes, @PathVariable(value="dgroupId") int dgroupId) {
+		DGroupDTO dgroupDto = null;
+		try {
+			dgroupDto = dgServ.readById(dgroupId);										// 게시글 세부 정보
+		} catch (NoSuchGroupException nsge) {
+			rdAttributes.addFlashAttribute("error", nsge);
+			return "redirect:/lol/board";
+		}
+		
+		List<DApplyDTO> acceptedList = daServ.readAllAcceptedByGroupId(dgroupId);				// 수락된 멤버 목록
 		model.addAttribute("dgroupDto", dgroupDto);
 		model.addAttribute("acceptedList", acceptedList);
 
@@ -280,21 +294,21 @@ public class DNFController {
 		model.addAttribute("myAppliedChars", myAppliedChars);
 		model.addAttribute("myNotAppliedChars", myNotAppliedChars);
 		
-		DCharDTO dcharDto = dcServ.readById(dgroupDto.getDgroupOwnerName());
+		DCharDTO dcharDto = dcServ.readByName(dgroupDto.getDgroupOwnerName());
 		model.addAttribute("ownerUid", dcharDto.getUid());
 		
-		ModelAndView mv = new ModelAndView();
-		mv.setViewName("/dnf/boardDetail");
-		return mv;
+		return "/dnf/boardDetail";
 	}
 	
 	@GetMapping("/board/delete/{dgroupId}")
-	public String deletePost(@PathVariable("dgroupId") int dgroupId) {
+	public String deletePost(HttpServletRequest request, RedirectAttributes rdAttributes, @PathVariable("dgroupId") int dgroupId) {
 		try {
 			dgServ.deleteById(dgroupId);		
 		} catch(NoSuchGroupException nsge) {
+			rdAttributes.addFlashAttribute("error", nsge);
 			return "redirect:/lol/board";
 		}
+		rdAttributes.addFlashAttribute("error", new Exception("삭제에 성공했습니다"));
 		return "redirect:/lol/board";
 	}
 	
@@ -302,31 +316,34 @@ public class DNFController {
 	 * 그룹 신청 페이지에서 아이디를 클릭하면 신청을 넣고 게시판 페이지로 돌아감
 	 */
 	@PostMapping("/submit")
-	public ModelAndView dnfSubmitToGroup(Model model, HttpSession session, @Valid @ModelAttribute("applyForm") DApplyDTO dapplyDto, BindingResult br) {
-		ModelAndView mv = new ModelAndView();
-		
+	public String dnfSubmitToGroup(Model model, HttpServletRequest request, RedirectAttributes rdAttributes, HttpSession session, @Valid @ModelAttribute("applyForm") DApplyDTO dapplyDto, BindingResult br) {
 		if (br.hasErrors()) {
-			mv.setViewName("redirect:/dnf/board");
-			return mv;
+			return "redirect:/dnf/board";
 		}
 		try {
 			daServ.create(dapplyDto);						// DB접근을 통해 신청 정보 생성
 		} catch(AlreadyExistedApplyException leae) {
-			
+			rdAttributes.addFlashAttribute("error", leae);
+			return "redirect:" + request.getHeader("Referer");
 		}
 		
-		mv.setViewName("redirect:/dnf/boardDetail/" + dapplyDto.getDgroupId());
-		return mv;
+		return "redirect:/dnf/boardDetail/" + dapplyDto.getDgroupId();
 	}
 	
 	/**
 	 * 계정 전적 정보를 볼 수 있는 페이지
 	 */
 	@RequestMapping("/charDetail/{dcname}")
-	public ModelAndView dnfCharDetail(Model model, @PathVariable("dcname") String dcname) {
+	public String dnfCharDetail(Model model, HttpServletRequest request, RedirectAttributes rdAttributes, @PathVariable("dcname") String dcname) {
 		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 		
-		DCharDTO dcharDto = dcServ.readByName(dcname);
+		DCharDTO dcharDto = null;
+		try {
+			dcServ.readByName(dcname);
+		} catch (NoSuchCharException nsce) {
+			rdAttributes.addFlashAttribute("error", nsce);
+			return "redirect:" + request.getHeader("Referer");
+		}
 		model.addAttribute("dcharDto", dcharDto);
 		
 		String url = "?api_key=" + api.getDNF_API_KEY();
@@ -339,31 +356,32 @@ public class DNFController {
 			if (response.getStatusLine().getStatusCode() == 200) {
 				ResponseHandler<String> handler = new BasicResponseHandler();
 				String body = handler.handleResponse(response);
-				
+				System.out.println(body);
 				
 				// -- 캐릭터의 상세 정보를 담아서 model에 넣음 --
 			}
-			//asdf
 			
 		} catch(Exception e) {
 			model.addAttribute("exception", e);
 		}
 
-		ModelAndView mv = new ModelAndView();
-		mv.setViewName("/dnf/charDetail");							
-		return mv;
+		return "/dnf/charDetail";	
 	}
 	
 	@RequestMapping("/acceptApply/{dapplyId}&{dgroupId}")
-	public String acceptApply(HttpServletRequest request, @PathVariable("dapplyId") int dapplyId, @PathVariable("dgroupId") int dgroupId) {
+	public String acceptApply(HttpServletRequest request, RedirectAttributes rdAttributes, @PathVariable("dapplyId") int dapplyId, @PathVariable("dgroupId") int dgroupId) {
 		DApplyDTO applyForm = new DApplyDTO(dapplyId, dgroupId, "ACCEPTED");
-		daServ.updateResult(applyForm);
+		try {
+			daServ.updateResult(applyForm);
+		} catch(TooManyApplyException tmae) {
+			rdAttributes.addFlashAttribute("error", tmae);
+		}
 		return "redirect:" + request.getHeader("Referer");
 	}
 	
 	@RequestMapping("/denyApply/{dapplyId}&{dgroupId}")
-	public String denyApply(HttpServletRequest request, @PathVariable("dapplyId") int dapplyId, @PathVariable("dgroupId") int dgroupId) {
-		DApplyDTO applyForm = new DApplyDTO(dapplyId, dgroupId, "ACCEPTED");
+	public String denyApply(HttpServletRequest request, RedirectAttributes rdAttributes, @PathVariable("dapplyId") int dapplyId, @PathVariable("dgroupId") int dgroupId) {
+		DApplyDTO applyForm = new DApplyDTO(dapplyId, dgroupId, "DENIED");
 		daServ.updateResult(applyForm);
 		return "redirect:" + request.getHeader("Referer");
 	}

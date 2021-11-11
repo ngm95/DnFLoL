@@ -13,41 +13,52 @@
 
 	<div class="container contents-wrap" style="height: 100%">
 		<%@ include file="/view/includes/03_header.jsp"%>
+		<c:if test="${not empty error}">
+			<jsp:include page="/view/includes/errorModal.jsp"></jsp:include>
+		</c:if>
+		
 		<div class="jumbotron">
-			<button type="button" class="btn btn-warning" onclick="location.href='/dnf/board/delete/${dgroupDto.dgroupId}'" style="float:right">글 삭제</button>
 			<button type="button" class="btn btn-success" onclick="location.href='/dnf/board'" style="float:right">목록</button>
 			<h3><b>게시글 상세</b></h3>
 			<div class="jumbotron-board" style="margin-top:45px">
-				<div class="input-group mb-3" style="margin-bottom: 15px">
-					<span class="input-group-text">제목</span>
-					<input class="form-control" type="text" value="${dgroupDto.dgroupName}" readonly/>
-				</div>
-				<div class="input-group" style="margin-bottom: 15px">
-					<select class="form-select" disabled>
-						<option value="${dgroupDto.dgroupOwnerName}">${dgroupDto.dgroupOwnerName}</option>
-					</select>
-					<select class="form-select" disabled>
-						<c:choose>
-							<c:when test="${dgroupDto.dgroupType == 1}">
-								<option value="핀드워">핀드워</option>
-							</c:when>
-							<c:when test="${dgroupDto.dgroupType == 2}">
-								<option value="프레이-이시스">프레이-이시스</option>
-								<td>프레이-이시스</td>
-							</c:when>
-							<c:when test="${dgroupDto.dgroupType == 3}">
-								<option value="무형의 시로코">무형의 시로코</option>
-							</c:when>
-							<c:when test="${dgroupDto.dgroupType == 4}">
-								<option value="혼돈의 오즈마">혼돈의 오즈마</option>
-							</c:when>
-						</c:choose>
-					</select>
-				</div>
-				<div class="input-group mb-3" style="margin-bottom: 5px">
-					<span class="input-group-text">설명</span>
-					<textarea class="form-control" readonly>${dgroupDto.dgroupDetail}</textarea>
-				</div>
+				<c:if test="${authInfo.uid eq ownerUid}">
+					<button type="button" class="btn btn-warning" onclick="location.href='/dnf/board/delete/${dgroupDto.dgroupId}'" style="float:right">글 삭제</button>
+				</c:if>
+				<table class="table">
+					<tr>
+						<td>제목</td>
+						<td><input class="form-control" type="text" value="${dgroupDto.dgroupName}" readonly/></td>
+					</tr>
+					<tr>
+						<td>내 계정</td>
+						<td><select class="form-select" disabled>
+								<option value="${dgroupDto.dgroupOwnerName}">${dgroupDto.dgroupOwnerName}</option>
+						</select></td>
+					</tr>
+					<tr>
+						<td>게임 타입</td>
+						<td><select class="form-select" disabled>
+								<c:choose>
+									<c:when test="${dgroupDto.dgroupType == 1}">
+										<option value="핀드워">핀드워</option>
+									</c:when>
+									<c:when test="${dgroupDto.dgroupType == 2}">
+										<option value="프레이-이시스">프레이-이시스</option>
+									</c:when>
+									<c:when test="${dgroupDto.dgroupType == 3}">
+										<option value="무형의 시로코">무형의 시로코</option>
+									</c:when>
+									<c:when test="${dgroupDto.dgroupType == 4}">
+										<option value="혼돈의 오즈마">혼돈의 오즈마</option>
+									</c:when>
+								</c:choose>
+						</select></td>
+					</tr>
+					<tr>
+						<td>설명</td>
+						<td><textarea class="form-control" readonly>${dgroupDto.dgroupDetail}</textarea></td>
+					</tr>
+				</table>
 			</div>
 
 			<h3>참가 인원 수 : ${fn:length(acceptedList)} / ${dgroupDto.dgroupMax}</h3>
@@ -62,8 +73,8 @@
 							<c:forEach var="accepted" items="${acceptedList}">
 								<div class="col-6 col-md-4">
 									<button class="btn btn-info" onclick="location.href='/dnf/charDetail/${accepted.dcname}'">${accepted.dcname}</button>
-										<c:if test="${authInfo.uid eq ownerUid}">
-											<button class="btn btn-danger" onclick="location.href='/lol/denyApply/${accepted.lapplyId}&${accepted.lgroupId}'">수락 거절</button>
+										<c:if test="${authInfo.uid eq ownerUid and accepted.dcname ne dgroupDto.dgroupOwnerName}">
+											<button class="btn btn-danger" onclick="location.href='/dnf/denyApply/${accepted.dapplyId}&${accepted.dgroupId}'">수락 거절</button>
 										</c:if>
 								</div>
 							</c:forEach>

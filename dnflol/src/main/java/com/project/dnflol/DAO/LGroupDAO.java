@@ -24,8 +24,8 @@ public class LGroupDAO {
 		return template.selectOne(MAPPER + ".readlgroupId", lgroupDto);
 	}
 	
-	public int readGroupMaxByGroupId(int groupId) {
-		return template.selectOne(MAPPER + ".readGroupMaxByGroupId", groupId);
+	public int readGroupMaxByGroupId(int lgroupId) {
+		return template.selectOne(MAPPER + ".readGroupMaxByGroupId", lgroupId);
 	}
 	
 	public LGroupDTO readById(int lgroupId) {

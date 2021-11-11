@@ -7,37 +7,46 @@
 <html>
 <head>
 <%@ include file="/view/includes/00_head.jsp"%>
+
 <title>LoL 게시글 세부내용</title>
 </head>
 <body>
-
 	<div class="container contents-wrap" style="height: 100%">
 		<%@ include file="/view/includes/03_header.jsp"%>
+		<c:if test="${not empty error}">
+			<jsp:include page="/view/includes/errorModal.jsp"></jsp:include>
+		</c:if>
+		
 		<div class="jumbotron">
-			<c:if test="${authInfo.uid eq ownerUid}">
-				<button type="button" class="btn btn-warning" onclick="location.href='/dnf/board/delete/${lgroupDto.lgroupId}'" style="float:right">글 삭제</button>
-			</c:if>
 			<button type="button" class="btn btn-success" onclick="location.href='/lol/board'" style="float:right">목록</button>
 			<h3><b>게시글 상세</b></h3>
 			<div class="jumbotron-board" style="margin-top:45px">
-				<div class="input-group mb-3" style="margin-bottom: 15px">
-					<span class="input-group-text">제목</span>
-					<input class="form-control" type="text" value="${lgroupDto.lgroupName}" readonly/>
-				</div>
-				<div class="input-group" style="margin-bottom: 15px">
-					<select class="form-select" disabled>
-						<option value="${lgroupDto.lgroupOwner}">${lgroupDto.lgroupOwner}</option>
-					</select>
-					<select class="form-select" disabled>
-						<option value="${lgroupDto.lgroupType}">${lgroupDto.lgroupType}</option>
-					</select>
-				</div>
-				<div class="input-group mb-3" style="margin-bottom: 5px">
-					<span class="input-group-text">설명</span>
-					<textarea class="form-control" readonly>${lgroupDto.lgroupDetail}</textarea>
-				</div>
+				<c:if test="${authInfo.uid eq ownerUid}">
+					<button type="button" class="btn btn-warning" onclick="location.href='/dnf/board/delete/${lgroupDto.lgroupId}'" style="float: right">글 삭제</button>
+				</c:if>
+				<table class="table">
+					<tr>
+						<td>제목</td>
+						<td><input class="form-control" type="text" value="${lgroupDto.lgroupName}" readonly/></td>
+					</tr>
+					<tr>
+						<td>작성자</td>
+						<td><select class="form-select" disabled>
+								<option value="${lgroupDto.lgroupOwner}">${lgroupDto.lgroupOwner}</option>
+						</select></td>
+					</tr>
+					<tr>
+						<td>게임 타입</td>
+						<td><select class="form-select" disabled>
+								<option value="${lgroupDto.lgroupType}">${lgroupDto.lgroupType}</option>
+						</select></td>
+					</tr>
+					<tr>
+						<td>설명</td>
+						<td><textarea class="form-control" readonly>${lgroupDto.lgroupDetail}</textarea></td>
+					</tr>
+				</table>
 			</div>
-
 			<h3>참가 인원 수 : ${fn:length(acceptedList)} / ${lgroupDto.lgroupMax}</h3>
 			<div class="jumbotron-board" style="margin-top:45px">
 				<c:choose>
@@ -50,7 +59,7 @@
 							<c:forEach var="accepted" items="${acceptedList}">
 								<div class="col-6 col-md-4">
 									<button class="btn btn-info" onclick="location.href='/lol/charDetail/${accepted.lcharName}'">${accepted.lcharName}</button>
-										<c:if test="${authInfo.uid eq ownerUid}">
+										<c:if test="${authInfo.uid eq ownerUid and accepted.lcharName ne lgroupDto.lgroupOwner}">
 											<button class="btn btn-danger" onclick="location.href='/lol/denyApply/${accepted.lapplyId}&${accepted.lgroupId}'">수락 거절</button>
 										</c:if>
 								</div>
@@ -95,6 +104,5 @@
 		</div>
 		<%@ include file="/view/includes/09_footer.jsp"%>
 	</div>
-	
 </body>
 </html>

@@ -25,9 +25,6 @@ public class DApplyService {
 	private DGroupDAO dgroupDao;
 	
 	public void create(DApplyDTO dapplyDto) {
-		if (dapplyDao.readAcceptedCountByGroupId(dapplyDto.getDapplyId()) >= dgroupDao.readGroupMaxByGroupId(dapplyDto.getDgroupId()))
-			throw new TooManyApplyException("이미 모든 자리가 다 찼습니다.");
-		
 		if (dapplyDao.read(dapplyDto) != null)
 			throw new AlreadyExistedApplyException(dapplyDto.getDcname() + "은/는 이미 해당 그룹에 지원한 상태입니다.");
 		
@@ -35,21 +32,22 @@ public class DApplyService {
 	}
 	
 	public void createToAccepted(DApplyDTO dapplyDto) {
-		if (dapplyDao.readAcceptedCountByGroupId(dapplyDto.getDapplyId()) >= dgroupDao.readGroupMaxByGroupId(dapplyDto.getDgroupId()))
-			throw new TooManyApplyException("이미 모든 자리가 다 찼습니다.");
-		
 		if (dapplyDao.read(dapplyDto) != null)
 			throw new AlreadyExistedApplyException(dapplyDto.getDcname() + "은/는 이미 해당 그룹에 지원한 상태입니다.");
 		
 		dapplyDao.createToAccepted(dapplyDto);
 	}
 	
+	public List<DApplyDTO> readAllAcceptedByGroupId(int dgroupId) {
+		return dapplyDao.readAllAcceptedByGroupId(dgroupId);
+	}
+	
 	public DApplyDTO read(DApplyDTO dapplyDto) {
 		return dapplyDao.read(dapplyDto);
 	}
 	
-	public List<DApplyDTO> readAllByGroupId(int groupId) {
-		return dapplyDao.readAllByGroupId(groupId);
+	public List<DApplyDTO> readAllByGroupId(int dgroupId) {
+		return dapplyDao.readAllByGroupId(dgroupId);
 	}
 	
 	public List<DApplyDTO> readAllMyApply(String uid) {
@@ -57,7 +55,7 @@ public class DApplyService {
 	}
 	
 	public void updateResult(DApplyDTO dapplyDto) {
-		if (dapplyDao.readAcceptedCountByGroupId(dapplyDto.getDapplyId()) >= dgroupDao.readGroupMaxByGroupId(dapplyDto.getDgroupId()))
+		if (dapplyDto.getDapplyResult().equals("ACCEPTED") && dapplyDao.readAcceptedCountByGroupId(dapplyDto.getDgroupId()) >= dgroupDao.readGroupMaxByGroupId(dapplyDto.getDgroupId()))
 			throw new TooManyApplyException("이미 모든 자리가 다 찼습니다.");
 		
 		dapplyDao.updateLapplyResult(dapplyDto);

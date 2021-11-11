@@ -8,6 +8,11 @@
 <body class="main-pages contents-wrap">
 	<div class="container" style="height: 100%">
 		<%@ include file="/view/includes/03_header.jsp"%>
+
+		<c:if test="${not empty error}">
+			<jsp:include page="/view/includes/errorModal.jsp"></jsp:include>
+		</c:if>
+		
 		<div class="jumbotron">
 			<h1>
 				<b>D</b>n<b>F</b> <b>L</b>o<b>L</b>

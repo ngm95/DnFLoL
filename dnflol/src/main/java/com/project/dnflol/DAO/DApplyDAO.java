@@ -27,12 +27,16 @@ public class DApplyDAO {
 		return template.selectOne(MAPPER + ".read", dapplyDto);
 	}
 	
-	public int readAcceptedCountByGroupId(int groupId) {
-		return template.selectOne(MAPPER + ".readAcceptedCountByGroupId", groupId);
+	public int readAcceptedCountByGroupId(int dgroupId) {
+		return template.selectOne(MAPPER + ".readAcceptedCountByGroupId", dgroupId);
+	}
+	
+	public List<DApplyDTO> readAllAcceptedByGroupId(int dgroupId) {
+		return template.selectList(MAPPER + ".readAllAcceptedByGroupId", dgroupId);
 	}
 
-	public List<DApplyDTO> readAllByGroupId(int groupId) {
-		return template.selectList(MAPPER + ".readAllByGroupId", groupId);
+	public List<DApplyDTO> readAllByGroupId(int dgroupId) {
+		return template.selectList(MAPPER + ".readAllByGroupId", dgroupId);
 	}
 	
 	public List<DApplyDTO> readAllMyApply(String uid) {

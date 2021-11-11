@@ -13,6 +13,9 @@
 
 	<div class="container contents-wrap" style="height: 100%">
 		<%@ include file="/view/includes/03_header.jsp"%>
+		<c:if test="${not empty error}">
+			<jsp:include page="/view/includes/errorModal.jsp"></jsp:include>
+		</c:if>
 		
 		<div class="jumbotron">
 			<h3>계정 상세정보</h3>

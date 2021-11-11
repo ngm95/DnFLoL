@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -42,7 +43,9 @@ import com.project.dnflol.DTO.ParticipantDTO;
 import com.project.dnflol.DTO.SummonerDTO;
 import com.project.dnflol.DTO.UserDTO;
 import com.project.dnflol.Exception.AlreadyExistedApplyException;
+import com.project.dnflol.Exception.AlreadyExistedLCharNameException;
 import com.project.dnflol.Exception.NoSuchGroupException;
+import com.project.dnflol.Exception.TooManyApplyException;
 import com.project.dnflol.Service.LApplyService;
 import com.project.dnflol.Service.LCharService;
 import com.project.dnflol.Service.LGroupService;
@@ -95,6 +98,11 @@ public class LOLController {
 	@ModelAttribute("applyForm")
 	public LApplyDTO applyForm() {
 		return new LApplyDTO();
+	}
+	
+	@ModelAttribute("post")
+	public LGroupDTO post() {
+		return new LGroupDTO();
 	}
 	
 	/**
@@ -152,6 +160,9 @@ public class LOLController {
 		model.addAttribute("lgroupList", lgroupList.subList(startIdx, endIdx));			// 현재 페이지에서 볼 수 있는 글만 담아서 모델에 담음
 		model.addAttribute("bmm", bmm);
 		
+		List<LCharDTO> mylolChars = lcServ.readAllByUid(((AuthInfo)model.getAttribute("authInfo")).getUid());
+		model.addAttribute("mylolChars", mylolChars);
+		
 		return "/lol/board";
 	}
 
@@ -178,16 +189,8 @@ public class LOLController {
 		return mv;
 	}
 
-	@GetMapping(value="/board/newPostGET")
-	public String newPostGet(Model model) {
-		List<LCharDTO> mylolChars = lcServ.readAllByUid(((AuthInfo)model.getAttribute("authInfo")).getUid());	// DB접근을 통해 계정과 연동된 내 LOL 계정 정보를 받아 옴
-		model.addAttribute("mylolChars", mylolChars); 					// 모델에 계정과 연동된 내 LOL 계정 정보 저장
-		model.addAttribute("post", new LGroupDTO());					// 모델에 글 작성 양식 저장
-		return "/lol/newPost";
-	}
-
-	@PostMapping(value="/board/newPostPOST")
-	public String newPostPost(@Valid @ModelAttribute("post") LGroupDTO lgroupDto, BindingResult br) throws Exception {
+	@PostMapping(value="/board/newPost")
+	public String newPost(@Valid @ModelAttribute("post") LGroupDTO lgroupDto, BindingResult br) throws Exception {
 		if (br.hasErrors())													// 필요한 정보가 정한 폼에 맞지 않으면 이전 단계로 돌아감
 			return "redirect:/lol/board/newPostGET";
 
@@ -216,7 +219,7 @@ public class LOLController {
 	public String deletePost(@PathVariable("lgroupId") int lgroupId, Model model) {
 		if (((String)model.getAttribute("ownerUid")).equals(((AuthInfo)model.getAttribute("authInfo")).getUid())) {
 			// 생성한 계정과 다를 때 작업
-		})
+		}
 		
 		try {
 			lgServ.deleteById(lgroupId);		
@@ -324,10 +327,13 @@ public class LOLController {
 	}
 	
 	@PostMapping("/addSummoner") 
-	public String addSummoner(Model model, @Valid @ModelAttribute("summoner") SummonerDTO summonerDto, BindingResult br) {
+	public String addSummoner(Model model, RedirectAttributes rdAttributes, @Valid @ModelAttribute("summoner") SummonerDTO summonerDto, BindingResult br) {
 		LCharDTO lcharDto = new LCharDTO(((AuthInfo)model.getAttribute("authInfo")).getUid(), summonerDto.getName());	// 새로운 LOL 계정 정보 생성
-		lcServ.create(lcharDto);					// 아이디를 계정에 연동
-		
+		try {
+			lcServ.create(lcharDto);					// 아이디를 계정에 연동
+		} catch(AlreadyExistedLCharNameException aelne) {
+			rdAttributes.addFlashAttribute("error", aelne);
+		}
 		return "redirect:/user/myPage";				// 마이페이지로 리다이렉트
 	}
 	
@@ -513,7 +519,7 @@ public class LOLController {
 				model.addAttribute("normalDetail", normalDetail);
 			}
 		} catch(Exception e) {
-			model.addAttribute("exception", e);
+			model.addAttribute("error", e);
 		}
 
 		ModelAndView mv = new ModelAndView();
@@ -522,15 +528,19 @@ public class LOLController {
 	}
 	
 	@RequestMapping("/acceptApply/{lapplyId}&{lgroupId}")
-	public String acceptApply(HttpServletRequest request, @PathVariable("lapplyId") int lapplyId, @PathVariable("lgroupId") int lgroupId) {
+	public String acceptApply(HttpServletRequest request, RedirectAttributes rdAttributes, @PathVariable("lapplyId") int lapplyId, @PathVariable("lgroupId") int lgroupId) {
 		LApplyDTO applyForm = new LApplyDTO(lapplyId, lgroupId, "ACCEPTED");
-		laServ.updateResult(applyForm);
+		try {
+			laServ.updateResult(applyForm);
+		} catch(TooManyApplyException tmae) {
+			rdAttributes.addFlashAttribute("error", tmae);
+		}
 		return "redirect:" + request.getHeader("Referer");
 	}
 	
 	@RequestMapping("/denyApply/{lapplyId}&{lgroupId}")
-	public String denyApply(HttpServletRequest request, @PathVariable("lapplyId") int lapplyId, @PathVariable("lgroupId") int lgroupId) {
-		LApplyDTO applyForm = new LApplyDTO(lapplyId, lgroupId, "ACCEPTED");
+	public String denyApply(HttpServletRequest request, RedirectAttributes rdAttributes, @PathVariable("lapplyId") int lapplyId, @PathVariable("lgroupId") int lgroupId) {
+		LApplyDTO applyForm = new LApplyDTO(lapplyId, lgroupId, "DENIED");
 		laServ.updateResult(applyForm);
 		return "redirect:" + request.getHeader("Referer");
 	}

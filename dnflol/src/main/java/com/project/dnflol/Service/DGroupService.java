@@ -15,7 +15,6 @@ public class DGroupService {
 	
 	private DGroupDAO dgroupDao;
 	
-	//test
 	@Autowired
 	public DGroupService(DGroupDAO dgroupDao) {
 		this.dgroupDao = dgroupDao;
@@ -24,14 +23,18 @@ public class DGroupService {
 	public void create(DGroupDTO dgroupDto) {
 		dgroupDao.create(dgroupDto);
 	}
-	
 
 	public Integer readDgroupId(DGroupDTO dgroupDto) {
 		return dgroupDao.readDgroupId(dgroupDto);
 	}
 	
 	public DGroupDTO readById(int dgroupId) {
-		return dgroupDao.readById(dgroupId);
+		DGroupDTO group = dgroupDao.readById(dgroupId);
+		
+		if (group == null)
+			throw new NoSuchGroupException("해당하는 게시물이 없습니다.");
+		
+		return group;
 	}
 	
 	public List<DGroupDTO> readAllByOwnerName(String onwerName) {

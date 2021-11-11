@@ -53,7 +53,13 @@
 		ORDER BY DapplyId DESC
 	</select>
 	
-	<update id="updatelapplyResult">
+	<select id="readAllAcceptedByGroupId" resultType="com.project.dnflol.DTO.DApplyDTO">
+		SELECT DApply.*
+		FROM DApply, DGroup
+		WHERE DApply.dgroupId = DGroup.dgroupId AND DGroup.dgroupId = #{dgroupId} AND dapplyResult = 'ACCEPTED'
+	</select>
+	
+	<update id="updatedapplyResult">
 		UPDATE DApply
 		SET dapplyResult = #{dapplyResult}
 		WHERE dapplyId = #{dapplyId} AND dgroupId = #{dgroupId}

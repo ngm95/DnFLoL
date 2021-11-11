@@ -13,6 +13,10 @@
 
 	<div class="container contents-wrap" style="height: 100%">
 		<%@ include file="/view/includes/03_header.jsp"%>
+		<c:if test="${not empty error}">
+			<jsp:include page="/view/includes/errorModal.jsp"></jsp:include>
+		</c:if>
+		
 		<div class="jumbotron">
 			<h3>캐릭터 검색</h3>
 			<form:form modelAttribute="character" action="/dnf/findcharacter" method="post">

@@ -4,7 +4,6 @@ import org.springframework.stereotype.Service;
 
 import com.project.dnflol.DAO.UserDAO;
 import com.project.dnflol.DTO.UserDTO;
-import com.project.dnflol.Exception.AlreadyExistedEmailException;
 import com.project.dnflol.Exception.AlreadyExistedUIdException;
 import com.project.dnflol.Exception.AlreadyExistedUNameException;
 import com.project.dnflol.Exception.NoSuchUIdException;

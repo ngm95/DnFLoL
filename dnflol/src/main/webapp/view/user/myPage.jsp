@@ -13,7 +13,11 @@
 
 	<div class="container contents-wrap" style="height: 100%">
 		<%@ include file="/view/includes/03_header.jsp"%>
-
+		
+		<c:if test="${not empty error}">
+			<jsp:include page="/view/includes/errorModal.jsp"></jsp:include>
+		</c:if>
+		
 		<div class="jumbotron">
 			<button type="button" class="btn btn-style" onclick="location.href='/lol/findSummoner'" style="float: right; background-color: SkyBlue; color: white">계정 추가하기</button>
 			<h3>

@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import com.project.dnflol.DAO.DCharDAO;
 import com.project.dnflol.DTO.DCharDTO;
-import com.project.dnflol.DTO.LCharDTO;
 import com.project.dnflol.Exception.AlreadyExistedLCharNameException;
 import com.project.dnflol.util.UidAndGroupId;
 
