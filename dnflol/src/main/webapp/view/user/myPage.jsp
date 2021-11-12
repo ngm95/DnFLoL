@@ -61,7 +61,7 @@
 							<div class="row">
 								<form style="display: inline-block" action="/dnf/deletecharacter" method="post">
 									<input name="${_csrf.parameterName}" type="hidden" value="${_csrf.token}" /> 
-									<input name="dcname" type="hidden" value="${chars.dcname}" />
+									<input name="dcname" type="hidden" value="${chars.dcharId}" />
 									<p>
 										계정명 : ${chars.dcname}
 										<button type="submit" class="btn btn-style" style="background-color: pink; color: white; margin-left: 15px">연동 해제</button>
