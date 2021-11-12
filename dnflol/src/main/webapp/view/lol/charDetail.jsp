@@ -49,7 +49,7 @@
 				</c:choose>
 			</div>
 				
-			<h3 style="margin-top : 25px">최근 10게임 중 소환사의 협곡</h3>
+			<h3 style="margin-top : 25px">최근 ${rankDetail.totalGames + normalDetail.totalGames}게임 중 소환사의 협곡</h3>
 			<div class="jumbotron-board">
 				<table class="table table-striped">
 					<thead>

@@ -245,7 +245,7 @@ public class DNFController {
 	 * - 페이지 하단에는 메인 게시판으로 되돌아가는 버튼과 신청 페이지로 이동할 수 있는 버튼이 존재
 	 */
 	@RequestMapping("/boardDetail/{dgroupId}")
-	public String dnfGroupBoardDetail(Model model, HttpServletRequest request, RedirectAttributes rdAttributes, @PathVariable(value="dgroupId") int dgroupId) {
+	public String dnfBoardDetail(Model model, HttpServletRequest request, RedirectAttributes rdAttributes, @PathVariable(value="dgroupId") int dgroupId) {
 		DGroupDTO dgroupDto = null;
 		try {
 			dgroupDto = dgServ.readById(dgroupId);										// 게시글 세부 정보
