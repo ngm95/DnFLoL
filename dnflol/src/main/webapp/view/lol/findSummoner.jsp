@@ -37,31 +37,31 @@
 					<c:otherwise>
 						<c:choose>
 							<c:when test="${'IRON' eq leagueDto.tier}">
-								<img src="/lol/img/ranked-emblems/Emblem_Iron.png" style="width:15%">
+								<img src="/lol/img/ranked-emblems/Emblem_Iron.png" style="width:5%">
 							</c:when>
 							<c:when test="${'BRONZE' eq leagueDto.tier}">
-								<img src="/lol/img/ranked-emblems/Emblem_Bronze.png" style="width:15%">
+								<img src="/lol/img/ranked-emblems/Emblem_Bronze.png" style="width:5%">
 							</c:when>
 							<c:when test="${'SILVER' eq leagueDto.tier}">
-								<img src="/lol/img/ranked-emblems/Emblem_Silver.png" style="width:15%">
+								<img src="/lol/img/ranked-emblems/Emblem_Silver.png" style="width:5%">
 							</c:when>
 							<c:when test="${'GOLD' eq leagueDto.tier}">
-								<img src="/lol/img/ranked-emblems/Emblem_Gold.png" style="width:15%">
+								<img src="/lol/img/ranked-emblems/Emblem_Gold.png" style="width:5%">
 							</c:when>
 							<c:when test="${'PLATINUM' eq leagueDto.tier}">
-								<img src="/lol/img/ranked-emblems/Emblem_Platinum.png" style="width:15%">
+								<img src="/lol/img/ranked-emblems/Emblem_Platinum.png" style="width:5%">
 							</c:when>
 							<c:when test="${'DIAMOND' eq leagueDto.tier}">
-								<img src="/lol/img/ranked-emblems/Emblem_Diamond.png" style="width:15%">
+								<img src="/lol/img/ranked-emblems/Emblem_Diamond.png" style="width:5%">
 							</c:when>
 							<c:when test="${'MASTER' eq leagueDto.tier}">
-								<img src="/lol/img/ranked-emblems/Emblem_Master.png" style="width:15%">
+								<img src="/lol/img/ranked-emblems/Emblem_Master.png" style="width:5%">
 							</c:when>
 							<c:when test="${'GRANDMASTER' eq leagueDto.tier}">
-								<img src="/lol/img/ranked-emblems/Emblem_Grandmaster.png" style="width:15%">
+								<img src="/lol/img/ranked-emblems/Emblem_Grandmaster.png" style="width:5%">
 							</c:when>
 							<c:when test="${'CHALLENGER' eq leagueDto.tier}">
-								<img src="/lol/img/ranked-emblems/Emblem_Challenger.png" style="width:15%">
+								<img src="/lol/img/ranked-emblems/Emblem_Challenger.png" style="width:5%">
 							</c:when>
 						</c:choose>
 						아이디 : ${summoner.name}, 레벨 : ${summoner.summonerLevel}, 티어 : ${leagueDto.tier} ${leagueDto.rank}

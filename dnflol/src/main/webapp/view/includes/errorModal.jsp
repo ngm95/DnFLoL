@@ -5,8 +5,8 @@
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h5 class="modal-title">오류 발생</h5>
-				<button type="button" class="btn-close" data-dismiss="modal"></button>
+				<h5 class="modal-title">알림</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
 			</div>
 			<div id="modalBody" class="modal-body">
 				<c:if test="${not empty error}">

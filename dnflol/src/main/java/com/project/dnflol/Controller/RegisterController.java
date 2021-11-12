@@ -2,7 +2,6 @@ package com.project.dnflol.Controller;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,11 +15,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.project.dnflol.Exception.AlreadyExistedUIdException;
 import com.project.dnflol.Exception.AlreadyExistedUNameException;
 import com.project.dnflol.Service.UserService;
-import com.project.dnflol.util.AuthInfo;
 import com.project.dnflol.util.RegisterRequest;
 
 @Controller
@@ -60,18 +59,16 @@ public class RegisterController {
 	}
 	
 	@RequestMapping(value="/step3", method=RequestMethod.POST)
-	public ModelAndView registerStep3(@Valid @ModelAttribute("request") RegisterRequest regReq, BindingResult br) throws Exception {
-		ModelAndView mv = new ModelAndView();
+	public String registerStep3(HttpServletRequest request, RedirectAttributes rdAttributes, @Valid @ModelAttribute("request") RegisterRequest regReq, BindingResult br) throws Exception {
 		
 		if (br.hasErrors()) {					// 필요한 정보가 정한 폼에 맞지 않으면 이전 단계로 돌아감
-			mv.setViewName("/register/step2");
-			return mv;
+			rdAttributes.addFlashAttribute("error", new Exception("정해진 형식에 맞지 않습니다."));
+			return "redirect:" + request.getHeader("Referer");
 		}
 		
 		if (!regReq.isPwEqualtoCheckPw()) {		// 입력한 비밀번호와 그 확인이 정확하지 않으면 이전 단계로 돌아감
 			br.rejectValue("checkPw", "noMatch", "패스워드가 일치하지 않습니다.");
-			mv.setViewName("/register/step2");
-			return mv;
+			return "/register/step2";
 		}
 		
 		/*
@@ -83,21 +80,17 @@ public class RegisterController {
 			uServ.register(regReq);
 		} catch(AlreadyExistedUNameException aeune) {
 			br.rejectValue("uname", "duplicate", "이미 존재하는 닉네임입니다.");
-			mv.setViewName("/register/step2");
-			return mv;
+			return "/register/step2";
 		} catch(AlreadyExistedUIdException aeuie) {
 			br.rejectValue("uid", "duplicate", "이미 존재하는 아이디입니다.");
-			mv.setViewName("/register/step2");
-			return mv;
+			return "/register/step2";
 		}
 		
-		mv.setViewName("redirect:/");			// 정상적으로 회원가입이 완료되면 메인페이지로 돌아간다.
-		return mv;
+		return "redirect:/";			// 정상적으로 회원가입이 완료되면 메인페이지로 돌아간다.
 	}
 	
 	@RequestMapping("/unregister")
-	public ModelAndView unregister(HttpSession session, HttpServletRequest servletRequest, Authentication auth) {
-		uServ.delete(((AuthInfo)session.getAttribute("authInfo")).getUid());	// 회원 정보 삭제
+	public String unregister(HttpServletRequest servletRequest, Authentication auth) {
 		servletRequest.getSession().invalidate();								// 세션 정보 제거
 		servletRequest.getSession(true);										// 새로운 세션 ID 발급
 		try {
@@ -105,8 +98,6 @@ public class RegisterController {
 		} catch(ServletException se) {
 			;
 		}
-		ModelAndView mv = new ModelAndView();									// 첫 메인 페이지로 리다이렉트
-		mv.setViewName("redirect:/");
-		return mv;
+		return "redirect:/";
 	}
 }

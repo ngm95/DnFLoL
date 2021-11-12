@@ -29,7 +29,10 @@ public class LGroupService {
 	}
 	
 	public LGroupDTO readById(int lgroupId) {
-		return lgroupDao.readById(lgroupId);
+		LGroupDTO lgroupDto = lgroupDao.readById(lgroupId);
+		if (lgroupDto == null)
+			throw new NoSuchGroupException("해당하는 게시물이 없습니다.");
+		return lgroupDto;
 	}
 	
 	public List<LGroupDTO> readAllByOwnerName(String onwerName) {

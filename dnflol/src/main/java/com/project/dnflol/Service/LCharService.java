@@ -8,9 +8,8 @@ import org.springframework.stereotype.Service;
 import com.project.dnflol.DAO.LCharDAO;
 import com.project.dnflol.DTO.LCharDTO;
 import com.project.dnflol.Exception.AlreadyExistedLCharNameException;
-
+import com.project.dnflol.Exception.NoSuchCharException;
 import com.project.dnflol.util.UidAndGroupId;
-
 
 @Service
 public class LCharService {
@@ -30,7 +29,10 @@ public class LCharService {
 	}
 	
 	public LCharDTO readByName(String lcharName) {
-		return lcharDao.readByName(lcharName);
+		LCharDTO lcharDto = lcharDao.readByName(lcharName);
+		if (lcharDto == null)
+			throw new NoSuchCharException("해당하는 LoL 계정이 없습니다.");
+		return lcharDto;
 	}
 	
 	public List<LCharDTO> readAllByUid(String uid) {
@@ -51,6 +53,8 @@ public class LCharService {
 	}
 	
 	public void deleteByName(String lcharName) {
-		lcharDao.deleteByName(lcharName);
+		LCharDTO lcharDto = readByName(lcharName);
+		if (lcharDto != null)
+			lcharDao.deleteByName(lcharName);
 	}
 }

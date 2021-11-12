@@ -9,6 +9,7 @@ import com.project.dnflol.DAO.DApplyDAO;
 import com.project.dnflol.DAO.DGroupDAO;
 import com.project.dnflol.DTO.DApplyDTO;
 import com.project.dnflol.Exception.AlreadyExistedApplyException;
+import com.project.dnflol.Exception.NoSuchApplyException;
 import com.project.dnflol.Exception.TooManyApplyException;
 
 @Service
@@ -38,12 +39,15 @@ public class DApplyService {
 		dapplyDao.createToAccepted(dapplyDto);
 	}
 	
-	public List<DApplyDTO> readAllAcceptedByGroupId(int dgroupId) {
-		return dapplyDao.readAllAcceptedByGroupId(dgroupId);
+	public DApplyDTO read(DApplyDTO dapplyDto) {
+		DApplyDTO apply = dapplyDao.read(dapplyDto);
+		if (apply == null)
+			throw new NoSuchApplyException("해당하는 가입 요청이 없습니다.");
+		return apply;
 	}
 	
-	public DApplyDTO read(DApplyDTO dapplyDto) {
-		return dapplyDao.read(dapplyDto);
+	public List<DApplyDTO> readAllAcceptedByGroupId(int dgroupId) {
+		return dapplyDao.readAllAcceptedByGroupId(dgroupId);
 	}
 	
 	public List<DApplyDTO> readAllByGroupId(int dgroupId) {
@@ -62,6 +66,8 @@ public class DApplyService {
 	}
 	
 	public void delete(DApplyDTO dapplyDto) {
-		dapplyDao.delete(dapplyDto);
+		DApplyDTO apply = read(dapplyDto);
+		if (apply != null)
+			dapplyDao.delete(dapplyDto);
 	}
 }

@@ -30,7 +30,6 @@ public class DGroupService {
 	
 	public DGroupDTO readById(int dgroupId) {
 		DGroupDTO group = dgroupDao.readById(dgroupId);
-		
 		if (group == null)
 			throw new NoSuchGroupException("해당하는 게시물이 없습니다.");
 		

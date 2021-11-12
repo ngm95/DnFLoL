@@ -8,7 +8,6 @@
 <body class="main-pages contents-wrap">
 	<div class="container" style="height: 100%">
 		<%@ include file="/view/includes/03_header.jsp"%>
-
 		<c:if test="${not empty error}">
 			<jsp:include page="/view/includes/errorModal.jsp"></jsp:include>
 		</c:if>

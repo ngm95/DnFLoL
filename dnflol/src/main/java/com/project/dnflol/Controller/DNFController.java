@@ -161,6 +161,136 @@ public class DNFController {
 		return "/dnf/board";
 	}
 	
+	/**
+	 * 게시판 페이지에서 상세정보로 찾기 버튼을 눌렀을 때 이벤트 처리
+	 * 이후 게시판 페이지로 리다이렉트한다.
+	 */
+	@PostMapping("/findBoard")
+	public ModelAndView dnfFindBoard(Model model, @Valid @ModelAttribute("searchForm") LSearchForm form, BindingResult br) {
+		if (form.getCheckRadio().equals("detail"))							// 어떤 옵션을 선택했는지 체크해서 적절한 Service, mapper를 통해 DB 접근을 통해 검색된 글 리스트를 받아 옴
+			dgroupList = dgServ.readAllByDetail(form.getFindDetail());
+		else if (form.getCheckRadio().equals("groupName"))
+			dgroupList = dgServ.readAllByGroupName(form.getFindDetail());
+		else
+			dgroupList = dgServ.readAllByOwnerName(form.getFindDetail());
+		
+		bmm = new BoardMinMax(dgroupList.size());							// 받아 온 글 리스트를 가지고 새로운 bmm객체를 생성
+		
+		model.addAttribute("dgroupList", dgroupList);			
+		model.addAttribute("bmm", bmm);
+
+		ModelAndView mv = new ModelAndView();	
+		mv.setViewName("redirect:/dnf/board/" + bmm.getPaging());		//첫 번째 페이지로 리다이렉트
+		return mv;
+	}
+	
+	@PostMapping(value="/board/newPost")
+	public String newPost(HttpServletRequest request, RedirectAttributes rdAttributes, @Valid @ModelAttribute("post") DGroupDTO dgroupDto, BindingResult br) throws Exception {
+		if (br.hasErrors())													// 필요한 정보가 정한 폼에 맞지 않으면 이전 단계로 돌아감
+			return "redirect:/dnf/board/newPostGET";
+
+		if (dgroupDto.getDgroupOwner() == null)								
+			return "redirect:/dnf/board/newPostGET";
+		
+		if (dgroupDto.getDgroupType() == 1)						// 선택한 게임 타입에 따라 최대 인원수를 정함
+			dgroupDto.setDgroupMax(8);
+		else if (dgroupDto.getDgroupType() == 3)
+			dgroupDto.setDgroupMax(16);
+		else
+			dgroupDto.setDgroupMax(12);
+		
+		try {
+			DCharDTO dcharDto = dcServ.readByNametocid(dgroupDto.getDgroupOwner());
+			String OwnerName= dcharDto.getDcname();
+			dgroupDto.setDgroupOwnerName(OwnerName);
+			DateFormat format = new SimpleDateFormat("yy.MM.dd kk:mm:ss");		// '연.월.일 시간:분:초' 형식으로 시간을 구함
+			String dateStr = format.format(Calendar.getInstance().getTime());
+			dgroupDto.setDgroupDate(dateStr);
+
+			dgServ.create(dgroupDto);											// DB접근을 통해 게시글 생성 
+			
+			int dgroupId = dgServ.readDgroupId(dgroupDto);					// 생성한 게시글의 고유 번호를 받아 옴
+			
+			DApplyDTO ownerApply = new DApplyDTO(dgroupDto.getDgroupOwner(), dgroupDto.getDgroupOwnerName(), dgroupId, dgroupDto.getDgroupName());
+			daServ.createToAccepted(ownerApply);								// 게시물을 생성한 사람을 수락 상태로 초대 추가함
+			
+			return "redirect:/dnf/boardDetail/" + dgroupId;						// 생성한 게시글로 리다이렉트
+		} catch(Exception e) {
+			rdAttributes.addFlashAttribute("error", e);
+			return "redirect:" + request.getHeader("Referer");
+		}
+	}
+	
+	@GetMapping("/board/delete/{dgroupId}")
+	public String deletePost(HttpServletRequest request, RedirectAttributes rdAttributes, Model model, @PathVariable("dgroupId") int dgroupId) {
+		if (((String)model.getAttribute("ownerUid")).equals(((AuthInfo)model.getAttribute("authInfo")).getUid())) {
+			rdAttributes.addFlashAttribute("error", new Exception("작성한 계정과 달라 삭제할 수 없습니다."));
+			return "redirect:/lol/board";
+		}
+		
+		try {
+			dgServ.deleteById(dgroupId);		
+		} catch(NoSuchGroupException nsge) {
+			rdAttributes.addFlashAttribute("error", nsge);
+			return "redirect:/lol/board";
+		}
+		rdAttributes.addFlashAttribute("error", new Exception("삭제에 성공했습니다"));
+		return "redirect:/lol/board";
+	}
+	
+	/**
+	 * 그룹의 세부 정보를 보여주는 페이지
+	 * - 그룹 생성자와 현재까지의 멤버 목록을 보여줌
+	 * - 그룹 멤버를 클릭하면 그 멤버의 세부 전적/티어를 볼 수 있는 페이지로 이동
+	 * - 페이지 하단에는 메인 게시판으로 되돌아가는 버튼과 신청 페이지로 이동할 수 있는 버튼이 존재
+	 */
+	@RequestMapping("/boardDetail/{dgroupId}")
+	public String dnfGroupBoardDetail(Model model, HttpServletRequest request, RedirectAttributes rdAttributes, @PathVariable(value="dgroupId") int dgroupId) {
+		DGroupDTO dgroupDto = null;
+		try {
+			dgroupDto = dgServ.readById(dgroupId);										// 게시글 세부 정보
+		} catch (NoSuchGroupException nsge) {
+			rdAttributes.addFlashAttribute("error", nsge);
+			return "redirect:/lol/board";
+		}
+		
+		List<DApplyDTO> acceptedList = daServ.readAllAcceptedByGroupId(dgroupId);				// 수락된 멤버 목록
+		model.addAttribute("dgroupDto", dgroupDto);
+		model.addAttribute("acceptedList", acceptedList);
+
+		List<DCharDTO> myAppliedChars = dcServ.readAllAppliedByUid(((AuthInfo)model.getAttribute("authInfo")).getUid(), dgroupId);			// 내 LOL 계정 중 해당 게시글에 이미 신청한 계정
+		List<DCharDTO> myNotAppliedChars = dcServ.readAllNotAppliedByUid(((AuthInfo)model.getAttribute("authInfo")).getUid(), dgroupId);	// 내 LOL 계정 중 해당 게시글에 아직 신청하지 않은 계정
+		model.addAttribute("myAppliedChars", myAppliedChars);
+		model.addAttribute("myNotAppliedChars", myNotAppliedChars);
+		
+		try {
+			DCharDTO dcharDto = dcServ.readByName(dgroupDto.getDgroupOwnerName());
+			model.addAttribute("ownerUid", dcharDto.getUid());
+			return "/dnf/boardDetail";
+		} catch (NoSuchCharException nsce) {
+			rdAttributes.addFlashAttribute("error", nsce);
+			return "redirect:/lol/board";
+		}
+	}
+	
+	/**
+	 * 그룹 신청 페이지에서 아이디를 클릭하면 신청을 넣고 게시판 페이지로 돌아감
+	 */
+	@PostMapping("/submit")
+	public String dnfSubmitToGroup(Model model, HttpServletRequest request, RedirectAttributes rdAttributes, HttpSession session, @Valid @ModelAttribute("applyForm") DApplyDTO dapplyDto, BindingResult br) {
+		if (br.hasErrors()) {
+			return "redirect:/dnf/board";
+		}
+		try {
+			daServ.create(dapplyDto);						// DB접근을 통해 신청 정보 생성
+		} catch(AlreadyExistedApplyException leae) {
+			rdAttributes.addFlashAttribute("error", leae);
+			return "redirect:" + request.getHeader("Referer");
+		}
+		
+		return "redirect:/dnf/boardDetail/" + dapplyDto.getDgroupId();
+	}
+	
 	@GetMapping("/findcharacter")
 	public ModelAndView findcharacter(Model model) {
 		ModelAndView mv = new ModelAndView();
@@ -210,124 +340,14 @@ public class DNFController {
 	}
 	
 	@GetMapping("/deletecharacter/{characterName}")
-	public String deletecharacter(@PathVariable(value="characterName") String characterName) {
-		dcServ.deleteByName(characterName);				// DB에서 해당 던 캐릭터 삭제
-		return "redirect:/user/myPage";				// 마이페이지로 리다이렉트
-	}
-	
-	/**
-	 * 게시판 페이지에서 상세정보로 찾기 버튼을 눌렀을 때 이벤트 처리
-	 * 이후 게시판 페이지로 리다이렉트한다.
-	 */
-	@PostMapping("/findBoard")
-	public ModelAndView dnfFindBoard(Model model, @Valid @ModelAttribute("searchForm") LSearchForm form, BindingResult br) {
-		if (form.getCheckRadio().equals("detail"))							// 어떤 옵션을 선택했는지 체크해서 적절한 Service, mapper를 통해 DB 접근을 통해 검색된 글 리스트를 받아 옴
-			dgroupList = dgServ.readAllByDetail(form.getFindDetail());
-		else if (form.getCheckRadio().equals("groupName"))
-			dgroupList = dgServ.readAllByGroupName(form.getFindDetail());
-		else
-			dgroupList = dgServ.readAllByOwnerName(form.getFindDetail());
-		
-		bmm = new BoardMinMax(dgroupList.size());							// 받아 온 글 리스트를 가지고 새로운 bmm객체를 생성
-		
-		model.addAttribute("dgroupList", dgroupList);			
-		model.addAttribute("bmm", bmm);
-
-		ModelAndView mv = new ModelAndView();	
-		mv.setViewName("redirect:/dnf/board/" + bmm.getPaging());		//첫 번째 페이지로 리다이렉트
-		return mv;
-	}
-
-	@PostMapping(value="/board/newPost")
-	public String newPost(@Valid @ModelAttribute("post") DGroupDTO dgroupDto, BindingResult br) throws Exception {
-		if (br.hasErrors())													// 필요한 정보가 정한 폼에 맞지 않으면 이전 단계로 돌아감
-			return "redirect:/dnf/board/newPostGET";
-
-		if (dgroupDto.getDgroupOwner() == null)								
-			return "redirect:/dnf/board/newPostGET";
-		
-		if (dgroupDto.getDgroupType() == 1)						// 선택한 게임 타입에 따라 최대 인원수를 정함
-			dgroupDto.setDgroupMax(8);
-		else if (dgroupDto.getDgroupType() == 3)
-			dgroupDto.setDgroupMax(16);
-		else
-			dgroupDto.setDgroupMax(12);
-		DCharDTO dcharDto = dcServ.readByNametocid(dgroupDto.getDgroupOwner());
-		String OwnerName= dcharDto.getDcname();
-		dgroupDto.setDgroupOwnerName(OwnerName);
-		DateFormat format = new SimpleDateFormat("yy.MM.dd kk:mm:ss");		// '연.월.일 시간:분:초' 형식으로 시간을 구함
-		String dateStr = format.format(Calendar.getInstance().getTime());
-		dgroupDto.setDgroupDate(dateStr);
-
-		dgServ.create(dgroupDto);											// DB접근을 통해 게시글 생성 
-		
-		int dgroupId = dgServ.readDgroupId(dgroupDto);					// 생성한 게시글의 고유 번호를 받아 옴
-		
-		DApplyDTO ownerApply = new DApplyDTO(dgroupDto.getDgroupOwner(), dgroupDto.getDgroupOwnerName(), dgroupId, dgroupDto.getDgroupName());
-		daServ.createToAccepted(ownerApply);								// 게시물을 생성한 사람을 수락 상태로 초대 추가함
-		
-		return "redirect:/dnf/boardDetail/" + dgroupId;						// 생성한 게시글로 리다이렉트
-	}
-
-	/**
-	 * 그룹의 세부 정보를 보여주는 페이지
-	 * - 그룹 생성자와 현재까지의 멤버 목록을 보여줌
-	 * - 그룹 멤버를 클릭하면 그 멤버의 세부 전적/티어를 볼 수 있는 페이지로 이동
-	 * - 페이지 하단에는 메인 게시판으로 되돌아가는 버튼과 신청 페이지로 이동할 수 있는 버튼이 존재
-	 */
-	@RequestMapping("/boardDetail/{dgroupId}")
-	public String dnfGroupBoardDetail(Model model, HttpServletRequest request, RedirectAttributes rdAttributes, @PathVariable(value="dgroupId") int dgroupId) {
-		DGroupDTO dgroupDto = null;
+	public String deletecharacter(HttpServletRequest request, RedirectAttributes rdAttributes, @PathVariable(value="characterName") String characterName) {
 		try {
-			dgroupDto = dgServ.readById(dgroupId);										// 게시글 세부 정보
-		} catch (NoSuchGroupException nsge) {
-			rdAttributes.addFlashAttribute("error", nsge);
-			return "redirect:/lol/board";
-		}
-		
-		List<DApplyDTO> acceptedList = daServ.readAllAcceptedByGroupId(dgroupId);				// 수락된 멤버 목록
-		model.addAttribute("dgroupDto", dgroupDto);
-		model.addAttribute("acceptedList", acceptedList);
-
-		List<DCharDTO> myAppliedChars = dcServ.readAllAppliedByUid(((AuthInfo)model.getAttribute("authInfo")).getUid(), dgroupId);			// 내 LOL 계정 중 해당 게시글에 이미 신청한 계정
-		List<DCharDTO> myNotAppliedChars = dcServ.readAllNotAppliedByUid(((AuthInfo)model.getAttribute("authInfo")).getUid(), dgroupId);	// 내 LOL 계정 중 해당 게시글에 아직 신청하지 않은 계정
-		model.addAttribute("myAppliedChars", myAppliedChars);
-		model.addAttribute("myNotAppliedChars", myNotAppliedChars);
-		
-		DCharDTO dcharDto = dcServ.readByName(dgroupDto.getDgroupOwnerName());
-		model.addAttribute("ownerUid", dcharDto.getUid());
-		
-		return "/dnf/boardDetail";
-	}
-	
-	@GetMapping("/board/delete/{dgroupId}")
-	public String deletePost(HttpServletRequest request, RedirectAttributes rdAttributes, @PathVariable("dgroupId") int dgroupId) {
-		try {
-			dgServ.deleteById(dgroupId);		
-		} catch(NoSuchGroupException nsge) {
-			rdAttributes.addFlashAttribute("error", nsge);
-			return "redirect:/lol/board";
-		}
-		rdAttributes.addFlashAttribute("error", new Exception("삭제에 성공했습니다"));
-		return "redirect:/lol/board";
-	}
-	
-	/**
-	 * 그룹 신청 페이지에서 아이디를 클릭하면 신청을 넣고 게시판 페이지로 돌아감
-	 */
-	@PostMapping("/submit")
-	public String dnfSubmitToGroup(Model model, HttpServletRequest request, RedirectAttributes rdAttributes, HttpSession session, @Valid @ModelAttribute("applyForm") DApplyDTO dapplyDto, BindingResult br) {
-		if (br.hasErrors()) {
-			return "redirect:/dnf/board";
-		}
-		try {
-			daServ.create(dapplyDto);						// DB접근을 통해 신청 정보 생성
-		} catch(AlreadyExistedApplyException leae) {
-			rdAttributes.addFlashAttribute("error", leae);
+			dcServ.deleteByName(characterName);				// DB에서 해당 던 캐릭터 삭제
+		} catch (NoSuchCharException nsce) {
+			rdAttributes.addFlashAttribute("error", nsce);
 			return "redirect:" + request.getHeader("Referer");
 		}
-		
-		return "redirect:/dnf/boardDetail/" + dapplyDto.getDgroupId();
+		return "redirect:/user/myPage";				// 마이페이지로 리다이렉트
 	}
 	
 	/**

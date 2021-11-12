@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.project.dnflol.DAO.DCharDAO;
 import com.project.dnflol.DTO.DCharDTO;
 import com.project.dnflol.Exception.AlreadyExistedLCharNameException;
+import com.project.dnflol.Exception.NoSuchCharException;
 import com.project.dnflol.util.UidAndGroupId;
 
 @Service
@@ -27,16 +28,18 @@ public class DCharService {
 			throw new AlreadyExistedLCharNameException(dcharDto.getDcname() + "는 이미 다른 계정과 연동되어 있습니다.");
 	}
 	
-	public DCharDTO readById(String dcharId) {
-		return dcharDao.readById(dcharId);
-	}
-	
-	public DCharDTO readByName(String dcharName) {
-		return dcharDao.readByName(dcharName);
+	public DCharDTO readByName(String dcname) {
+		DCharDTO dcharDto = dcharDao.readByName(dcname);
+		if (dcharDto == null)
+			throw new NoSuchCharException("해당하는 DnF 캐릭터가 없습니다.");
+		return dcharDto; 
 	}
 	
 	public DCharDTO readByNametocid(String dcharId) {
-		return dcharDao.readByNametocid(dcharId);
+		DCharDTO dcharDto = dcharDao.readByNametocid(dcharId);
+		if (dcharDto == null)
+			throw new NoSuchCharException("해당하는 DnF 캐릭터가 없습니다.");
+		return dcharDto; 
 	}
 	
 	public List<DCharDTO> readAllByUid(String uid) {
@@ -60,11 +63,9 @@ public class DCharService {
 		return dcharDao.readAllAppliedByGroupId(dgroupId);
 	}
 	
-	public void deleteById(String dcharId) {
-		dcharDao.deleteById(dcharId);
-	}
-	
-	public void deleteByName(String dcharName) {
-		dcharDao.deleteByName(dcharName);
+	public void deleteByName(String dcname) {
+		DCharDTO dcharDto = readByName(dcname);
+		if (dcharDto != null)
+			dcharDao.deleteByName(dcname);
 	}
 }

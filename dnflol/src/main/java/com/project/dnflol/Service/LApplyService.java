@@ -9,6 +9,7 @@ import com.project.dnflol.DAO.LApplyDAO;
 import com.project.dnflol.DAO.LGroupDAO;
 import com.project.dnflol.DTO.LApplyDTO;
 import com.project.dnflol.Exception.AlreadyExistedApplyException;
+import com.project.dnflol.Exception.NoSuchApplyException;
 import com.project.dnflol.Exception.TooManyApplyException;
 
 @Service
@@ -39,7 +40,10 @@ public class LApplyService {
 	}
 	
 	public LApplyDTO read(LApplyDTO lapplyDto) {
-		return lapplyDao.read(lapplyDto);
+		LApplyDTO apply = lapplyDao.read(lapplyDto);
+		if (apply == null)
+			throw new NoSuchApplyException("해당하는 가입 요청이 없습니다.");
+		return apply;
 	}
 	
 	public List<LApplyDTO> readAllAcceptedByGroupId(int lgroupId) {
@@ -57,10 +61,13 @@ public class LApplyService {
 	public void updateResult(LApplyDTO lapplyDto) {
 		if (lapplyDto.getLapplyResult().equals("ACCEPTED") && lapplyDao.readAcceptedCountByGroupId(lapplyDto.getLgroupId()) >= lgroupDao.readGroupMaxByGroupId(lapplyDto.getLgroupId()))
 			throw new TooManyApplyException("이미 모든 자리가 다 찼습니다.");
+		
 		lapplyDao.updateLapplyResult(lapplyDto);
 	}
 	
 	public void delete(LApplyDTO lapplyDto) {
-		lapplyDao.delete(lapplyDto);
+		LApplyDTO apply = read(lapplyDto);
+		if (apply != null)
+			lapplyDao.delete(lapplyDto);
 	}
 }

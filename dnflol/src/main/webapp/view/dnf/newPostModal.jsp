@@ -8,7 +8,7 @@
 		<div class="modal-content">
 			<div class="modal-header">
 				<h5 class="modal-title">새로운 글 작성</h5>
-				<button type="button" class="btn-close" data-dismiss="modal"></button>
+				<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
 			</div>
 			<c:choose>
 				<c:when test="${empty mydnfChars}">
