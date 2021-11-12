@@ -74,5 +74,10 @@
 		DELETE FROM DChar
 		WHERE dcname = #{dcname}
 	</delete>
+	
+	<delete id="deleteById">
+		DELETE FROM DChar
+		WHERE dcharId = #{dcharId}
+	</delete>
 
 </mapper>

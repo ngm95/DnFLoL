@@ -60,7 +60,7 @@
 						<div class="row row-cols-6">
 							<c:forEach var="accepted" items="${acceptedList}">
 								<div class="col-6 col-md-4">
-									<button class="btn btn-info" onclick="location.href='/dnf/charDetail/${accepted.dcharName}'">${accepted.dcharName}</button>
+									<button class="btn btn-info" onclick="location.href='/dnf/charDetail/${accepted.dcharId}'">${accepted.dcname}</button>
 								</div>
 							</c:forEach>
 						</div>

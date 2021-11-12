@@ -31,6 +31,8 @@ import org.springframework.web.servlet.ModelAndView;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.dnflol.DTO.DAdventureDTO;
+import com.project.dnflol.DTO.TimeLineDTO;
+import com.project.dnflol.DTO.TimeLineDataDTO;
 import com.project.dnflol.DTO.DApplyDTO;
 import com.project.dnflol.DTO.DCharDTO;
 import com.project.dnflol.DTO.DGroupDTO;
@@ -193,9 +195,9 @@ public class DNFController {
 		return "redirect:/user/myPage";				// 마이페이지로 리다이렉트
 	}
 	
-	@GetMapping("/deletecharacter/{characterName}")
-	public String deletecharacter(@PathVariable(value="characterName") String characterName) {
-		dcServ.deleteByName(characterName);				// DB에서 해당 던 캐릭터 삭제
+	@GetMapping("/deletecharacter/{dcharId}")
+	public String deletecharacter(@PathVariable(value="dcharId") String dcharId) {
+		dcServ.deleteById(dcharId);				// DB에서 해당 던 캐릭터 삭제
 		return "redirect:/user/myPage";				// 마이페이지로 리다이렉트
 	}
 	
@@ -306,14 +308,56 @@ public class DNFController {
 	/**
 	 * 계정 전적 정보를 볼 수 있는 페이지
 	 */
-	@RequestMapping("/charDetail/{dcname}")
-	public ModelAndView dnfCharDetail(Model model, @PathVariable("dcname") String dcname) {
+	@GetMapping("/test")
+	public ModelAndView lolFindSummoner(HttpSession session) {
+		String requestURL = "https://api.neople.co.kr/df/servers/siroco/characters/fb2eabeab87124585a54a48356cc02c3/timeline?limit=100&code=201,507&apikey=VdItQKfKUZWekekAag0O6i7vxRhE9TMs";
+							
+		ModelAndView mv = new ModelAndView();
+		DAdventureDTO summonerDto = null;
+		try {
+			HttpClient client = HttpClientBuilder.create().build();
+			HttpGet getRequest = new HttpGet(requestURL);
+			HttpResponse response = client.execute(getRequest);
+			/*
+			 * 기본적인 계정 정보를 받아옴
+			 */
+			if (response.getStatusLine().getStatusCode() == 200) {
+				ResponseHandler<String> handler = new BasicResponseHandler();
+				String body = handler.handleResponse(response);
+				//body = body.substring(9,body.length());
+				//body.indexOf
+				
+				body = body.substring(body.indexOf("rows")+6,body.length()-2);
+				System.out.print(body);
+				objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+				List<TimeLineDTO> timeline = objectMapper.readValue(body, objectMapper.getTypeFactory().constructCollectionType(List.class, TimeLineDTO.class));
+				//summonerDto = objectMapper.readValue(body, DAdventureDTO.class);	// json을 SummonerDTO로 바꿈
+				session.setAttribute("result", timeline);
+				/*
+				for (TimeLineDTO ele : timeline) {
+					 ele.getData();
+				}*/
+				//LCharDTO lcharDto = new LCharDTO(((AuthInfo)session.getAttribute("authInfo")).getUid(), summonerDto.getName());
+				//lcServ.create(lcharDto);										// 아이디를 계정에 연동
+			}
+		} catch(Exception e) {
+			session.setAttribute("linked", false);
+			mv.setViewName("redirect:/secrity/denied");
+			return mv;
+		}
+		
+		session.setAttribute("linked", true);
+		mv.setViewName("/dnf/test");					// 이전 상태로 되돌아감
+		return mv;
+	}
+	@RequestMapping("/charDetail/{dcharId}")
+	public ModelAndView dnfCharDetail(Model model, @PathVariable("dcharId") String dcharId) {
 		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 		
-		DCharDTO dcharDto = dcServ.readByName(dcname);
+		DCharDTO dcharDto = dcServ.readByNametocid(dcharId);
 		model.addAttribute("dcharDto", dcharDto);
 		
-		String url = "?api_key=" + api.getDNF_API_KEY();
+		String url ="https://api.neople.co.kr/df/servers/"+dcharDto.getDcserver()+"/characters/"+dcharDto.getDcharId() +"/timeline?limit=100&code=201&apikey=" + api.getDNF_API_KEY();
 		
 		try {
 			HttpClient client = HttpClientBuilder.create().build();
@@ -324,10 +368,40 @@ public class DNFController {
 				ResponseHandler<String> handler = new BasicResponseHandler();
 				String body = handler.handleResponse(response);
 				
+
+				body = body.substring(body.indexOf("rows")+6,body.length()-2);
+
+				objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+				List<TimeLineDTO> timeline = objectMapper.readValue(body, objectMapper.getTypeFactory().constructCollectionType(List.class, TimeLineDTO.class));
+				
+				model.addAttribute("result", timeline);
+				
+				
+				/*
+				 * body를 다듬어서 원하는 부분만 가져옴
+				 */
+				body=body.substring(0, body.length()-1);
+				body = body.replaceAll("}}", "}}}]");
+				String[] asdf=body.split("}],");
+
+				String tmp="[";
+				for(int i =0;i<asdf.length-2;i++) {
+				
+				tmp +=asdf[i].substring(asdf[i].indexOf("data")+6,asdf[i].length()-1)+",";
+	
+				}
+				
+				tmp = tmp.substring(0, tmp.length()-1);
+				tmp+= "]";
+
+				List<TimeLineDataDTO> dataList = objectMapper.readValue(tmp, objectMapper.getTypeFactory().constructCollectionType(List.class, TimeLineDataDTO.class));
+
+				System.out.print(dataList+"\n");
+				model.addAttribute("dataresult", dataList);
 				
 				// -- 캐릭터의 상세 정보를 담아서 model에 넣음 --
 			}
-			//asdf
+			
 			
 		} catch(Exception e) {
 			model.addAttribute("exception", e);

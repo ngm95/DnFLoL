@@ -31,8 +31,8 @@ public class DApplyDAO {
 		return template.selectList(MAPPER + ".readAllMyApply", uid);
 	}
 	
-	public void updateLapplyResult(DApplyDTO dapplyDto) {
-		template.update(MAPPER + ".updatedapplyResult", dapplyDto);
+	public void updateDapplyResult(DApplyDTO dapplyDto) {
+		template.update(MAPPER + ".updateDapplyResult", dapplyDto);
 	}
 	
 	public void delete(DApplyDTO dapplyDto) {

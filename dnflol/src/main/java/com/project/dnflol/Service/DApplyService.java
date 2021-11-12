@@ -38,7 +38,7 @@ public class DApplyService {
 	}
 	
 	public void updateResult(DApplyDTO dapplyDto) {
-		dapplyDao.updateLapplyResult(dapplyDto);
+		dapplyDao.updateDapplyResult(dapplyDto);
 	}
 	
 	public void delete(DApplyDTO dapplyDto) {

@@ -36,17 +36,17 @@
 												   WHERE dgroupOwner IN (SELECT dcharId
 																		 FROM DChar, User
 																		 WHERE DChar.uid = User.uid And user.uid = #{uid}))
-		ORDER BY DapplyId DESC
+		ORDER BY dapplyId DESC
 	</select>
 	
-	<update id="updatelapplyResult">
+	<update id="updateDapplyResult">
 		UPDATE DApply
 		SET dapplyResult = #{dapplyResult}
 		WHERE dapplyId = #{dapplyId} AND dgroupId = #{dgroupId}
 	</update>
 	
 	<delete id="delete">
-		DELETE FROM DApply
+		DELETE FROM DApply 
 		WHERE dapplyId = #{dapplyId} AND dgroupId = #{dgroupId}
 	</delete>
 
