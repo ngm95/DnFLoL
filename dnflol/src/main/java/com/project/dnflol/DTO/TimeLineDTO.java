@@ -7,7 +7,9 @@ public class TimeLineDTO {
 	int code;
 	String name;
 	String date;
-	GameData data;
+	//String data;
+	
+	/*
 	@Data
 	private class GameData {
 		String itemId;
@@ -17,10 +19,10 @@ public class TimeLineDTO {
 		String phaseName;
 		String hard;
 		
-		public String toString() {
-			return itemId + ", " + itemName;
+		public void setitemName(String itemName) {
+			
 		}
 	}
-
+*/
 
 }

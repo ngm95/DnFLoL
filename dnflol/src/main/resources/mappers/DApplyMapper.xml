@@ -56,7 +56,7 @@
 												   WHERE dgroupOwner IN (SELECT dcharId
 																		 FROM DChar, User
 																		 WHERE DChar.uid = User.uid And user.uid = #{uid}))
-		ORDER BY DapplyId DESC
+		ORDER BY dapplyId DESC
 	</select>
 	
 	<select id="readAllAcceptedByGroupId" resultType="com.project.dnflol.DTO.DApplyDTO">
@@ -65,14 +65,14 @@
 		WHERE DApply.dgroupId = DGroup.dgroupId AND DGroup.dgroupId = #{dgroupId} AND dapplyResult = 'ACCEPTED'
 	</select>
 	
-	<update id="updatedapplyResult">
+	<update id="updateDapplyResult">
 		UPDATE DApply
 		SET dapplyResult = #{dapplyResult}
 		WHERE dapplyId = #{dapplyId} AND dgroupId = #{dgroupId}
 	</update>
 	
 	<delete id="delete">
-		DELETE FROM DApply
+		DELETE FROM DApply 
 		WHERE dapplyId = #{dapplyId} AND dgroupId = #{dgroupId}
 	</delete>
 
