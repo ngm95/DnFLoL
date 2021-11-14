@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -152,9 +153,11 @@ public class LOLController {
 	}
 	
 	@RequestMapping("/board/{page}")
-	public String lolBoardPaging(Model model, @PathVariable("page") int page) {
-		if (bmm.getLimit() - page*10 < -10)												// URL로 비활성화된 페이지로 접근하면 다시 첫 페이지로 이동하도록 함
+	public String lolBoardPaging(RedirectAttributes rdAttributes, Model model, @PathVariable("page") int page) {
+		if (bmm.getLimit() - page*10 < -10)	{											// URL로 비활성화된 페이지로 접근하면 다시 첫 페이지로 이동하도록 함
+			rdAttributes.addFlashAttribute("error", new Exception("존재하지 않는 게시글 페이지입니다."));
 			return "redirect:/lol/board/" + bmm.getPaging();	
+		}
 
 		int startIdx = bmm.getMin()+(page-1)*10;										// 현재 페이지에서 볼 수 있는 글의 시작, 끝 인덱스 계산
 		int endIdx = Math.min(bmm.getLimit(), startIdx+10);
@@ -222,10 +225,10 @@ public class LOLController {
 		}
 	}
 
-	@GetMapping("/board/delete/{lgroupId}")
-	public String deletePost(HttpServletRequest request, RedirectAttributes rdAttributes, @PathVariable("lgroupId") int lgroupId, Model model) {
-		if (((String)model.getAttribute("ownerUid")).equals(((AuthInfo)model.getAttribute("authInfo")).getUid())) {
-			rdAttributes.addFlashAttribute("error", new Exception("작성한 계정과 달라 삭제할 수 없습니다."));
+	@PostMapping("/board/delete")
+	public String deletePost(HttpServletRequest request, RedirectAttributes rdAttributes, Model model, @RequestParam("lgroupId") int lgroupId, @RequestParam("ownerUid") String ownerUid) {
+		if (!ownerUid.equals(((AuthInfo)model.getAttribute("authInfo")).getUid())) {
+			rdAttributes.addFlashAttribute("error", new Exception("현재 계정과 작성한 계정이 달라 삭제할 수 없습니다."));
 			return "redirect:/lol/board";
 		}
 		
@@ -356,8 +359,8 @@ public class LOLController {
 		return "redirect:/user/myPage";				// 마이페이지로 리다이렉트
 	}
 	
-	@GetMapping("/deleteSummoner/{lcharName}")
-	public String deleteSummoner(HttpServletRequest request, RedirectAttributes rdAttributes, @PathVariable(value="lcharName") String lcharName) {
+	@PostMapping("/deleteSummoner")
+	public String deleteSummoner(HttpServletRequest request, RedirectAttributes rdAttributes, @RequestParam(value="lcharName") String lcharName) {
 		try {
 			lcServ.deleteByName(lcharName);				// DB에서 해당 LOL 계정 삭제
 		} catch(NoSuchCharException nsce) {
@@ -400,7 +403,6 @@ public class LOLController {
 				ResponseHandler<String> handler = new BasicResponseHandler();
 				String body = handler.handleResponse(response);
 				summonerDto = objectMapper.readValue(body, SummonerDTO.class);		// JSON 응답을 DTO로 바꾸는 작업
-				System.out.println(summonerDto);
 				
 				/*
 				 * 계정의 티어를 받아옴
@@ -430,7 +432,6 @@ public class LOLController {
 						handler = new BasicResponseHandler();
 						body = handler.handleResponse(response);
 						List<String> matches = Arrays.asList(body.substring(2, body.length()-2).split("\",\""));	// match_id의 배열을 리스트 형태로 변환
-						System.out.println("matches " + body);
 						
 						List<ParticipantDTO> rankQ = new ArrayList<>();		// 랭크 게임 정보
 						List<ParticipantDTO> normalQ = new ArrayList<>();	// 일반 게임 정보
@@ -581,8 +582,8 @@ public class LOLController {
 		return "/lol/charDetail";		
 	}
 	
-	@RequestMapping("/acceptApply/{lapplyId}&{lgroupId}")
-	public String acceptApply(HttpServletRequest request, RedirectAttributes rdAttributes, @PathVariable("lapplyId") int lapplyId, @PathVariable("lgroupId") int lgroupId) {
+	@PostMapping("/acceptApply")
+	public String acceptApply(HttpServletRequest request, RedirectAttributes rdAttributes, @RequestParam("lapplyId") int lapplyId, @RequestParam("lgroupId") int lgroupId) {
 		LApplyDTO applyForm = new LApplyDTO(lapplyId, lgroupId, "ACCEPTED");
 		try {
 			laServ.updateResult(applyForm);
@@ -592,10 +593,10 @@ public class LOLController {
 		return "redirect:" + request.getHeader("Referer");
 	}
 	
-	@RequestMapping("/denyApply/{lapplyId}&{lgroupId}")
-	public String denyApply(HttpServletRequest request, RedirectAttributes rdAttributes, @PathVariable("lapplyId") int lapplyId, @PathVariable("lgroupId") int lgroupId) {
+	@PostMapping("/denyApply")
+	public String denyApply(HttpServletRequest request, RedirectAttributes rdAttributes, @RequestParam("lapplyId") int lapplyId, @RequestParam("lgroupId") int lgroupId) {
 		LApplyDTO applyForm = new LApplyDTO(lapplyId, lgroupId, "DENIED");
-		laServ.updateResult(applyForm);
+		laServ.delete(applyForm);
 		return "redirect:" + request.getHeader("Referer");
 	}
 }

@@ -27,6 +27,12 @@
 		WHERE lcharName = #{lcharName} AND lgroupId = #{lgroupId}
 	</select>
 	
+	<select id="readById" resultType="com.project.dnflol.DTO.LApplyDTO">
+		SELECT *
+		FROM LApply
+		WHERE lapplyId = #{lapplyId}
+	</select>
+	
 	<select id="readAcceptedCountByGroupId" resultType="int">
 		SELECT Count(*)
 		FROM LGroup, LApply

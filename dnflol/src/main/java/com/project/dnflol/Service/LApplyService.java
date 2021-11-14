@@ -40,7 +40,16 @@ public class LApplyService {
 	}
 	
 	public LApplyDTO read(LApplyDTO lapplyDto) {
+		System.out.println(lapplyDto);
+		
 		LApplyDTO apply = lapplyDao.read(lapplyDto);
+		if (apply == null)
+			throw new NoSuchApplyException("해당하는 가입 요청이 없습니다.");
+		return apply;
+	}
+	
+	public LApplyDTO readById(int lapplyId) {
+		LApplyDTO apply = lapplyDao.readById(lapplyId);
 		if (apply == null)
 			throw new NoSuchApplyException("해당하는 가입 요청이 없습니다.");
 		return apply;
@@ -66,8 +75,11 @@ public class LApplyService {
 	}
 	
 	public void delete(LApplyDTO lapplyDto) {
-		LApplyDTO apply = read(lapplyDto);
-		if (apply != null)
+		try {
+			readById(lapplyDto.getLapplyId());
 			lapplyDao.delete(lapplyDto);
+		} catch (NoSuchApplyException nsae) {
+			throw nsae;
+		}
 	}
 }

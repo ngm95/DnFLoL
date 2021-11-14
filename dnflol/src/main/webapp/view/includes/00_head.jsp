@@ -16,3 +16,5 @@
 	<script src="/js/errorModal.js"></script>
 </c:if>
 
+<meta name="csrf_parameterName" content="${_csrf.parameterName}"/>
+<meta name="csrf_token" content="${_csrf.token}"/>

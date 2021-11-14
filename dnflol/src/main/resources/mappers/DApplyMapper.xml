@@ -27,6 +27,12 @@
 		WHERE dcharId = #{dcharId} AND dgroupId = #{dgroupId}
 	</select>
 	
+	<select id="readById" resultType="com.project.dnflol.DTO.DApplyDTO">
+		SELECT *
+		FROM DApply
+		WHERE dapplyId = #{dapplyId}
+	</select>
+	
 	<select id="readAcceptedCountByGroupId" resultType="int">
 		SELECT Count(*)
 		FROM DGroup, DApply

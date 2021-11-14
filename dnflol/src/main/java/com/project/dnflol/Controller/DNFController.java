@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -221,10 +222,10 @@ public class DNFController {
 		}
 	}
 	
-	@GetMapping("/board/delete/{dgroupId}")
-	public String deletePost(HttpServletRequest request, RedirectAttributes rdAttributes, Model model, @PathVariable("dgroupId") int dgroupId) {
-		if (((String)model.getAttribute("ownerUid")).equals(((AuthInfo)model.getAttribute("authInfo")).getUid())) {
-			rdAttributes.addFlashAttribute("error", new Exception("작성한 계정과 달라 삭제할 수 없습니다."));
+	@PostMapping("/board/delete")
+	public String deletePost(HttpServletRequest request, RedirectAttributes rdAttributes, Model model, @RequestParam("dgroupId") int dgroupId, @RequestParam("ownerUid") String ownerUid) {
+		if (!ownerUid.equals(((AuthInfo)model.getAttribute("authInfo")).getUid())) {
+			rdAttributes.addFlashAttribute("error", new Exception("현재 계정과 작성한 계정이 달라 삭제할 수 없습니다."));
 			return "redirect:/lol/board";
 		}
 		
@@ -339,8 +340,8 @@ public class DNFController {
 		return "redirect:/user/myPage";				// 마이페이지로 리다이렉트
 	}
 	
-	@GetMapping("/deletecharacter/{characterName}")
-	public String deletecharacter(HttpServletRequest request, RedirectAttributes rdAttributes, @PathVariable(value="characterName") String characterName) {
+	@PostMapping("/deletecharacter")
+	public String deletecharacter(HttpServletRequest request, RedirectAttributes rdAttributes, @RequestParam(value="characterName") String characterName) {
 		try {
 			dcServ.deleteByName(characterName);				// DB에서 해당 던 캐릭터 삭제
 		} catch (NoSuchCharException nsce) {
@@ -388,8 +389,8 @@ public class DNFController {
 		return "/dnf/charDetail";	
 	}
 	
-	@RequestMapping("/acceptApply/{dapplyId}&{dgroupId}")
-	public String acceptApply(HttpServletRequest request, RedirectAttributes rdAttributes, @PathVariable("dapplyId") int dapplyId, @PathVariable("dgroupId") int dgroupId) {
+	@PostMapping("/acceptApply")
+	public String acceptApply(HttpServletRequest request, RedirectAttributes rdAttributes, @RequestParam("dapplyId") int dapplyId, @RequestParam("dgroupId") int dgroupId) {
 		DApplyDTO applyForm = new DApplyDTO(dapplyId, dgroupId, "ACCEPTED");
 		try {
 			daServ.updateResult(applyForm);
@@ -399,10 +400,10 @@ public class DNFController {
 		return "redirect:" + request.getHeader("Referer");
 	}
 	
-	@RequestMapping("/denyApply/{dapplyId}&{dgroupId}")
-	public String denyApply(HttpServletRequest request, RedirectAttributes rdAttributes, @PathVariable("dapplyId") int dapplyId, @PathVariable("dgroupId") int dgroupId) {
+	@PostMapping("/denyApply")
+	public String denyApply(HttpServletRequest request, RedirectAttributes rdAttributes, @RequestParam("dapplyId") int dapplyId, @RequestParam("dgroupId") int dgroupId) {
 		DApplyDTO applyForm = new DApplyDTO(dapplyId, dgroupId, "DENIED");
-		daServ.updateResult(applyForm);
+		daServ.delete(applyForm);
 		return "redirect:" + request.getHeader("Referer");
 	}
 }

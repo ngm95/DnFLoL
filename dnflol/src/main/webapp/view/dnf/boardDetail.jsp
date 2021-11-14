@@ -22,7 +22,12 @@
 			<h3><b>게시글 상세</b></h3>
 			<div class="jumbotron-board" style="margin-top:45px">
 				<c:if test="${authInfo.uid eq ownerUid}">
-					<button type="button" class="btn btn-warning" onclick="location.href='/dnf/board/delete/${dgroupDto.dgroupId}'" style="float:right">글 삭제</button>
+					<form action="/dnf/board/delete" method="post">
+						<input name="${_csrf.parameterName}" type="hidden" value="${_csrf.token}" />
+						<input name="ownerUid" type="hidden" value="${ownerUid}" />
+						<input name="dgroupId" type="hidden" value="${dgroupDto.dgroupId}" />
+						<button type="submit" class="btn btn-warning" style="float: right">글 삭제</button>
+					</form>
 				</c:if>
 				<table class="table">
 					<tr>
@@ -72,10 +77,19 @@
 						<div class="row row-cols-6">
 							<c:forEach var="accepted" items="${acceptedList}">
 								<div class="col-6 col-md-4">
-									<button class="btn btn-info" onclick="location.href='/dnf/charDetail/${accepted.dcname}'">${accepted.dcname}</button>
-										<c:if test="${authInfo.uid eq ownerUid and accepted.dcname ne dgroupDto.dgroupOwnerName}">
-											<button class="btn btn-danger" onclick="location.href='/dnf/denyApply/${accepted.dapplyId}&${accepted.dgroupId}'">수락 거절</button>
-										</c:if>
+									<div class="card">
+										<div class="card-body">
+											<button class="btn btn-info" onclick="location.href='/dnf/charDetail/${accepted.dcname}'">${accepted.dcname}</button>
+											<c:if test="${authInfo.uid eq ownerUid and accepted.dcname ne dgroupDto.dgroupOwnerName}">
+												<form action="/dnf/denyApply" method="post" style="float:right">
+													<input name="${_csrf.parameterName}" type="hidden" value="${_csrf.token}" /> 
+													<input name="dapplyId" type="hidden" value="${accepted.dapplyId}" /> 
+													<input name="dgroupId" type="hidden" value="${accepted.dgroupId}" />
+													<button type="submit" class="btn btn-danger">취소하기</button>
+												</form>
+											</c:if>
+										</div>
+									</div>
 								</div>
 							</c:forEach>
 						</div>
@@ -95,7 +109,7 @@
 					<c:otherwise>
 						<c:forEach var="chars" items="${myNotAppliedChars}">
 							<div>
-								<form:form modelAttribute="applyForm" style="display: inline-block" action="${pageContext.request.contextPath}/dnf/submit/" method="post">
+								<form:form modelAttribute="applyForm" style="display: inline-block" action="/dnf/submit" method="post">
 									<p>계정명 : ${chars.dcname} 
 									<input type="hidden" id="dcharId" name="dcharId" value="${chars.dcharId}"> 
 									<input type="hidden" id="dcname" name="dcname" value="${chars.dcname}"> 
@@ -107,7 +121,7 @@
 						</c:forEach>
 						<c:forEach var="chars" items="${myAppliedChars}">
 							<div>
-								<form:form modelAttribute="applyForm" style="display: inline-block" action="${pageContext.request.contextPath}/dnf/submit/" method="post">
+								<form:form modelAttribute="applyForm" style="display: inline-block" action="/dnf/submit" method="post">
 									<p>계정명 : ${chars.dcname} 
 									<input type="submit" value="신청하기" disabled>
 								</form:form>
@@ -119,6 +133,5 @@
 		</div>
 		<%@ include file="/view/includes/09_footer.jsp"%>
 	</div>
-	
 </body>
 </html>

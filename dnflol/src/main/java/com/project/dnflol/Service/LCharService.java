@@ -22,10 +22,12 @@ public class LCharService {
 	}
 	
 	public void create(LCharDTO lcharDto) {
-		if (readByName(lcharDto.getLcharName()) == null)
+		try {
+			readByName(lcharDto.getLcharName());		// 해당 이름으로 계정을 찾아 봄
+			throw new AlreadyExistedLCharNameException("<b>" + lcharDto.getLcharName() + "</b>은/는 이미 다른 계정과 연동되어 있습니다.");
+		} catch (NoSuchCharException nsce) {			// 해당 이름의 계정을 찾을 수 없어야 새로운 캐릭터 생성 가능
 			lcharDao.create(lcharDto);
-		else
-			throw new AlreadyExistedLCharNameException(lcharDto.getLcharName() + "는 이미 다른 계정과 연동되어 있습니다.");
+		}
 	}
 	
 	public LCharDTO readByName(String lcharName) {

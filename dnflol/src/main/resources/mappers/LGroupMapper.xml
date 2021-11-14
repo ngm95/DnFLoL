@@ -89,7 +89,7 @@
 	
 	<delete id="deleteById">
 		DELETE FROM LGroup
-		WHERE lgropuId = #{lgropuId}
+		WHERE lgroupId = #{lgroupId}
 	</delete>
 
 </mapper>

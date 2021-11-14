@@ -22,7 +22,12 @@
 			<h3><b>게시글 상세</b></h3>
 			<div class="jumbotron-board" style="margin-top:45px">
 				<c:if test="${authInfo.uid eq ownerUid}">
-					<button type="button" class="btn btn-warning" onclick="location.href='/dnf/board/delete/${lgroupDto.lgroupId}'" style="float: right">글 삭제</button>
+					<form action="/lol/board/delete" method="post">
+						<input name="${_csrf.parameterName}" type="hidden" value="${_csrf.token}" />
+						<input name="ownerUid" type="hidden" value="${ownerUid}" />
+						<input name="lgroupId" type="hidden" value="${lgroupDto.lgroupId}" />
+						<button type="submit" class="btn btn-warning" style="float: right">글 삭제</button>
+					</form>
 				</c:if>
 				<table class="table">
 					<tr>
@@ -58,10 +63,19 @@
 						<div class="row row-cols-6">
 							<c:forEach var="accepted" items="${acceptedList}">
 								<div class="col-6 col-md-4">
-									<button class="btn btn-info" onclick="location.href='/lol/charDetail/${accepted.lcharName}'">${accepted.lcharName}</button>
-										<c:if test="${authInfo.uid eq ownerUid and accepted.lcharName ne lgroupDto.lgroupOwner}">
-											<button class="btn btn-danger" onclick="location.href='/lol/denyApply/${accepted.lapplyId}&${accepted.lgroupId}'">수락 거절</button>
-										</c:if>
+									<div class="card">
+										<div class="card-body">
+											<button class="btn btn-info" onclick="location.href='/lol/charDetail/${accepted.lcharName}'">${accepted.lcharName}</button>
+											<c:if test="${authInfo.uid eq ownerUid and accepted.lcharName ne lgroupDto.lgroupOwner}">
+												<form action="/lol/denyApply" method="post" style="float:right">
+													<input name="${_csrf.parameterName}" type="hidden" value="${_csrf.token}" /> 
+													<input type="hidden" name="lapplyId" value="${accepted.lapplyId}"> 
+													<input type="hidden" name="lgroupId" value="${accepted.lgroupId}"> 
+													<button type="submit" class="btn btn-danger" style="float:right">취소하기</button>
+												</form>
+											</c:if>
+										</div>
+									</div>
 								</div>
 							</c:forEach>
 						</div>
@@ -81,7 +95,7 @@
 					<c:otherwise>
 						<c:forEach var="chars" items="${myNotAppliedChars}">
 							<div>
-								<form:form modelAttribute="applyForm" style="display: inline-block" action="${pageContext.request.contextPath}/lol/submit/" method="post">
+								<form:form modelAttribute="applyForm" style="display: inline-block" action="/lol/submit/" method="post">
 									<p>계정명 : ${chars.lcharName} 
 									<input type="hidden" id="lgroupId" name="lgroupId" value="${lgroupDto.lgroupId}"> 
 									<input type="hidden" id="lcharName" name="lcharName" value="${chars.lcharName}"> 
@@ -92,7 +106,7 @@
 						</c:forEach>
 						<c:forEach var="chars" items="${myAppliedChars}">
 							<div>
-								<form:form modelAttribute="applyForm" style="display: inline-block" action="${pageContext.request.contextPath}/lol/submit/" method="post">
+								<form:form modelAttribute="applyForm" style="display: inline-block" action="$/lol/submit/" method="post">
 									<p>계정명 : ${chars.lcharName} 
 									<input type="submit" value="신청하기" disabled>
 								</form:form>

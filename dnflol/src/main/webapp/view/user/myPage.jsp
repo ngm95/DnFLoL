@@ -32,7 +32,9 @@
 					<c:otherwise>
 						<c:forEach var="chars" items="${mylolChars}">
 							<div class="row">
-								<form style="display: inline-block" action="${pageContext.request.contextPath}/lol/deleteSummoner/${chars.lcharName}" method="get">
+								<form style="display: inline-block" action="/lol/deleteSummoner" method="post">
+									<input name="${_csrf.parameterName}" type="hidden" value="${_csrf.token}" /> 
+									<input name="lcharName" type="hidden" value="${chars.lcharName}" /> 
 									<p>
 										계정명 : ${chars.lcharName}
 										<button type="submit" class="btn btn-style" style="background-color: pink; color: white; margin-left: 15px">연동 해제</button>
@@ -57,13 +59,13 @@
 					<c:otherwise>
 						<c:forEach var="chars" items="${mydnfChars}">
 							<div class="row">
-								<div>
-									<form style="display: inline-block" action="${pageContext.request.contextPath}/dnf/deletecharacter/${chars.dcname}" method="get">
-										<p>
-											계정명 : ${chars.dcname}
-											<button type="submit" class="btn btn-style" style="background-color: pink; color: white; margin-left: 15px">연동 해제</button>
-									</form>
-								</div>
+								<form style="display: inline-block" action="/dnf/deletecharacter" method="post">
+									<input name="${_csrf.parameterName}" type="hidden" value="${_csrf.token}" /> 
+									<input name="dcname" type="hidden" value="${chars.dcname}" />
+									<p>
+										계정명 : ${chars.dcname}
+										<button type="submit" class="btn btn-style" style="background-color: pink; color: white; margin-left: 15px">연동 해제</button>
+								</form>
 							</div>
 						</c:forEach>
 					</c:otherwise>

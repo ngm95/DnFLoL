@@ -66,8 +66,12 @@ public class DApplyService {
 	}
 	
 	public void delete(DApplyDTO dapplyDto) {
-		DApplyDTO apply = read(dapplyDto);
-		if (apply != null)
+		try {
+			dapplyDao.readById(dapplyDto.getDapplyId());
 			dapplyDao.delete(dapplyDto);
+		} catch (NoSuchApplyException nsae) {
+			throw nsae;
+		}
+			
 	}
 }

@@ -22,10 +22,12 @@ public class DCharService {
 	}
 	
 	public void create(DCharDTO dcharDto) {
-		if (readByName(dcharDto.getDcname()) == null)
+		try {
+			readByName(dcharDto.getDcname());		// 해당 이름으로 캐릭터를 찾아 봄
+			throw new AlreadyExistedLCharNameException("<b>" + dcharDto.getDcserver() + "</b>서버의 <b>" + dcharDto.getDcname() + "</b>은/는 이미 다른 계정과 연동되어 있습니다.");
+		} catch (NoSuchCharException nsce) {		// 해당 이름의 캐릭터를 찾을 수 없어야 새로운 캐릭터 생성 가능
 			dcharDao.create(dcharDto);
-		else
-			throw new AlreadyExistedLCharNameException(dcharDto.getDcname() + "는 이미 다른 계정과 연동되어 있습니다.");
+		}
 	}
 	
 	public DCharDTO readByName(String dcname) {

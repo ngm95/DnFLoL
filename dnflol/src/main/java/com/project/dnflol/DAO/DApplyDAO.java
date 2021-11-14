@@ -27,6 +27,10 @@ public class DApplyDAO {
 		return template.selectOne(MAPPER + ".read", dapplyDto);
 	}
 	
+	public DApplyDTO readById(int dapplyId) {
+		return template.selectOne(MAPPER + ".readById", dapplyId);
+	}
+	
 	public int readAcceptedCountByGroupId(int dgroupId) {
 		return template.selectOne(MAPPER + ".readAcceptedCountByGroupId", dgroupId);
 	}
