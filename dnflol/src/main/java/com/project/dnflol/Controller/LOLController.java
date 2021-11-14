@@ -29,7 +29,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -45,6 +44,7 @@ import com.project.dnflol.DTO.SummonerDTO;
 import com.project.dnflol.DTO.UserDTO;
 import com.project.dnflol.Exception.AlreadyExistedApplyException;
 import com.project.dnflol.Exception.AlreadyExistedLCharNameException;
+import com.project.dnflol.Exception.NoSuchApplyException;
 import com.project.dnflol.Exception.NoSuchCharException;
 import com.project.dnflol.Exception.NoSuchGroupException;
 import com.project.dnflol.Exception.TooManyApplyException;
@@ -115,13 +115,11 @@ public class LOLController {
 	 *   검색 버튼을 누르면 입력 폼에 입력된 정보와 체크박스에서 선택된 정보를 가지고 비슷한 글을 찾아서 그 글들을 보여줌.
 	 */
 	@RequestMapping("/board")
-	public ModelAndView lolBoard() {
-		ModelAndView mv = new ModelAndView();
+	public String lolBoard() {
 		bmm = new BoardMinMax(lgServ.readMaxCount());		// 새로운 bmm 객체를 만들어 둠
 		lgroupList = lgServ.readLimitList(bmm);				// 최신 글 리스트(100개)를 불러옴 
 		
-		mv.setViewName("redirect:/lol/board/" + bmm.getPaging());	// 첫 번째 페이지로 리다이렉트
-		return mv;
+		return "redirect:/lol/board/" + bmm.getPaging();	// 첫 번째 페이지로 리다이렉트
 	}
 	
 	/**
@@ -130,12 +128,10 @@ public class LOLController {
 	 *   이후 게시판 페이지로 리다이렉트한다.
 	 */
 	@RequestMapping("/board/next")
-	public ModelAndView lolNextBoard() {
-		ModelAndView mv = new ModelAndView();
+	public String lolNextBoard() {
 		bmm.next();											// bmm을 다음으로 넘김
 		
-		mv.setViewName("redirect:/lol/board/" + bmm.getPaging());	// 첫 번째 페이지로 리다이렉트
-		return mv;
+		return "redirect:/lol/board/" + bmm.getPaging();	// 첫 번째 페이지로 리다이렉트
 	}
 
 	/**
@@ -144,16 +140,14 @@ public class LOLController {
 	 *   이후 게시판 페이지로 리다이렉트한다.
 	 */
 	@RequestMapping("/board/prev")
-	public ModelAndView lolPrevBoard() {
-		ModelAndView mv = new ModelAndView();
+	public String lolPrevBoard() {
 		bmm.prev();											// bmm을 이전으로 넘김
 		
-		mv.setViewName("redirect:/lol/board/" + bmm.getPaging());	// 첫 번째 페이지로 리다이렉트
-		return mv;
+		return "redirect:/lol/board/" + bmm.getPaging();	// 첫 번째 페이지로 리다이렉트
 	}
 	
 	@RequestMapping("/board/{page}")
-	public String lolBoardPaging(RedirectAttributes rdAttributes, Model model, @PathVariable("page") int page) {
+	public String lolBoardPaging(@PathVariable("page") int page, RedirectAttributes rdAttributes, Model model) {
 		if (bmm.getLimit() - page*10 < -10)	{											// URL로 비활성화된 페이지로 접근하면 다시 첫 페이지로 이동하도록 함
 			rdAttributes.addFlashAttribute("error", new Exception("존재하지 않는 게시글 페이지입니다."));
 			return "redirect:/lol/board/" + bmm.getPaging();	
@@ -176,7 +170,7 @@ public class LOLController {
 	 * 이후 게시판 페이지로 리다이렉트한다.
 	 */
 	@PostMapping("/findBoard")
-	public ModelAndView lolFindBoard(Model model, @Valid @ModelAttribute("searchForm") LSearchForm form, BindingResult br) {
+	public String lolFindBoard(@Valid @ModelAttribute("searchForm") LSearchForm form, BindingResult br, Model model) {
 		if (form.getCheckRadio().equals("detail"))							// 어떤 옵션을 선택했는지 체크해서 적절한 Service, mapper를 통해 DB 접근을 통해 검색된 글 리스트를 받아 옴
 			lgroupList = lgServ.readAllByDetail(form.getFindDetail());
 		else if (form.getCheckRadio().equals("groupName"))
@@ -189,13 +183,11 @@ public class LOLController {
 		model.addAttribute("lgroupList", lgroupList);			
 		model.addAttribute("bmm", bmm);
 
-		ModelAndView mv = new ModelAndView();	
-		mv.setViewName("redirect:/lol/board/" + bmm.getPaging());		//첫 번째 페이지로 리다이렉트
-		return mv;
+		return "redirect:/lol/board/" + bmm.getPaging();	// 첫 번째 페이지로 리다이렉트
 	}
 
 	@PostMapping(value="/board/newPost")
-	public String newPost(HttpServletRequest request, RedirectAttributes rdAttributes, @Valid @ModelAttribute("post") LGroupDTO lgroupDto, BindingResult br) throws Exception {
+	public String newPost(@Valid @ModelAttribute("post") LGroupDTO lgroupDto, BindingResult br, HttpServletRequest request, RedirectAttributes rdAttributes) {
 		if (br.hasErrors())													// 필요한 정보가 정한 폼에 맞지 않으면 이전 단계로 돌아감
 			return "redirect:/lol/board/newPostGET";
 
@@ -226,7 +218,7 @@ public class LOLController {
 	}
 
 	@PostMapping("/board/delete")
-	public String deletePost(HttpServletRequest request, RedirectAttributes rdAttributes, Model model, @RequestParam("lgroupId") int lgroupId, @RequestParam("ownerUid") String ownerUid) {
+	public String deletePost(@RequestParam("lgroupId") int lgroupId, @RequestParam("ownerUid") String ownerUid, Model model, HttpServletRequest request, RedirectAttributes rdAttributes) {
 		if (!ownerUid.equals(((AuthInfo)model.getAttribute("authInfo")).getUid())) {
 			rdAttributes.addFlashAttribute("error", new Exception("현재 계정과 작성한 계정이 달라 삭제할 수 없습니다."));
 			return "redirect:/lol/board";
@@ -249,7 +241,7 @@ public class LOLController {
 	 * - 페이지 하단에는 메인 게시판으로 되돌아가는 버튼과 신청 페이지로 이동할 수 있는 버튼이 존재
 	 */
 	@RequestMapping("/boardDetail/{lgroupId}")
-	public String lolBoardDetail(HttpServletRequest request, RedirectAttributes rdAttributes, Model model, @PathVariable(value="lgroupId") int lgroupId) {
+	public String lolBoardDetail(@PathVariable(value="lgroupId") int lgroupId, HttpServletRequest request, RedirectAttributes rdAttributes, Model model) {
 		LGroupDTO lgroupDto = null;
 		try {
 			lgroupDto = lgServ.readById(lgroupId);										// 게시글 세부 정보
@@ -280,7 +272,7 @@ public class LOLController {
 	 * 그룹 신청 페이지에서 아이디를 클릭하면 신청을 넣고 게시판 페이지로 돌아감
 	 */
 	@PostMapping("/submit")
-	public String lolSubmitToGroup(HttpServletRequest request, RedirectAttributes rdAttributes, Model model, HttpSession session, @Valid @ModelAttribute("applyForm") LApplyDTO lapplyDto, BindingResult br) {
+	public String lolSubmitToGroup(@Valid @ModelAttribute("applyForm") LApplyDTO lapplyDto, BindingResult br, HttpServletRequest request, RedirectAttributes rdAttributes, Model model, HttpSession session) {
 		if (br.hasErrors()) {
 			return "redirect:/lol/board";
 		}
@@ -295,15 +287,13 @@ public class LOLController {
 	}
 
 	@GetMapping("/findSummoner")
-	public ModelAndView findSummoner(Model model) {
-		ModelAndView mv = new ModelAndView();
+	public String findSummoner(Model model) {
 		model.addAttribute("summoner", new SummonerDTO());	// LOL계정 정보를 담을 폼을 모델에 저장
-		mv.setViewName("/lol/findSummoner");
-		return mv;
+		return "/lol/findSummoner";
 	}
 
 	@PostMapping("/findSummoner")
-	public String findSummoner(HttpServletRequest request, RedirectAttributes rdAttributes, Model model, @Valid @ModelAttribute("summoner") SummonerDTO summoner, BindingResult br) {
+	public String findSummoner(@Valid @ModelAttribute("summoner") SummonerDTO summoner, BindingResult br, HttpServletRequest request, RedirectAttributes rdAttributes, Model model) {
 		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 		String requestURL = "https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/" + summoner.getName().replaceAll(" ", "") + "?api_key=" + api.getLOL_API_KEY();
 		SummonerDTO summonerDto = new SummonerDTO();
@@ -349,7 +339,7 @@ public class LOLController {
 	}
 	
 	@PostMapping("/addSummoner") 
-	public String addSummoner(Model model, HttpServletRequest request, RedirectAttributes rdAttributes, @Valid @ModelAttribute("summoner") SummonerDTO summonerDto, BindingResult br) {
+	public String addSummoner(@Valid @ModelAttribute("summoner") SummonerDTO summonerDto, BindingResult br, Model model, HttpServletRequest request, RedirectAttributes rdAttributes) {
 		LCharDTO lcharDto = new LCharDTO(((AuthInfo)model.getAttribute("authInfo")).getUid(), summonerDto.getName());	// 새로운 LOL 계정 정보 생성
 		try {
 			lcServ.create(lcharDto);					// 아이디를 계정에 연동
@@ -360,7 +350,7 @@ public class LOLController {
 	}
 	
 	@PostMapping("/deleteSummoner")
-	public String deleteSummoner(HttpServletRequest request, RedirectAttributes rdAttributes, @RequestParam(value="lcharName") String lcharName) {
+	public String deleteSummoner(@RequestParam(value="lcharName") String lcharName, HttpServletRequest request, RedirectAttributes rdAttributes) {
 		try {
 			lcServ.deleteByName(lcharName);				// DB에서 해당 LOL 계정 삭제
 		} catch(NoSuchCharException nsce) {
@@ -375,7 +365,7 @@ public class LOLController {
 	 * - 계정 전적을 랭크 / 일반 / 합계로 구분해서 각각 최근 10게임의 전적, 승률, 주요 포지션 등을 보여줌
 	 */
 	@RequestMapping("/charDetail/{lcharName}")
-	public String lolCharDetail(HttpServletRequest request, RedirectAttributes rdAttributes, Model model, @PathVariable("lcharName") String lcharName) {
+	public String lolCharDetail(@PathVariable("lcharName") String lcharName, HttpServletRequest request, RedirectAttributes rdAttributes, Model model) {
 		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 		
 		LCharDTO lcharDto = null;
@@ -576,14 +566,14 @@ public class LOLController {
 			}
 			
 		} catch(Exception e) {
-			model.addAttribute("error", e);
+			model.addAttribute("error", new RuntimeException(""));
 		}
 
 		return "/lol/charDetail";		
 	}
 	
 	@PostMapping("/acceptApply")
-	public String acceptApply(HttpServletRequest request, RedirectAttributes rdAttributes, @RequestParam("lapplyId") int lapplyId, @RequestParam("lgroupId") int lgroupId) {
+	public String acceptApply(@RequestParam("lapplyId") int lapplyId, @RequestParam("lgroupId") int lgroupId, HttpServletRequest request, RedirectAttributes rdAttributes) {
 		LApplyDTO applyForm = new LApplyDTO(lapplyId, lgroupId, "ACCEPTED");
 		try {
 			laServ.updateResult(applyForm);
@@ -594,9 +584,13 @@ public class LOLController {
 	}
 	
 	@PostMapping("/denyApply")
-	public String denyApply(HttpServletRequest request, RedirectAttributes rdAttributes, @RequestParam("lapplyId") int lapplyId, @RequestParam("lgroupId") int lgroupId) {
+	public String denyApply(@RequestParam("lapplyId") int lapplyId, @RequestParam("lgroupId") int lgroupId, HttpServletRequest request, RedirectAttributes rdAttributes) {
 		LApplyDTO applyForm = new LApplyDTO(lapplyId, lgroupId, "DENIED");
-		laServ.delete(applyForm);
+		try {
+			laServ.delete(applyForm);
+		} catch(NoSuchApplyException nsae) {
+			rdAttributes.addFlashAttribute("error", nsae);
+		}
 		return "redirect:" + request.getHeader("Referer");
 	}
 }

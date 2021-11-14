@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.project.dnflol.Exception.AlreadyExistedUIdException;
@@ -33,10 +32,8 @@ public class RegisterController {
 	 * step1에서는 약관을 보여주고 동의를 받음
 	 */
 	@RequestMapping("/step1")
-	public ModelAndView registerStep1() throws Exception {
-		ModelAndView mv = new ModelAndView();
-		mv.setViewName("/register/step1");
-		return mv;
+	public String registerStep1() throws Exception {
+		return "/register/step1";
 	}
 	
 	/**
@@ -45,21 +42,18 @@ public class RegisterController {
 	 * @param agree step1에서 확인 버튼을 눌렀는지 여부
 	 */
 	@RequestMapping("/step2")
-	public ModelAndView registerStep2(@RequestParam(value="agree", defaultValue="false") boolean agree, Model model) throws Exception {
-		ModelAndView mv = new ModelAndView();
+	public String registerStep2(@RequestParam(value="agree", defaultValue="false") boolean agree, Model model) throws Exception {
 		if (!agree) {							// 확인 버튼이 눌리지 않았으면 step1으로 되돌아감
-			mv.setViewName("/register/step1");
-			return mv;
+			return "/register/step1";
 		}
 		else {									// 확인 버튼이 눌렸으면 RegisterRequest 객체를 추가해 step2로 넘어감
-			mv.setViewName("/register/step2");
 			model.addAttribute("request", new RegisterRequest());
-			return mv;
+			return "/register/step2";
 		}
 	}
 	
 	@RequestMapping(value="/step3", method=RequestMethod.POST)
-	public String registerStep3(HttpServletRequest request, RedirectAttributes rdAttributes, @Valid @ModelAttribute("request") RegisterRequest regReq, BindingResult br) throws Exception {
+	public String registerStep3(@Valid @ModelAttribute("request") RegisterRequest regReq, BindingResult br, HttpServletRequest request, RedirectAttributes rdAttributes) throws Exception {
 		
 		if (br.hasErrors()) {					// 필요한 정보가 정한 폼에 맞지 않으면 이전 단계로 돌아감
 			rdAttributes.addFlashAttribute("error", new Exception("정해진 형식에 맞지 않습니다."));

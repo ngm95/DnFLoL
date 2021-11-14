@@ -3,8 +3,6 @@ package com.project.dnflol.Controller;
 
 import java.util.List;
 
-import javax.servlet.http.HttpSession;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -12,7 +10,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.google.gson.Gson;
 import com.project.dnflol.DTO.DApplyDTO;
@@ -55,15 +52,12 @@ public class MainPageController {
 	}
 	
 	@RequestMapping("/")
-	public ModelAndView mainPage(HttpSession session) {
-		ModelAndView mv = new ModelAndView();
-		mv.setViewName("/mainPage");
-		return mv;
+	public String mainPage() {
+		return "/mainPage";
 	}
 	
 	@RequestMapping("user/myPage")
-	public ModelAndView myPage(Model model) {
-		ModelAndView mv = new ModelAndView();
+	public String myPage(Model model) {
 		AuthInfo auth = (AuthInfo)model.getAttribute("authInfo");
 		
 		List<LCharDTO> mylolChars = lcServ.readAllByUid(auth.getUid());	// LoL 연동 계정 정보
@@ -72,8 +66,7 @@ public class MainPageController {
 		List<DCharDTO> mydnfChars = dcServ.readAllByUid(auth.getUid());	// LoL 연동 계정 정보
 		model.addAttribute("mydnfChars", mydnfChars);
 		
-		mv.setViewName("/user/myPage");
-		return mv;
+		return "/user/myPage";
 	} 
 	
 	@RequestMapping("/myLoLNotice")
