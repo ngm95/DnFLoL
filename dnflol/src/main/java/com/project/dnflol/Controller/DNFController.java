@@ -420,7 +420,7 @@ public class DNFController {
 				List<TimeLineDTO> timeline = objectMapper.readValue(body, objectMapper.getTypeFactory().constructCollectionType(List.class, TimeLineDTO.class));
 				
 				model.addAttribute("result", timeline);
-				
+				System.out.print(timeline+"\n");
 				
 				/*
 				 * body를 다듬어서 원하는 부분만 가져옴

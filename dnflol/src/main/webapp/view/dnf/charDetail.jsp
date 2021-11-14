@@ -36,10 +36,10 @@
 						</tr>
 					</thead>
 					<tbody >
-					<c:forEach var="dtel" items="${dataresult}" varStatus="status">
+					<c:forEach var="el" items="${result}" varStatus="status">
 						<tr>
-							<td>${dtel.raidName}</td>
-							<td>${dtel.raidPartyName}</td>
+							<td>${el.data.raidName}</td>
+							<td>${el.data.raidPartyName}</td>
 						</tr>
 					</c:forEach>
 					</tbody>
