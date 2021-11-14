@@ -7,6 +7,7 @@
 <html>
 <head>
 <%@ include file="/view/includes/00_head.jsp"%>
+<script src="/js/spinner.js"></script>
 <title>LoL 게시글 세부내용</title>
 </head>
 <body>
@@ -73,13 +74,19 @@
 						<p>아직 수락된 신청이 없습니다.</p>
 					</c:when>
 					<c:otherwise>
-						<h4>수락된 신청</h4>
+						<div style="display:inline-block; padding-bottom:15px">
+							<h4 style="float:left">수락된 신청</h4>
+							<button id="spinner" class="btn btn-info" type="button" style="display:none; margin-left:15px;" disabled>
+								<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> 
+								로딩중...
+							</button>
+						</div>
 						<div class="row row-cols-6">
-							<c:forEach var="accepted" items="${acceptedList}">
+							<c:forEach var="accepted" items="${acceptedList}" varStatus="status">
 								<div class="col-6 col-md-4">
 									<div class="card">
 										<div class="card-body">
-											<button class="btn btn-info" onclick="location.href='/dnf/charDetail/${accepted.dcname}'">${accepted.dcname}</button>
+											<button id="character${status.count}" class="btn btn-info" onclick="location.href='/dnf/charDetail/${accepted.dcname}'">${accepted.dcname}</button>
 											<c:if test="${authInfo.uid eq ownerUid and accepted.dcname ne dgroupDto.dgroupOwnerName}">
 												<form action="/dnf/denyApply" method="post" style="float:right">
 													<input name="${_csrf.parameterName}" type="hidden" value="${_csrf.token}" /> 

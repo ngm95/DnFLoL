@@ -432,7 +432,6 @@ public class LOLController {
 							if (response.getStatusLine().getStatusCode() == 200) {
 								handler = new BasicResponseHandler();
 								body = handler.handleResponse(response);
-								System.out.println("match" + i + " " + body);
 								/*
 								 * 많고 많은 JSON 응답 중 관심있게 볼 것은 ParticipantDTO의 리스트 중 검색 계정의 정보이므로
 								 * InfoDTO와 그 내부의 ParticipantDTO만 따로 구해서 계정 ID와 일치하는 정보만 뽑아낸다.
