@@ -32,7 +32,7 @@
 						<tr>
 							<th scope="col">레이드</th>
 							<th scope="col">공대명</th>
-							<th scope="col">시간</th>
+							
 						</tr>
 					</thead>
 					<tbody >
@@ -40,7 +40,6 @@
 						<tr>
 							<td>${el.data.raidName}</td>
 							<td>${el.data.raidPartyName}</td>
-							<td>${el.date}</td>
 						</tr>
 					</c:forEach>
 					</tbody>
