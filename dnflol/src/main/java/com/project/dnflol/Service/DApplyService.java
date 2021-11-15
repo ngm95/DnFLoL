@@ -62,7 +62,7 @@ public class DApplyService {
 		if (dapplyDto.getDapplyResult().equals("ACCEPTED") && dapplyDao.readAcceptedCountByGroupId(dapplyDto.getDgroupId()) >= dgroupDao.readGroupMaxByGroupId(dapplyDto.getDgroupId()))
 			throw new TooManyApplyException("이미 모든 자리가 다 찼습니다.");
 		
-		dapplyDao.updateDapplyResult(dapplyDto);
+		dapplyDao.updateLapplyResult(dapplyDto);
 	}
 	
 	public void delete(DApplyDTO dapplyDto) {

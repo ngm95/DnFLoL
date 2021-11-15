@@ -50,7 +50,12 @@ $(document).ready(function() {
 		dataType: "json",
 		contentType:"application/json;charset=UTF-8",
 		success: function(data) {
-			$('#dnfNotice').empty();	
+			$('#dnfNotice').empty();
+			if (data == null) {
+				var myNotice = "<li>신청이 없습니다.</li>";
+				$("#dnfNotice").append(myNotice);
+			}
+			else {
 				if (data.length > 0) {
 					for (var i in data) {
 						var dapplyId = data[i].dapplyId;
@@ -82,6 +87,7 @@ $(document).ready(function() {
 					var myNotice = "<li>신청이 없습니다.</li>";
 					$("#dnfNotice").append(myNotice);
 				}
+			}
 		},
 		error : function() {
 			$('#dnfNotice').empty();
