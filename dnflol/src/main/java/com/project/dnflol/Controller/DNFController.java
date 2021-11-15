@@ -226,17 +226,17 @@ public class DNFController {
 	public String deletePost(@RequestParam("dgroupId") int dgroupId, @RequestParam("ownerUid") String ownerUid, Model model, HttpServletRequest request, RedirectAttributes rdAttributes) {
 		if (!ownerUid.equals(((AuthInfo)model.getAttribute("authInfo")).getUid())) {
 			rdAttributes.addFlashAttribute("error", new Exception("현재 계정과 작성한 계정이 달라 삭제할 수 없습니다."));
-			return "redirect:/lol/board";
+			return "redirect:/dnf/board";
 		}
 		
 		try {
 			dgServ.deleteById(dgroupId);		
 		} catch(NoSuchGroupException nsge) {
 			rdAttributes.addFlashAttribute("error", nsge);
-			return "redirect:/lol/board";
+			return "redirect:/dnf/board";
 		}
 		rdAttributes.addFlashAttribute("error", new Exception("삭제에 성공했습니다"));
-		return "redirect:/lol/board";
+		return "redirect:/dnf/board";
 	}
 	
 	/**
@@ -252,7 +252,7 @@ public class DNFController {
 			dgroupDto = dgServ.readById(dgroupId);										// 게시글 세부 정보
 		} catch (NoSuchGroupException nsge) {
 			rdAttributes.addFlashAttribute("error", nsge);
-			return "redirect:/lol/board";
+			return "redirect:/dnf/board";
 		}
 		
 		List<DApplyDTO> acceptedList = daServ.readAllAcceptedByGroupId(dgroupId);				// 수락된 멤버 목록
@@ -270,7 +270,7 @@ public class DNFController {
 			return "/dnf/boardDetail";
 		} catch (NoSuchCharException nsce) {
 			rdAttributes.addFlashAttribute("error", nsce);
-			return "redirect:/lol/board";
+			return "redirect:/dnf/board";
 		}
 	}
 	

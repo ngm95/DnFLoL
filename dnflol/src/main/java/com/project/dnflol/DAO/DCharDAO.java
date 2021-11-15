@@ -25,7 +25,7 @@ public class DCharDAO {
 	}
 	
 	public DCharDTO readByCId(String dcharId) {
-		return template.selectOne(MAPPER + ".readByName", dcharId);
+		return template.selectOne(MAPPER + ".readById", dcharId);
 	}
 	
 	public DCharDTO readByNametocid(String dcharId) {
