@@ -37,11 +37,13 @@
 					</thead>
 					<tbody >
 					<c:forEach var="el" items="${result}" varStatus="status">
+					<c:if test="${el.data.phaseName ne '추적'}">
 						<tr>
 							<td>${el.data.raidName}</td>
 							<td>${el.data.raidPartyName}</td>
 							<td>${el.date}</td>
 						</tr>
+					</c:if>
 					</c:forEach>
 					</tbody>
 				</table>
