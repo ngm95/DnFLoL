@@ -1,25 +1,23 @@
 package com.project.dnflol.Controller;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.ModelAndView;
 
 @RequestMapping("/security")
 @Controller
 public class SecurityController {
 	
-	@RequestMapping(value="/login", method=RequestMethod.GET)
-	public ModelAndView loginPage() {
-		ModelAndView mv = new ModelAndView();
-		mv.setViewName("/security/loginForm");
-		return mv;
+	@GetMapping(value="/login")
+	public String loginPage(Authentication auth) {
+		if (auth != null)
+			return "redirect:/";
+		return "/security/loginForm";
 	}
 	
 	@RequestMapping("/denied")
-	public ModelAndView deniedPage() {
-		ModelAndView mv = new ModelAndView();
-		mv.setViewName("/security/deniedPage");
-		return mv;
+	public String deniedPage() {
+		return "/security/deniedPage";
 	}
 }
