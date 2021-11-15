@@ -31,7 +31,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.dnflol.DTO.InfoDTO;
@@ -404,7 +403,7 @@ public class LOLController {
 					handler = new BasicResponseHandler();
 					body = handler.handleResponse(response);
 					
-					if (body.equals("[]")) {
+					if (!body.equals("[]")) {
 						LeagueDTO leagueDto = objectMapper.readValue(body.substring(1, body.length()-1), LeagueDTO.class);	// JSON 응답을 DTO로 바꾸는 작업
 						model.addAttribute("leagueDto", leagueDto);
 					}
@@ -415,7 +414,7 @@ public class LOLController {
 					/*
 					 * 계정의 전적을 받아옴
 					 */
-					String matchURL = "https://asia.api.riotgames.com/lol/match/v5/matches/by-puuid/" + summonerDto.getPuuid() + "/ids?start=0&count=10&api_key=" + api.getLOL_API_KEY();
+					String matchURL = "https://asia.api.riotgames.com/lol/match/v5/matches/by-puuid/" + summonerDto.getPuuid() + "/ids?start=0&count=20&api_key=" + api.getLOL_API_KEY();
 					getRequest = new HttpGet(matchURL);
 					response = client.execute(getRequest);
 					if (response.getStatusLine().getStatusCode() == 200) {
@@ -423,6 +422,7 @@ public class LOLController {
 						body = handler.handleResponse(response);
 						List<String> matches = Arrays.asList(body.substring(2, body.length()-2).split("\",\""));	// match_id의 배열을 리스트 형태로 변환
 						
+						List<ParticipantDTO> totalQ = new ArrayList<>();	// 모든 소환사의 협곡 게임 정보
 						List<ParticipantDTO> rankQ = new ArrayList<>();		// 랭크 게임 정보
 						List<ParticipantDTO> normalQ = new ArrayList<>();	// 일반 게임 정보
 						for (int i = 0; i < matches.size(); i++) {
@@ -439,15 +439,20 @@ public class LOLController {
 								 */
 								String info = body.substring(body.indexOf("info")+6, body.length()-1);
 								InfoDTO infoDto = objectMapper.readValue(info, InfoDTO.class);
-								String participants = info.substring(info.indexOf("participants")+14, info.indexOf("platformId")-2);
-								List<ParticipantDTO> participantList = objectMapper.readValue(participants, new TypeReference<List<ParticipantDTO>>() {});	// JSO응답을 DTO의 List로 바꾸는 작업
+								List<ParticipantDTO> participantList = infoDto.getParticipants();
 								for (int j = 0; j < participantList.size(); j++) {
 									ParticipantDTO person = participantList.get(j);
 									if (person.getSummonerName().equals(lcharDto.getLcharName())) {		// 계정 ID가 같을 때
-										if (infoDto.getQueueId() == 430)								// 게임 큐 ID를 보고 어떤 종류의 게임을 했는 지 판단해서 리스트에 넣음 
+										if (infoDto.getQueueId() == 430)	{							// 게임 큐 ID를 보고 어떤 종류의 게임을 했는 지 판단해서 리스트에 넣음 
+											person.setGameType("노말");
 											normalQ.add(person);
-										else if (infoDto.getQueueId() == 420)
+											totalQ.add(person);
+										}
+										else if (infoDto.getQueueId() == 420) {
+											person.setGameType("솔랭");
 											rankQ.add(person);
+											totalQ.add(person);
+										}
 										break;
 									}
 								}
@@ -457,6 +462,9 @@ public class LOLController {
 								return "redirect:" + request.getHeader("Referer");
 							}
 						}
+						model.addAttribute("totalQ", totalQ);
+						model.addAttribute("rankQ", rankQ);
+						model.addAttribute("normalQ", normalQ);
 						
 						/*
 						 * 구한 ParticipantsDTO를 그대로 View에서 사용하기엔 View에서 해야 할 작업량이 너무 많으므로
