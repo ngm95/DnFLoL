@@ -422,27 +422,7 @@ public class DNFController {
 				model.addAttribute("result", timeline);
 				System.out.print(timeline+"\n");
 				
-				/*
-				 * body를 다듬어서 원하는 부분만 가져옴
-				 */
-				body=body.substring(0, body.length()-1);
-				body = body.replaceAll("}}", "}}}]");
-				String[] asdf=body.split("}],");
-
-				String tmp="[";
-				for(int i =0;i<asdf.length-2;i++) {
 				
-				tmp +=asdf[i].substring(asdf[i].indexOf("data")+6,asdf[i].length()-1)+",";
-	
-				}
-				
-				tmp = tmp.substring(0, tmp.length()-1);
-				tmp+= "]";
-
-				List<TimeLineDataDTO> dataList = objectMapper.readValue(tmp, objectMapper.getTypeFactory().constructCollectionType(List.class, TimeLineDataDTO.class));
-
-				System.out.print(dataList+"\n");
-				model.addAttribute("dataresult", dataList);
 				
 				// -- 캐릭터의 상세 정보를 담아서 model에 넣음 --
 			}
