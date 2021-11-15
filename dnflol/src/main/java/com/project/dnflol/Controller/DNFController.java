@@ -33,6 +33,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.dnflol.DTO.DAdventureDTO;
+import com.project.dnflol.DTO.TimeLineDTO;
+import com.project.dnflol.DTO.TimeLineDataDTO;
 import com.project.dnflol.DTO.DApplyDTO;
 import com.project.dnflol.DTO.DCharDTO;
 import com.project.dnflol.DTO.DGroupDTO;
@@ -155,6 +157,12 @@ public class DNFController {
 		model.addAttribute("mydnfChars", mydnfChars);
 		
 		return "/dnf/board";
+	}
+	
+	@GetMapping("/deletecharacter/{dcharId}")
+	public String deletecharacter(@PathVariable(value="dcharId") String dcharId) {
+		dcServ.deleteById(dcharId);				// DB에서 해당 던 캐릭터 삭제
+		return "redirect:/user/myPage";				// 마이페이지로 리다이렉트
 	}
 	
 	/**
@@ -332,9 +340,9 @@ public class DNFController {
 	}
 	
 	@PostMapping("/deletecharacter")
-	public String deletecharacter(@RequestParam(value="characterName") String characterName, HttpServletRequest request, RedirectAttributes rdAttributes) {
+	public String deletecharacter(@RequestParam(value="dcharId") String dcharId, HttpServletRequest request, RedirectAttributes rdAttributes) {
 		try {
-			dcServ.deleteByName(characterName);				// DB에서 해당 던 캐릭터 삭제
+			dcServ.deleteById(dcharId);				// DB에서 해당 던 캐릭터 삭제
 		} catch (NoSuchCharException nsce) {
 			rdAttributes.addFlashAttribute("error", nsce);
 			return "redirect:" + request.getHeader("Referer");
@@ -345,20 +353,19 @@ public class DNFController {
 	/**
 	 * 계정 전적 정보를 볼 수 있는 페이지
 	 */
-	@RequestMapping("/charDetail/{dcname}")
-	public String dnfCharDetail(@PathVariable("dcname") String dcname, Model model, HttpServletRequest request, RedirectAttributes rdAttributes) {
+	@RequestMapping("/charDetail/{dcharId}")
+	public String dnfCharDetail(@PathVariable("dcharId") String dcharId, Model model, HttpServletRequest request, RedirectAttributes rdAttributes) {
 		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 		
 		DCharDTO dcharDto = null;
 		try {
-			dcServ.readByName(dcname);
+			dcharDto = dcServ.readByNametocid(dcharId);
+			model.addAttribute("dcharDto", dcharDto);
 		} catch (NoSuchCharException nsce) {
 			rdAttributes.addFlashAttribute("error", nsce);
 			return "redirect:" + request.getHeader("Referer");
 		}
-		model.addAttribute("dcharDto", dcharDto);
-		
-		String url = "?api_key=" + api.getDNF_API_KEY();
+		String url ="https://api.neople.co.kr/df/servers/"+dcharDto.getDcserver()+"/characters/"+dcharDto.getDcharId() +"/timeline?limit=100&code=201&apikey=" + api.getDNF_API_KEY();
 		
 		try {
 			HttpClient client = HttpClientBuilder.create().build();
@@ -368,10 +375,18 @@ public class DNFController {
 			if (response.getStatusLine().getStatusCode() == 200) {
 				ResponseHandler<String> handler = new BasicResponseHandler();
 				String body = handler.handleResponse(response);
-				System.out.println(body);
+				body = body.substring(body.indexOf("rows")+6,body.length()-2);
+
+				objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+				List<TimeLineDTO> timeline = objectMapper.readValue(body, objectMapper.getTypeFactory().constructCollectionType(List.class, TimeLineDTO.class));
 				
+				model.addAttribute("result", timeline);
+						
 				// -- 캐릭터의 상세 정보를 담아서 model에 넣음 --
 			}
+				
+
+				
 			
 		} catch(Exception e) {
 			rdAttributes.addFlashAttribute("error", new RuntimeException("API 접속 에러가 발생했습니다."));

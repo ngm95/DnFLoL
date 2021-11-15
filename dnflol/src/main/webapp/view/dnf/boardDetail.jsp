@@ -86,7 +86,7 @@
 								<div class="col-6 col-md-4">
 									<div class="card">
 										<div class="card-body">
-											<button id="character${status.count}" class="btn btn-info" onclick="location.href='/dnf/charDetail/${accepted.dcname}'">${accepted.dcname}</button>
+											<button id="character${status.count}" class="btn btn-info" onclick="location.href='/dnf/charDetail/${accepted.dcharId}'">${accepted.dcname}</button>
 											<c:if test="${authInfo.uid eq ownerUid and accepted.dcname ne dgroupDto.dgroupOwnerName}">
 												<form action="/dnf/denyApply" method="post" style="float:right">
 													<input name="${_csrf.parameterName}" type="hidden" value="${_csrf.token}" /> 
@@ -97,6 +97,7 @@
 											</c:if>
 										</div>
 									</div>
+									
 								</div>
 							</c:forEach>
 						</div>
