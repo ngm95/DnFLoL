@@ -20,8 +20,12 @@ public class DCharDAO {
 		template.insert(MAPPER + ".create", dcharDto);
 	}
 	
-	public DCharDTO readByName(String dcharName) {
-		return template.selectOne(MAPPER + ".readByName", dcharName);
+	public DCharDTO readByName(String dcname) {
+		return template.selectOne(MAPPER + ".readByName", dcname);
+	}
+	
+	public DCharDTO readByCId(String dcharId) {
+		return template.selectOne(MAPPER + ".readByName", dcharId);
 	}
 	
 	public DCharDTO readByNametocid(String dcharId) {
@@ -53,8 +57,8 @@ public class DCharDAO {
 		return template.selectList(MAPPER + ".readAllAppliedByGroupId", dgroupId);
 	}
 	
-	public void deleteByName(String dcharName) {
-		template.delete(MAPPER + ".deleteByName", dcharName);
+	public void deleteByName(String dcname) {
+		template.delete(MAPPER + ".deleteByName", dcname);
 	}
 	public void deleteById(String dcharId) {
 		template.delete(MAPPER + ".deleteById", dcharId);

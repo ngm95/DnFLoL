@@ -36,6 +36,12 @@ public class DCharService {
 			throw new NoSuchCharException("해당하는 DnF 캐릭터가 없습니다.");
 		return dcharDto; 
 	}
+	public DCharDTO readByCId(String dcharId) {
+		DCharDTO dcharDto = dcharDao.readByCId(dcharId);
+		if (dcharDto == null)
+			throw new NoSuchCharException("해당하는 DnF 캐릭터가 없습니다.");
+		return dcharDto; 
+	}
 	
 	public DCharDTO readByNametocid(String dcharId) {
 		DCharDTO dcharDto = dcharDao.readByNametocid(dcharId);
@@ -65,9 +71,9 @@ public class DCharService {
 		return dcharDao.readAllAppliedByGroupId(dgroupId);
 	}
 	
-	public void deleteByName(String dcname) {
-		DCharDTO dcharDto = readByName(dcname);
+	public void deleteById(String dcharId) {
+		DCharDTO dcharDto = readByCId(dcharId);
 		if (dcharDto != null)
-			dcharDao.deleteByName(dcname);
+			dcharDao.deleteById(dcharId);
 	}
 }

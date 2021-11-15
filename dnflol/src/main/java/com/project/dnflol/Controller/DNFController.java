@@ -340,9 +340,9 @@ public class DNFController {
 	}
 	
 	@PostMapping("/deletecharacter")
-	public String deletecharacter(@RequestParam(value="characterName") String characterName, HttpServletRequest request, RedirectAttributes rdAttributes) {
+	public String deletecharacter(@RequestParam(value="dcharId") String dcharId, HttpServletRequest request, RedirectAttributes rdAttributes) {
 		try {
-			dcServ.deleteByName(characterName);				// DB에서 해당 던 캐릭터 삭제
+			dcServ.deleteById(dcharId);				// DB에서 해당 던 캐릭터 삭제
 		} catch (NoSuchCharException nsce) {
 			rdAttributes.addFlashAttribute("error", nsce);
 			return "redirect:" + request.getHeader("Referer");
@@ -353,66 +353,18 @@ public class DNFController {
 	/**
 	 * 계정 전적 정보를 볼 수 있는 페이지
 	 */
-	@RequestMapping("/charDetail/{dcname}")
-	public String dnfCharDetail(@PathVariable("dcname") String dcname, Model model, HttpServletRequest request, RedirectAttributes rdAttributes) {
+	@RequestMapping("/charDetail/{dcharId}")
+	public String dnfCharDetail(@PathVariable("dcharId") String dcharId, Model model, HttpServletRequest request, RedirectAttributes rdAttributes) {
 		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 		
 		DCharDTO dcharDto = null;
 		try {
-			dcServ.readByName(dcname);
+			dcharDto = dcServ.readByNametocid(dcharId);
+			model.addAttribute("dcharDto", dcharDto);
 		} catch (NoSuchCharException nsce) {
 			rdAttributes.addFlashAttribute("error", nsce);
 			return "redirect:" + request.getHeader("Referer");
 		}
-	@GetMapping("/test")
-	public ModelAndView lolFindSummoner(HttpSession session) {
-		String requestURL = "https://api.neople.co.kr/df/servers/siroco/characters/fb2eabeab87124585a54a48356cc02c3/timeline?limit=100&code=201,507&apikey=VdItQKfKUZWekekAag0O6i7vxRhE9TMs";
-							
-		ModelAndView mv = new ModelAndView();
-		DAdventureDTO summonerDto = null;
-		try {
-			HttpClient client = HttpClientBuilder.create().build();
-			HttpGet getRequest = new HttpGet(requestURL);
-			HttpResponse response = client.execute(getRequest);
-			/*
-			 * 기본적인 계정 정보를 받아옴
-			 */
-			if (response.getStatusLine().getStatusCode() == 200) {
-				ResponseHandler<String> handler = new BasicResponseHandler();
-				String body = handler.handleResponse(response);
-				//body = body.substring(9,body.length());
-				//body.indexOf
-				
-				body = body.substring(body.indexOf("rows")+6,body.length()-2);
-				System.out.print(body);
-				objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-				List<TimeLineDTO> timeline = objectMapper.readValue(body, objectMapper.getTypeFactory().constructCollectionType(List.class, TimeLineDTO.class));
-				//summonerDto = objectMapper.readValue(body, DAdventureDTO.class);	// json을 SummonerDTO로 바꿈
-				session.setAttribute("result", timeline);
-				/*
-				for (TimeLineDTO ele : timeline) {
-					 ele.getData();
-				}*/
-				//LCharDTO lcharDto = new LCharDTO(((AuthInfo)session.getAttribute("authInfo")).getUid(), summonerDto.getName());
-				//lcServ.create(lcharDto);										// 아이디를 계정에 연동
-			}
-		} catch(Exception e) {
-			session.setAttribute("linked", false);
-			mv.setViewName("redirect:/secrity/denied");
-			return mv;
-		}
-		
-		session.setAttribute("linked", true);
-		mv.setViewName("/dnf/test");					// 이전 상태로 되돌아감
-		return mv;
-	}
-	@RequestMapping("/charDetail/{dcharId}")
-	public ModelAndView dnfCharDetail(Model model, @PathVariable("dcharId") String dcharId) {
-		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-		
-		DCharDTO dcharDto = dcServ.readByNametocid(dcharId);
-		model.addAttribute("dcharDto", dcharDto);
-		
 		String url ="https://api.neople.co.kr/df/servers/"+dcharDto.getDcserver()+"/characters/"+dcharDto.getDcharId() +"/timeline?limit=100&code=201&apikey=" + api.getDNF_API_KEY();
 		
 		try {
@@ -423,25 +375,18 @@ public class DNFController {
 			if (response.getStatusLine().getStatusCode() == 200) {
 				ResponseHandler<String> handler = new BasicResponseHandler();
 				String body = handler.handleResponse(response);
-				System.out.println(body);
-				
-				// -- 캐릭터의 상세 정보를 담아서 model에 넣음 --
-			}
-				
-
 				body = body.substring(body.indexOf("rows")+6,body.length()-2);
 
 				objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 				List<TimeLineDTO> timeline = objectMapper.readValue(body, objectMapper.getTypeFactory().constructCollectionType(List.class, TimeLineDTO.class));
 				
 				model.addAttribute("result", timeline);
-				System.out.print(timeline+"\n");
-				
-				
-				
+						
 				// -- 캐릭터의 상세 정보를 담아서 model에 넣음 --
 			}
-			
+				
+
+				
 			
 		} catch(Exception e) {
 			rdAttributes.addFlashAttribute("error", new RuntimeException("API 접속 에러가 발생했습니다."));
