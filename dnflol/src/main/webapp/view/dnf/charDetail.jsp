@@ -7,7 +7,7 @@
 <html>
 <head>
 <%@ include file="/view/includes/00_head.jsp"%>
-<title>LoL 계정 상세정보</title>
+<title>DnF 캐릭터 상세정보</title>
 </head>
 <body class="board-pages">
 
@@ -20,8 +20,12 @@
 		<div class="jumbotron">
 			<h3>계정 상세정보</h3>
 			<div class="jumbotron-board">
-				<pre style="font-size:3.5rem">${dcharDto.dcname}</pre>
-				<img src="https://img-api.neople.co.kr/df/servers/${dcharDto.dcserver}/characters/${dcharDto.dcharId}?zoom=1" class="card-img-top">
+				<pre style="font-size: 2.0rem">${dcharDto.dcname} </pre>
+				<img src="https://img-api.neople.co.kr/df/servers/${dcharDto.dcserver}/characters/${dcharDto.dcharId}?zoom=1">
+				<h2>한달간 레이드 드랍 횟수 ${fn:length(itemresult)}/${fn:length(result)}</h2>
+				<c:forEach var="itemel" items="${itemresult}" >
+									<img src=	 https://img-api.neople.co.kr/df/items/${itemel.data.itemId}>
+								</c:forEach>
 			</div>
 				
 			<h3 style="margin-top : 25px"> 추가 정보 제목 </h3>
@@ -33,15 +37,23 @@
 							<th scope="col">레이드</th>
 							<th scope="col">공대명</th>
 							<th scope="col">시간</th>
+							<th scope="col">득템</th>
 						</tr>
 					</thead>
-					<tbody >
+					<tbody  >
 					<c:forEach var="el" items="${result}" varStatus="status">
 					<c:if test="${el.data.phaseName ne '추적'}">
 						<tr>
 							<td>${el.data.raidName}</td>
 							<td>${el.data.raidPartyName}</td>
 							<td>${el.date}</td>
+							<td>
+								<c:forEach var="itemel" items="${itemresult}" >
+									<c:if test="${el.date eq itemel.date}">
+										${itemel.data.itemName}
+									</c:if>
+								</c:forEach>
+							</td>
 						</tr>
 					</c:if>
 					</c:forEach>
