@@ -16,7 +16,16 @@
 		<%@ include file="/view/includes/03_header.jsp"%>
 		<jsp:include page="/view/includes/errorModal.jsp"></jsp:include>
 		<div class="jumbotron">
-			<h2><b>${lcharDto.lcharName}</b> 계정 상세정보</h2>
+			<div class="d-flex">
+				<div class="d-flex flex-row">
+					<div class="d-flex flex-column" style="margin-right:10px">
+						<img src="/lol/img/profileicon/${summonerDto.profileIconId}.png" width="50px">
+					</div>
+					<div class="d-flex flex-column">
+						<h2><b>${lcharDto.lcharName}</b> 계정 상세정보</h2>
+					</div>
+				</div>
+			</div>
 			<h3 style="margin-top : 25px">최근 15게임 중 소환사의 협곡 ${match.totalGames}게임</h3>
 			<div class="jumbotron-board">
 				<table class="table table-striped">

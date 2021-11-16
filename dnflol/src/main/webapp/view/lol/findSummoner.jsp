@@ -35,36 +35,31 @@
 						<p style="color:red"><b>검색 중 오류가 발생했습니다.</b></p>
 					</c:when>	
 					<c:otherwise>
-						<c:choose>
-							<c:when test="${'IRON' eq leagueDto.tier}">
-								<img src="/lol/img/ranked-emblems/Emblem_Iron.png" style="width:5%">
-							</c:when>
-							<c:when test="${'BRONZE' eq leagueDto.tier}">
-								<img src="/lol/img/ranked-emblems/Emblem_Bronze.png" style="width:5%">
-							</c:when>
-							<c:when test="${'SILVER' eq leagueDto.tier}">
-								<img src="/lol/img/ranked-emblems/Emblem_Silver.png" style="width:5%">
-							</c:when>
-							<c:when test="${'GOLD' eq leagueDto.tier}">
-								<img src="/lol/img/ranked-emblems/Emblem_Gold.png" style="width:5%">
-							</c:when>
-							<c:when test="${'PLATINUM' eq leagueDto.tier}">
-								<img src="/lol/img/ranked-emblems/Emblem_Platinum.png" style="width:5%">
-							</c:when>
-							<c:when test="${'DIAMOND' eq leagueDto.tier}">
-								<img src="/lol/img/ranked-emblems/Emblem_Diamond.png" style="width:5%">
-							</c:when>
-							<c:when test="${'MASTER' eq leagueDto.tier}">
-								<img src="/lol/img/ranked-emblems/Emblem_Master.png" style="width:5%">
-							</c:when>
-							<c:when test="${'GRANDMASTER' eq leagueDto.tier}">
-								<img src="/lol/img/ranked-emblems/Emblem_Grandmaster.png" style="width:5%">
-							</c:when>
-							<c:when test="${'CHALLENGER' eq leagueDto.tier}">
-								<img src="/lol/img/ranked-emblems/Emblem_Challenger.png" style="width:5%">
-							</c:when>
-						</c:choose>
-						아이디 : ${summoner.name}, 레벨 : ${summoner.summonerLevel}, 티어 : ${leagueDto.tier} ${leagueDto.rank}
+					
+						<div class="d-flex">
+							<div class="d-flex flex-row">
+								<div class="d-flex flex-column">
+									<img src="/lol/img/profileicon/${summoner.profileIconId}.png" width="80px">
+								</div>
+								<div class="d-flex flex-column" style="margin-left:20px; font-size:1.8em">
+									<div class="d-flex flex-column">
+										아이디 : ${summoner.name}, 레벨 : ${summoner.summonerLevel}
+									</div>
+									<div class="d-flex flex-column">
+										티어 :
+										<c:choose>
+											<c:when test="${not empty leagueDto}">
+												${leagueDto.tier} ${leagueDto.rank} ${leagueDto.leaguePoints}LP
+											</c:when>
+											<c:otherwise>
+												unranked
+											</c:otherwise>
+										</c:choose>
+									</div>
+								</div>
+							</div>
+						</div>
+						
 						<form:form modelAttribute="summoner" action="/lol/addSummoner" method="post">
 							<div class="col-xs-3">
 								<form:input type="hidden" path="name" value="${summoner.name}"/>

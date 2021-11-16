@@ -254,6 +254,7 @@ public class LOLController {
 		model.addAttribute("acceptedList", acceptedList);
 		
 		List<List<String>> matches = new ArrayList<>();
+		List<SummonerDTO> summonerList = new ArrayList<>();
 		for (LApplyDTO accepted : acceptedList) {
 			String summonerURL = "https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/" + accepted.getLcharName().replaceAll(" ", "") + "?api_key=" + api.getLOL_API_KEY();
 
@@ -270,7 +271,8 @@ public class LOLController {
 					ResponseHandler<String> handler = new BasicResponseHandler();
 					String body = handler.handleResponse(response);
 					summonerDto = objectMapper.readValue(body, SummonerDTO.class);		// JSON 응답을 DTO로 바꾸는 작업
-
+					summonerList.add(summonerDto);
+					
 					/*
 					 * 계정의 전적을 받아옴
 					 */
@@ -294,6 +296,7 @@ public class LOLController {
 				model.addAttribute("error", new RuntimeException("오류가 발생했습니다. 지속적으로 발생할 경우 관리자에게 문의해 주세요."));
 			}
 		}
+		model.addAttribute("summonerList", summonerList);
 		model.addAttribute("matches", matches);
 		
 		List<LCharDTO> myAppliedChars = lcServ.readAllAppliedByUid(((AuthInfo)model.getAttribute("authInfo")).getUid(), lgroupId);			// 내 LOL 계정 중 해당 게시글에 이미 신청한 계정
@@ -353,30 +356,32 @@ public class LOLController {
 				ResponseHandler<String> handler = new BasicResponseHandler();
 				String body = handler.handleResponse(response);
 				summonerDto = objectMapper.readValue(body, SummonerDTO.class);		// JSON 응답을 DTO로 바꾸는 작업
-				model.addAttribute("summoner", summonerDto);		
-			}
-			
-			/*
-			 * 계정의 티어를 받아옴
-			 */
-			String leagueURL = "https://kr.api.riotgames.com/lol/league/v4/entries/by-summoner/" + summonerDto.getId() + "?api_key=" + api.getLOL_API_KEY();
-			getRequest = new HttpGet(leagueURL);
-			response = client.execute(getRequest);
-			if (response.getStatusLine().getStatusCode() == 200) {
-				ResponseHandler<String> handler = new BasicResponseHandler();
-				String body = handler.handleResponse(response);
-				if (body.equals("[]")) {
-					rdAttributes.addFlashAttribute("error", new Exception(""));
+				model.addAttribute("summoner", summonerDto);	
+
+				/*
+				 * 계정의 티어를 받아옴
+				 */
+				String leagueURL = "https://kr.api.riotgames.com/lol/league/v4/entries/by-summoner/" + summonerDto.getId() + "?api_key=" + api.getLOL_API_KEY();
+				getRequest = new HttpGet(leagueURL);
+				response = client.execute(getRequest);
+				if (response.getStatusLine().getStatusCode() == 200) {
+					handler = new BasicResponseHandler();
+					body = handler.handleResponse(response);
+					
+					if (!body.equals("[]")) {
+						LeagueDTO leagueDto = objectMapper.readValue(body.substring(1, body.length()-1), LeagueDTO.class);	// JSON 응답을 DTO로 바꾸는 작업
+						model.addAttribute("leagueDto", leagueDto);
+					}
+					else {
+						model.addAttribute("leagueDto", null);
+					}
+				} else {
+					rdAttributes.addFlashAttribute("error", new Exception("API 접속 오류(League) : " + response.getStatusLine().getStatusCode()));
 					return "redirect:" + request.getHeader("Referer");
-				}
-				else {
-					LeagueDTO leagueDto = objectMapper.readValue(body.substring(1, body.length()-1), LeagueDTO.class);	// JSON 응답을 DTO로 바꾸는 작업
-					model.addAttribute("leagueDto", leagueDto);
 				}
 			}
 		} catch(Exception e) {
-			model.addAttribute("Exception", e);
-			return "/security/denied";
+			model.addAttribute("error", new RuntimeException("오류가 발생했습니다. 지속적으로 발생할 경우 관리자에게 문의해 주세요."));
 		}
 		
 		return "/lol/findSummoner";		// 다시 /lol/findSummoner 페이지로 이동해서 검색 결과를 확인하도록 함
@@ -439,6 +444,7 @@ public class LOLController {
 				ResponseHandler<String> handler = new BasicResponseHandler();
 				String body = handler.handleResponse(response);
 				summonerDto = objectMapper.readValue(body, SummonerDTO.class);		// JSON 응답을 DTO로 바꾸는 작업
+				model.addAttribute("summonerDto", summonerDto);
 				
 				/*
 				 * 계정의 티어를 받아옴
