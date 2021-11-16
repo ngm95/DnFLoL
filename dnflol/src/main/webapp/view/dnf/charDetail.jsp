@@ -21,11 +21,169 @@
 			<h3>계정 상세정보</h3>
 			<div class="jumbotron-board">
 				<pre style="font-size: 2.0rem">${dcharDto.dcname} </pre>
-				<img src="https://img-api.neople.co.kr/df/servers/${dcharDto.dcserver}/characters/${dcharDto.dcharId}?zoom=1">
+				<div class="row-vh d-flex flex-row justify-content-start"> <!--flex-row일 때는 안써도 된다.-->
+
+           			<div class="row-vh d-flex flex-column ">
+
+            				<div class="row-vh d-flex flex-row ">
+
+            				<c:choose>
+								<c:when test="${Equipresult[3].upgradeInfo.itemId ne null}">
+            						<img src=	 "https://img-api.neople.co.kr/df/items/${Equipresult[3].upgradeInfo.itemId}">
+								</c:when>
+					
+								<c:otherwise>
+									<img src=	 "https://img-api.neople.co.kr/df/items/${Equipresult[3].itemId}">
+								</c:otherwise>
+							</c:choose>
+
+            				<c:choose>
+								<c:when test="${Equipresult[2].upgradeInfo.itemId ne null}">
+            						<img src=	 "https://img-api.neople.co.kr/df/items/${Equipresult[2].upgradeInfo.itemId}">
+								</c:when>
+					
+								<c:otherwise>
+									<img src=	 "https://img-api.neople.co.kr/df/items/${Equipresult[2].itemId}">
+								</c:otherwise>
+							</c:choose>
+
+							</div>
+
+            				<div class="row-vh d-flex flex-row ">
+
+            				<c:choose>
+								<c:when test="${Equipresult[6].upgradeInfo.itemId ne null}">
+            						<img src=	 "https://img-api.neople.co.kr/df/items/${Equipresult[6].upgradeInfo.itemId}">
+								</c:when>
+					
+								<c:otherwise>
+									<img src=	 "https://img-api.neople.co.kr/df/items/${Equipresult[6].itemId}">
+								</c:otherwise>
+							</c:choose>
+
+            				<c:choose>
+								<c:when test="${Equipresult[4].upgradeInfo.itemId ne null}">
+            						<img src=	 "https://img-api.neople.co.kr/df/items/${Equipresult[4].upgradeInfo.itemId}">
+								</c:when>
+					
+								<c:otherwise>
+									<img src=	 "https://img-api.neople.co.kr/df/items/${Equipresult[4].itemId}">
+								</c:otherwise>
+							</c:choose>
+
+							</div>
+							
+							<div class="row-vh d-flex flex-row ">
+
+            				<c:choose>
+								<c:when test="${Equipresult[5].upgradeInfo.itemId ne null}">
+            						<img src=	 "https://img-api.neople.co.kr/df/items/${Equipresult[5].upgradeInfo.itemId}">
+								</c:when>
+					
+								<c:otherwise>
+									<img src=	 "https://img-api.neople.co.kr/df/items/${Equipresult[5].itemId}">
+								</c:otherwise>
+							</c:choose>
+
+
+							</div>
+
+							</div>
+
+            		<div  class="item align-self-center"><img src="https://img-api.neople.co.kr/df/servers/${dcharDto.dcserver}/characters/${dcharDto.dcharId}?zoom=1"></div>
+					<div class="row-vh d-flex flex-column ">
+
+            				<div class="row-vh d-flex flex-row ">
+
+            				<img src=	 "https://img-api.neople.co.kr/df/items/${Equipresult[0].itemId}">
+
+            				<img src=	 "https://img-api.neople.co.kr/df/items/${Equipresult[1].itemId}">
+
+							</div>
+
+            				<div class="row-vh d-flex flex-row ">
+
+            				<c:choose>
+								<c:when test="${Equipresult[8].upgradeInfo.itemId ne null}">
+            						<img src=	 "https://img-api.neople.co.kr/df/items/${Equipresult[8].upgradeInfo.itemId}">
+								</c:when>
+					
+								<c:otherwise>
+									<img src=	 "https://img-api.neople.co.kr/df/items/${Equipresult[8].itemId}">
+								</c:otherwise>
+							</c:choose>
+
+            				<c:choose>
+								<c:when test="${Equipresult[7].upgradeInfo.itemId ne null}">
+            						<img src=	 "https://img-api.neople.co.kr/df/items/${Equipresult[7].upgradeInfo.itemId}">
+								</c:when>
+					
+								<c:otherwise>
+									<img src=	 "https://img-api.neople.co.kr/df/items/${Equipresult[7].itemId}">
+								</c:otherwise>
+							</c:choose>
+
+							</div>
+							
+							<div class="row-vh d-flex flex-row ">
+
+            				<c:choose>
+								<c:when test="${Equipresult[8].upgradeInfo.itemId ne null}">
+            						<img src=	 "https://img-api.neople.co.kr/df/items/${Equipresult[10].upgradeInfo.itemId}">
+								</c:when>
+					
+								<c:otherwise>
+									<img src=	 "https://img-api.neople.co.kr/df/items/${Equipresult[10].itemId}">
+								</c:otherwise>
+							</c:choose>
+
+							<c:choose>
+								<c:when test="${Equipresult[9].upgradeInfo.itemId ne null}">
+            						<img src=	 "https://img-api.neople.co.kr/df/items/${Equipresult[9].upgradeInfo.itemId}">
+								</c:when>
+					
+								<c:otherwise>
+									<img src=	 "https://img-api.neople.co.kr/df/items/${Equipresult[9].itemId}">
+								</c:otherwise>
+							</c:choose>
+							</div>
+							
+							<div class="row-vh d-flex flex-row ">
+
+            				<c:choose>
+								<c:when test="${Equipresult[12].upgradeInfo.itemId ne null}">
+            						<img src=	 "https://img-api.neople.co.kr/df/items/${Equipresult[12].upgradeInfo.itemId}">
+								</c:when>
+					
+								<c:otherwise>
+									<img src=	 "https://img-api.neople.co.kr/df/items/${Equipresult[12].itemId}">
+								</c:otherwise>
+							</c:choose>
+							<c:choose>
+								<c:when test="${Equipresult[11].upgradeInfo.itemId ne null}">
+            						<img src=	 "https://img-api.neople.co.kr/df/items/${Equipresult[11].upgradeInfo.itemId}">
+								</c:when>
+					
+								<c:otherwise>
+									<img src=	 "https://img-api.neople.co.kr/df/items/${Equipresult[11].itemId}">
+								</c:otherwise>
+							</c:choose>
+							</div>
+
+							</div>
+            		
+
+				</div>
+				
+				<c:forEach var="eqel" items="${Equipresult}" >
+				
+								</c:forEach>
 				<h2>한달간 레이드 드랍 횟수 ${fn:length(itemresult)}/${fn:length(result)}</h2>
 				<c:forEach var="itemel" items="${itemresult}" >
 									<img src=	 https://img-api.neople.co.kr/df/items/${itemel.data.itemId}>
 								</c:forEach>
+								
+								
 			</div>
 				
 			<h3 style="margin-top : 25px"> 추가 정보 제목 </h3>

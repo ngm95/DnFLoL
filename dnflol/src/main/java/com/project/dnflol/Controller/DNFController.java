@@ -35,6 +35,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.dnflol.DTO.DAdventureDTO;
 import com.project.dnflol.DTO.TimeLineDTO;
 import com.project.dnflol.DTO.TimeLineDataDTO;
+import com.project.dnflol.DTO.DEquipDTO;
 import com.project.dnflol.DTO.DApplyDTO;
 import com.project.dnflol.DTO.DCharDTO;
 import com.project.dnflol.DTO.DGroupDTO;
@@ -358,6 +359,8 @@ public class DNFController {
 		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 		
 		List<TimeLineDTO> timeline,timeline2;
+		List<DEquipDTO> Equip;
+		
 		DCharDTO dcharDto = null;
 		try {
 			dcharDto = dcServ.readByNametocid(dcharId);
@@ -386,10 +389,6 @@ String url ="https://api.neople.co.kr/df/servers/"+dcharDto.getDcserver()+"/char
 				// -- 캐릭터의 상세 정보를 담아서 model에 넣음 --
 			}
 			
-		
-				
-
-				
 			
 		} catch(Exception e) {
 			rdAttributes.addFlashAttribute("error", new RuntimeException("API 접속 에러가 발생했습니다."));
@@ -419,7 +418,35 @@ String url ="https://api.neople.co.kr/df/servers/"+dcharDto.getDcserver()+"/char
 			rdAttributes.addFlashAttribute("error", new RuntimeException("API 접속 에러가 발생했습니다."));
 			return "redirect:" + request.getHeader("Referer");
 		}
+		
+		
+		url ="https://api.neople.co.kr/df/servers/"+dcharDto.getDcserver()+"/characters/"+dcharDto.getDcharId() +"/equip/equipment?&apikey=" + api.getDNF_API_KEY();
+		try {
+			HttpClient client = HttpClientBuilder.create().build();
+			HttpGet getRequest = new HttpGet(url);
+			HttpResponse response = client.execute(getRequest);
 
+			if (response.getStatusLine().getStatusCode() == 200) {
+				ResponseHandler<String> handler = new BasicResponseHandler();
+				String body = handler.handleResponse(response);
+				body = body.substring(body.indexOf("equipment")+11,body.indexOf("setItemInfo")-2);
+				
+				
+				
+				objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+				Equip = objectMapper.readValue(body, objectMapper.getTypeFactory().constructCollectionType(List.class, DEquipDTO.class));
+				
+				model.addAttribute("Equipresult", Equip);
+				
+				// -- 캐릭터의 상세 정보를 담아서 model에 넣음 --
+			}
+			
+			
+		} catch(Exception e) {
+			rdAttributes.addFlashAttribute("error", new RuntimeException("API 접속 에러가 발생했습니다."));
+			return "redirect:" + request.getHeader("Referer");
+		}
+		
 		return "/dnf/charDetail";	
 	}
 	
