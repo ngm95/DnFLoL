@@ -12,7 +12,6 @@ public class ParticipantDTO {
 	int damageDealtToTurrets;
 	int deaths;
 	int goldEarned;
-	int goldSpent;
 	String individualPosition;
 	int kills;
 	int summonerLevel;
@@ -22,4 +21,17 @@ public class ParticipantDTO {
 	int totalDamageTaken;
 	int trueDamageDealtToChampions;
 	int visionScore;
+	int sightWardsBoughtInGame;
+	boolean win;
+	int item0;
+	int item1;
+	int item2;
+	int item3;
+	int item4;
+	int item5;
+	int item6;
+	int totalMinionsKilled;
+	PerksDTO perks;
+	int summoner1Id;
+	int summoner2Id;
 }

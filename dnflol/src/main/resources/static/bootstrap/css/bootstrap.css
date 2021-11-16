@@ -11331,5 +11331,7 @@ textarea.form-control-lg {
   }
 }
 
-
+.tab {
+	white-space:pre;
+}
 /*# sourceMappingURL=bootstrap.css.map */

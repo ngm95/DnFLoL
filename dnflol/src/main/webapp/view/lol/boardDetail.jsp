@@ -68,36 +68,26 @@
 							</button>
 						</div>
 						<div class="row row-cols-6">
-<%-- 							<c:forEach var="accepted" items="${acceptedList}"> --%>
-<!-- 								<div class="col-6 col-md-4"> -->
-<!-- 									<div class="card"> -->
-<!-- 										<div class="card-body"> -->
-<%-- 											<button id="character${status.count}" class="btn btn-info" onclick="location.href='/lol/charDetail/${accepted.lcharName}'">${accepted.lcharName}</button> --%>
-<%-- 											<c:if test="${authInfo.uid eq ownerUid and accepted.lcharName ne lgroupDto.lgroupOwner}"> --%>
-<%-- 												<form action="/lol/denyApply" method="post" style="float:right"> --%>
-<%-- 													<input name="${_csrf.parameterName}" type="hidden" value="${_csrf.token}" />  --%>
-<%-- 													<input type="hidden" name="lapplyId" value="${accepted.lapplyId}">  --%>
-<%-- 													<input type="hidden" name="lgroupId" value="${accepted.lgroupId}">  --%>
-<!-- 													<button type="submit" class="btn btn-danger" style="float:right">취소하기</button> -->
-<%-- 												</form> --%>
-<%-- 											</c:if> --%>
-<!-- 										</div> -->
-<!-- 									</div> -->
-<!-- 								</div> -->
-<%-- 							</c:forEach> --%>
 							<c:forEach begin="0" end="${fn:length(acceptedList)-1}" step="1" varStatus="status">
 								<div class="col-6 col-md-4">
-									<div class="card">
+									<div class="card" style="margin-bottom:20px">
 										<div class="card-body">
-											<button id="character${status.index}" class="btn btn-info" onclick="location.href='/lol/charDetail/${acceptedList[status.index].lcharName}'">${acceptedList[status.index].lcharName}</button>
-											<c:if test="${authInfo.uid eq ownerUid and acceptedList[status.index].lcharName ne lgroupDto.lgroupOwner}">
-												<form action="/lol/denyApply" method="post" style="float:right">
+											<div style="display:block">
+												<form action="/lol/charDetail" target="_blank" method="post" style="float:left">
 													<input name="${_csrf.parameterName}" type="hidden" value="${_csrf.token}" /> 
-													<input type="hidden" name="lapplyId" value="${acceptedList[status.index].lapplyId}"> 
-													<input type="hidden" name="lgroupId" value="${acceptedList[status.index].lgroupId}"> 
-													<button type="submit" class="btn btn-danger" style="float:right">취소하기</button>
+													<input type="hidden" name="matches" value="${matches[status.index]}" />
+													<input type="hidden" name="lcharName" value="${acceptedList[status.index].lcharName}" />
+													<button type="submit" class="btn btn-info" style="float:left">${acceptedList[status.index].lcharName}</button>
 												</form>
-											</c:if>
+												<c:if test="${authInfo.uid eq ownerUid and acceptedList[status.index].lcharName ne lgroupDto.lgroupOwner}">
+													<form action="/lol/denyApply" method="post" style="float:right">
+														<input name="${_csrf.parameterName}" type="hidden" value="${_csrf.token}" /> 
+														<input type="hidden" name="lapplyId" value="${acceptedList[status.index].lapplyId}"> 
+														<input type="hidden" name="lgroupId" value="${acceptedList[status.index].lgroupId}"> 
+														<button type="submit" class="btn btn-danger" style="float:right">취소하기</button>
+													</form>
+												</c:if>	
+											</div>
 										</div>
 									</div>
 								</div>
