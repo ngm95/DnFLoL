@@ -18,9 +18,9 @@ import org.springframework.context.annotation.Configuration;
 @ComponentScan(basePackages = "com.project.dnflol")
 public class DnflolApplication extends SpringBootServletInitializer{
 	@Override
-	  protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
-	    return builder.sources(DnflolApplication.class);
-	  }
+	protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
+		return builder.sources(DnflolApplication.class);
+	}
 
 	public static void main(String[] args) {
 		SpringApplication.run(DnflolApplication.class, args);

@@ -31,7 +31,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.dnflol.DTO.InfoDTO;
@@ -39,6 +38,7 @@ import com.project.dnflol.DTO.LApplyDTO;
 import com.project.dnflol.DTO.LCharDTO;
 import com.project.dnflol.DTO.LGroupDTO;
 import com.project.dnflol.DTO.LeagueDTO;
+import com.project.dnflol.DTO.MatchDTO;
 import com.project.dnflol.DTO.ParticipantDTO;
 import com.project.dnflol.DTO.SummonerDTO;
 import com.project.dnflol.DTO.UserDTO;
@@ -253,11 +253,58 @@ public class LOLController {
 		model.addAttribute("lgroupDto", lgroupDto);
 		model.addAttribute("acceptedList", acceptedList);
 		
+		List<List<String>> matches = new ArrayList<>();
+		List<SummonerDTO> summonerList = new ArrayList<>();
+		for (LApplyDTO accepted : acceptedList) {
+			String summonerURL = "https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/" + accepted.getLcharName().replaceAll(" ", "") + "?api_key=" + api.getLOL_API_KEY();
+
+			SummonerDTO summonerDto = null;
+			try {
+				HttpClient client = HttpClientBuilder.create().build();
+				HttpGet getRequest = new HttpGet(summonerURL);
+				HttpResponse response = client.execute(getRequest);
+
+				/*
+				 * 기본적인 계정 정보를 받아옴
+				 */
+				if (response.getStatusLine().getStatusCode() == 200) {
+					ResponseHandler<String> handler = new BasicResponseHandler();
+					String body = handler.handleResponse(response);
+					summonerDto = objectMapper.readValue(body, SummonerDTO.class);		// JSON 응답을 DTO로 바꾸는 작업
+					summonerList.add(summonerDto);
+					
+					/*
+					 * 계정의 전적을 받아옴
+					 */
+					String matchURL = "https://asia.api.riotgames.com/lol/match/v5/matches/by-puuid/" + summonerDto.getPuuid() + "/ids?start=0&count=15&api_key=" + api.getLOL_API_KEY();
+					getRequest = new HttpGet(matchURL);
+					response = client.execute(getRequest);
+					if (response.getStatusLine().getStatusCode() == 200) {
+						handler = new BasicResponseHandler();
+						body = handler.handleResponse(response);
+						matches.add(Arrays.asList(body.substring(2, body.length()-2).split("\",\"")));		// match_id를 리스트 형태로 변환해 다시 리스트에 넣는다.
+					}
+					else {
+						rdAttributes.addFlashAttribute("error", new Exception("API 접속 오류(Match) : " + response.getStatusLine().getStatusCode()));
+						return "redirect:" + request.getHeader("Referer");
+					}
+				} else {
+					rdAttributes.addFlashAttribute("error", new Exception("API 접속 오류(Summoner) : " + response.getStatusLine().getStatusCode()));
+					return "redirect:" + request.getHeader("Referer");
+				}
+			} catch (Exception e) {
+				model.addAttribute("error", new RuntimeException("오류가 발생했습니다. 지속적으로 발생할 경우 관리자에게 문의해 주세요."));
+			}
+		}
+		model.addAttribute("summonerList", summonerList);
+		model.addAttribute("matches", matches);
+		
 		List<LCharDTO> myAppliedChars = lcServ.readAllAppliedByUid(((AuthInfo)model.getAttribute("authInfo")).getUid(), lgroupId);			// 내 LOL 계정 중 해당 게시글에 이미 신청한 계정
 		List<LCharDTO> myNotAppliedChars = lcServ.readAllNotAppliedByUid(((AuthInfo)model.getAttribute("authInfo")).getUid(), lgroupId);	// 내 LOL 계정 중 해당 게시글에 아직 신청하지 않은 계정
 		model.addAttribute("myAppliedChars", myAppliedChars);
 		model.addAttribute("myNotAppliedChars", myNotAppliedChars);
 
+		
 		try {
 			LCharDTO lcharDto = lcServ.readByName(lgroupDto.getLgroupOwner());
 			model.addAttribute("ownerUid", lcharDto.getUid());
@@ -309,30 +356,32 @@ public class LOLController {
 				ResponseHandler<String> handler = new BasicResponseHandler();
 				String body = handler.handleResponse(response);
 				summonerDto = objectMapper.readValue(body, SummonerDTO.class);		// JSON 응답을 DTO로 바꾸는 작업
-				model.addAttribute("summoner", summonerDto);		
-			}
-			
-			/*
-			 * 계정의 티어를 받아옴
-			 */
-			String leagueURL = "https://kr.api.riotgames.com/lol/league/v4/entries/by-summoner/" + summonerDto.getId() + "?api_key=" + api.getLOL_API_KEY();
-			getRequest = new HttpGet(leagueURL);
-			response = client.execute(getRequest);
-			if (response.getStatusLine().getStatusCode() == 200) {
-				ResponseHandler<String> handler = new BasicResponseHandler();
-				String body = handler.handleResponse(response);
-				if (body.equals("[]")) {
-					rdAttributes.addFlashAttribute("error", new Exception(""));
+				model.addAttribute("summoner", summonerDto);	
+
+				/*
+				 * 계정의 티어를 받아옴
+				 */
+				String leagueURL = "https://kr.api.riotgames.com/lol/league/v4/entries/by-summoner/" + summonerDto.getId() + "?api_key=" + api.getLOL_API_KEY();
+				getRequest = new HttpGet(leagueURL);
+				response = client.execute(getRequest);
+				if (response.getStatusLine().getStatusCode() == 200) {
+					handler = new BasicResponseHandler();
+					body = handler.handleResponse(response);
+					
+					if (!body.equals("[]")) {
+						LeagueDTO leagueDto = objectMapper.readValue(body.substring(1, body.length()-1), LeagueDTO.class);	// JSON 응답을 DTO로 바꾸는 작업
+						model.addAttribute("leagueDto", leagueDto);
+					}
+					else {
+						model.addAttribute("leagueDto", null);
+					}
+				} else {
+					rdAttributes.addFlashAttribute("error", new Exception("API 접속 오류(League) : " + response.getStatusLine().getStatusCode()));
 					return "redirect:" + request.getHeader("Referer");
-				}
-				else {
-					LeagueDTO leagueDto = objectMapper.readValue(body.substring(1, body.length()-1), LeagueDTO.class);	// JSON 응답을 DTO로 바꾸는 작업
-					model.addAttribute("leagueDto", leagueDto);
 				}
 			}
 		} catch(Exception e) {
-			model.addAttribute("Exception", e);
-			return "/security/denied";
+			model.addAttribute("error", new RuntimeException("오류가 발생했습니다. 지속적으로 발생할 경우 관리자에게 문의해 주세요."));
 		}
 		
 		return "/lol/findSummoner";		// 다시 /lol/findSummoner 페이지로 이동해서 검색 결과를 확인하도록 함
@@ -364,8 +413,10 @@ public class LOLController {
 	 * 계정 전적 정보를 볼 수 있는 페이지
 	 * - 계정 전적을 랭크 / 일반 / 합계로 구분해서 각각 최근 10게임의 전적, 승률, 주요 포지션 등을 보여줌
 	 */
-	@RequestMapping("/charDetail/{lcharName}")
-	public String lolCharDetail(@PathVariable("lcharName") String lcharName, HttpServletRequest request, RedirectAttributes rdAttributes, Model model) {
+	@PostMapping("/charDetail")
+	public String lolCharDetail(@RequestParam("lcharName") String lcharName, @RequestParam("matches") List<String> matches, HttpServletRequest request, RedirectAttributes rdAttributes, Model model) {
+		matches.add(0, matches.remove(0).substring(1));
+		matches.add(matches.size()-1, matches.remove(matches.size()-1).substring(0, 13));
 		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 		
 		LCharDTO lcharDto = null;
@@ -393,6 +444,7 @@ public class LOLController {
 				ResponseHandler<String> handler = new BasicResponseHandler();
 				String body = handler.handleResponse(response);
 				summonerDto = objectMapper.readValue(body, SummonerDTO.class);		// JSON 응답을 DTO로 바꾸는 작업
+				model.addAttribute("summonerDto", summonerDto);
 				
 				/*
 				 * 계정의 티어를 받아옴
@@ -404,7 +456,7 @@ public class LOLController {
 					handler = new BasicResponseHandler();
 					body = handler.handleResponse(response);
 					
-					if (body.equals("[]")) {
+					if (!body.equals("[]")) {
 						LeagueDTO leagueDto = objectMapper.readValue(body.substring(1, body.length()-1), LeagueDTO.class);	// JSON 응답을 DTO로 바꾸는 작업
 						model.addAttribute("leagueDto", leagueDto);
 					}
@@ -412,147 +464,52 @@ public class LOLController {
 						model.addAttribute("leagueDto", null);
 					}
 					
-					/*
-					 * 계정의 전적을 받아옴
-					 */
-					String matchURL = "https://asia.api.riotgames.com/lol/match/v5/matches/by-puuid/" + summonerDto.getPuuid() + "/ids?start=0&count=10&api_key=" + api.getLOL_API_KEY();
-					getRequest = new HttpGet(matchURL);
-					response = client.execute(getRequest);
-					if (response.getStatusLine().getStatusCode() == 200) {
-						handler = new BasicResponseHandler();
-						body = handler.handleResponse(response);
-						List<String> matches = Arrays.asList(body.substring(2, body.length()-2).split("\",\""));	// match_id의 배열을 리스트 형태로 변환
-						
-						List<ParticipantDTO> rankQ = new ArrayList<>();		// 랭크 게임 정보
-						List<ParticipantDTO> normalQ = new ArrayList<>();	// 일반 게임 정보
-						for (int i = 0; i < matches.size(); i++) {
-							matchURL = "https://asia.api.riotgames.com/lol/match/v5/matches/" + matches.get(i) + "?api_key=" + api.getLOL_API_KEY();
-							getRequest = new HttpGet(matchURL);
-							response = client.execute(getRequest);
-							if (response.getStatusLine().getStatusCode() == 200) {
-								handler = new BasicResponseHandler();
-								body = handler.handleResponse(response);
-								/*
-								 * 많고 많은 JSON 응답 중 관심있게 볼 것은 ParticipantDTO의 리스트 중 검색 계정의 정보이므로
-								 * InfoDTO와 그 내부의 ParticipantDTO만 따로 구해서 계정 ID와 일치하는 정보만 뽑아낸다.
-								 * 뽑아낸 정보는 랭크/일반게임 여부에 따라 위에서 정의한 리스트에 넣는다.
-								 */
-								String info = body.substring(body.indexOf("info")+6, body.length()-1);
-								InfoDTO infoDto = objectMapper.readValue(info, InfoDTO.class);
-								String participants = info.substring(info.indexOf("participants")+14, info.indexOf("platformId")-2);
-								List<ParticipantDTO> participantList = objectMapper.readValue(participants, new TypeReference<List<ParticipantDTO>>() {});	// JSO응답을 DTO의 List로 바꾸는 작업
-								for (int j = 0; j < participantList.size(); j++) {
-									ParticipantDTO person = participantList.get(j);
-									if (person.getSummonerName().equals(lcharDto.getLcharName())) {		// 계정 ID가 같을 때
-										if (infoDto.getQueueId() == 430)								// 게임 큐 ID를 보고 어떤 종류의 게임을 했는 지 판단해서 리스트에 넣음 
-											normalQ.add(person);
-										else if (infoDto.getQueueId() == 420)
-											rankQ.add(person);
-										break;
-									}
-								}
+					List<MatchDTO> matchList = new ArrayList<>();	// 모든 소환사의 협곡 게임 정보
+					for (int i = 0; i < matches.size(); i++) {
+						String matchURL = "https://asia.api.riotgames.com/lol/match/v5/matches/" + matches.get(i) + "?api_key=" + api.getLOL_API_KEY();
+						getRequest = new HttpGet(matchURL);
+						response = client.execute(getRequest);
+						if (response.getStatusLine().getStatusCode() == 200) {
+							handler = new BasicResponseHandler();
+							body = handler.handleResponse(response);
+							
+							/*
+							 * 많고 많은 JSON 응답 중 관심있게 볼 것은 ParticipantDTO의 리스트 중 검색 계정의 정보이므로
+							 * InfoDTO와 그 내부의 ParticipantDTO만 따로 구해서 계정 ID와 일치하는 정보만 뽑아낸다.
+							 * 뽑아낸 정보는 랭크/일반게임 여부에 따라 위에서 정의한 리스트에 넣는다.
+							 */
+							MatchDTO matchDto = objectMapper.readValue(body, MatchDTO.class);
+							InfoDTO infoDto = matchDto.getInfo();
+							infoDto.setMyInfoByLcharName(lcharDto.getLcharName());
+							
+							if (infoDto.getQueueId() == 430) {
+								infoDto.getMyInfo().setGameType("노말");
+								matchList.add(matchDto);
 							}
-							else {
-								rdAttributes.addFlashAttribute("error", new Exception("API 접속 오류(Match) : " + response.getStatusLine().getStatusCode()));
-								return "redirect:" + request.getHeader("Referer");
+							else if (infoDto.getQueueId() == 420) {
+								infoDto.getMyInfo().setGameType("솔랭");
+								matchList.add(matchDto);
 							}
 						}
-						
-						/*
-						 * 구한 ParticipantsDTO를 그대로 View에서 사용하기엔 View에서 해야 할 작업량이 너무 많으므로
-						 * 관심있게 볼 정보만 뽑아서 모델에 넣는다.
-						 * 관심있게 볼 정보는 총 게임 수, 라인별 게임 수, KDA, 라인별 KDA, 총 준 데미지, 라인별 준 데미지, 총 받은 데미지, 라인별 받은 데미지다.
-						 */
-						SummonerMatchDetails rankDetail = new SummonerMatchDetails();
-						rankDetail.setTotalGames(rankQ.size());
-						for (int i = 0; i < rankQ.size(); i++) {
-							ParticipantDTO myInfo = rankQ.get(i);
-
-							rankDetail.addTotalKDA(myInfo.getKills(), myInfo.getDeaths(), myInfo.getAssists());
-							rankDetail.addTotalDamage(myInfo.getTotalDamageDealtToChampions(), myInfo.getTotalDamageTaken());
-
-							switch(myInfo.getTeamPosition()) {
-							case "TOP" : {
-								rankDetail.increaseTopCount();
-								rankDetail.addTopKDA(myInfo.getKills(), myInfo.getDeaths(), myInfo.getAssists());
-								rankDetail.addTopDamage(myInfo.getTotalDamageDealtToChampions(), myInfo.getTotalDamageTaken());
-								break;
-							}
-							case "JUNGLE" : {
-								rankDetail.increaseJugCount();
-								rankDetail.addJugKDA(myInfo.getKills(), myInfo.getDeaths(), myInfo.getAssists());
-								rankDetail.addJugDamage(myInfo.getTotalDamageDealtToChampions(), myInfo.getTotalDamageTaken());
-								break;
-							}
-							case "MIDDLE" : {
-								rankDetail.increaseMidCount();
-								rankDetail.addMidKDA(myInfo.getKills(), myInfo.getDeaths(), myInfo.getAssists());
-								rankDetail.addMidDamage(myInfo.getTotalDamageDealtToChampions(), myInfo.getTotalDamageTaken());
-								break;
-							}
-							case "BOTTOM" : {
-								rankDetail.increaseBotCount();
-								rankDetail.addBotKDA(myInfo.getKills(), myInfo.getDeaths(), myInfo.getAssists());
-								rankDetail.addBotDamage(myInfo.getTotalDamageDealtToChampions(), myInfo.getTotalDamageTaken());
-								break;
-							}
-							case "UTILITY" : {
-								rankDetail.increaseSupCount();
-								rankDetail.addSupKDA(myInfo.getKills(), myInfo.getDeaths(), myInfo.getAssists());
-								rankDetail.addSupDamage(myInfo.getTotalDamageDealtToChampions(), myInfo.getTotalDamageTaken());
-								break;
-							}
-							}
+						else {
+							rdAttributes.addFlashAttribute("error", new Exception("API 접속 오류(Match) : " + response.getStatusLine().getStatusCode()));
+							return "redirect:" + request.getHeader("Referer");
 						}
-						model.addAttribute("rankDetail", rankDetail);
-						
-						SummonerMatchDetails normalDetail = new SummonerMatchDetails();
-						normalDetail.setTotalGames(normalQ.size());
-						for (int i = 0; i < normalQ.size(); i++) {
-							ParticipantDTO myInfo = normalQ.get(i);
-
-							normalDetail.addTotalKDA(myInfo.getKills(), myInfo.getDeaths(), myInfo.getAssists());
-							normalDetail.addTotalDamage(myInfo.getTotalDamageDealtToChampions(), myInfo.getTotalDamageTaken());
-
-							switch(myInfo.getTeamPosition()) {
-							case "TOP" : {
-								normalDetail.increaseTopCount();
-								normalDetail.addTopKDA(myInfo.getKills(), myInfo.getDeaths(), myInfo.getAssists());
-								normalDetail.addTopDamage(myInfo.getTotalDamageDealtToChampions(), myInfo.getTotalDamageTaken());
-								break;
-							}
-							case "JUNGLE" : {
-								normalDetail.increaseJugCount();
-								normalDetail.addJugKDA(myInfo.getKills(), myInfo.getDeaths(), myInfo.getAssists());
-								normalDetail.addJugDamage(myInfo.getTotalDamageDealtToChampions(), myInfo.getTotalDamageTaken());
-								break;
-							}
-							case "MIDDLE" : {
-								normalDetail.increaseMidCount();
-								normalDetail.addMidKDA(myInfo.getKills(), myInfo.getDeaths(), myInfo.getAssists());
-								normalDetail.addMidDamage(myInfo.getTotalDamageDealtToChampions(), myInfo.getTotalDamageTaken());
-								break;
-							}
-							case "BOTTOM" : {
-								normalDetail.increaseBotCount();
-								normalDetail.addBotKDA(myInfo.getKills(), myInfo.getDeaths(), myInfo.getAssists());
-								normalDetail.addBotDamage(myInfo.getTotalDamageDealtToChampions(), myInfo.getTotalDamageTaken());
-								break;
-							}
-							case "UTILITY" : {
-								normalDetail.increaseSupCount();
-								normalDetail.addSupKDA(myInfo.getKills(), myInfo.getDeaths(), myInfo.getAssists());
-								normalDetail.addSupDamage(myInfo.getTotalDamageDealtToChampions(), myInfo.getTotalDamageTaken());
-								break;
-							}
-							}
-						}
-						model.addAttribute("normalDetail", normalDetail);
 					}
-					else {
-						rdAttributes.addFlashAttribute("error", new Exception("API 접속 오류(Matches) : " + response.getStatusLine().getStatusCode()));
-						return "redirect:" + request.getHeader("Referer");
+					model.addAttribute("matchList", matchList);
+					
+					SummonerMatchDetails matchDetail = new SummonerMatchDetails();
+					matchDetail.setTotalGames(matchList.size());
+					for (MatchDTO matchDto : matchList) {
+						ParticipantDTO myInfo = matchDto.getInfo().getMyInfo();
+						matchDetail.addTotalKills(myInfo.getKills());
+						matchDetail.addTotalAssists(myInfo.getAssists());
+						matchDetail.addTotalDeaths(myInfo.getDeaths());
+						matchDetail.addTotalDamageToChampion(myInfo.getTotalDamageDealtToChampions());
+						matchDetail.addTotalDamageTaken(myInfo.getTotalDamageTaken());
 					}
+					
+					model.addAttribute("matchDetail", matchDetail);
 				}
 				else {
 					rdAttributes.addFlashAttribute("error", new Exception("API 접속 오류(League) : " + response.getStatusLine().getStatusCode()));
@@ -565,10 +522,40 @@ public class LOLController {
 			}
 			
 		} catch(Exception e) {
-			model.addAttribute("error", new RuntimeException(""));
+			model.addAttribute("error", new RuntimeException("오류가 발생했습니다. 지속적으로 발생할 경우 관리자에게 문의해 주세요."));
 		}
 
 		return "/lol/charDetail";		
+	}
+	
+	@GetMapping("/matchDetail/{matchId}")
+	public String matchDetail(@PathVariable("matchId") String matchId, HttpServletRequest request, RedirectAttributes rdAttributes, Model model) {
+		String matchURL = "https://asia.api.riotgames.com/lol/match/v5/matches/" + matchId + "?api_key=" + api.getLOL_API_KEY();
+		try {
+			HttpClient client = HttpClientBuilder.create().build();
+			HttpGet getRequest = new HttpGet(matchURL);
+			HttpResponse response = client.execute(getRequest);
+			
+			if (response.getStatusLine().getStatusCode() == 200) {
+				ResponseHandler<String> handler = new BasicResponseHandler();
+				String body = handler.handleResponse(response);
+				
+				MatchDTO match = objectMapper.readValue(body, MatchDTO.class);
+				
+				model.addAttribute("match", match);
+				
+				DateFormat format = new SimpleDateFormat("mm분 ss초");
+				String gameDuration = format.format(match.getInfo().getGameEndTimestamp()-match.getInfo().getGameStartTimestamp());
+				model.addAttribute("gameDuration", gameDuration);
+			}
+			else {
+				rdAttributes.addFlashAttribute("error", new Exception("API 접속 오류(Match) : " + response.getStatusLine().getStatusCode()));
+				return "redirect:" + request.getHeader("Referer");
+			}
+		} catch(Exception e) {
+			model.addAttribute("error", new RuntimeException("오류가 발생했습니다. 지속적으로 발생할 경우 관리자에게 문의해 주세요."));
+		}
+		return "/lol/matchDetail";
 	}
 	
 	@PostMapping("/acceptApply")
