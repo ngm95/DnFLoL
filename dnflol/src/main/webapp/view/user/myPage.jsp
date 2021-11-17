@@ -7,6 +7,7 @@
 <html>
 <head>
 <%@ include file="/view/includes/00_head.jsp"%>
+
 <title>마이 페이지</title>
 </head>
 <body class="board-pages">
@@ -19,10 +20,9 @@
 		</c:if>
 		
 		<div class="jumbotron">
-			<button type="button" class="btn btn-style" onclick="location.href='/lol/findSummoner'" style="float: right; background-color: SkyBlue; color: white">계정 추가하기</button>
-			<h3>
-				<b>내 LOL 계정</b>
-			</h3>
+			<jsp:include page="/view/user/findSummonerModal.jsp"></jsp:include>
+			<button id="createBtn" type="button" class="btn btn-style" data-bs-toggle="modal" data-bs-target="#findSummonerModal" style="float: right; background-color: SkyBlue; color: white">계정 추가하기</button>
+			<h3><b>내 LOL 계정</b></h3>
 			<div class="jumbotron-board">
 				<c:choose>
 					<c:when test="${empty mylolChars}">

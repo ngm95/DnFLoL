@@ -29,10 +29,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import com.project.dnflol.DTO.InfoDTO;
 import com.project.dnflol.DTO.LApplyDTO;
 import com.project.dnflol.DTO.LCharDTO;
@@ -335,66 +337,13 @@ public class LOLController {
 		
 		return "redirect:/lol/boardDetail/" + lapplyDto.getLgroupId();
 	}
-
-	@GetMapping("/findSummoner")
-	public String findSummoner(Model model) {
-		model.addAttribute("summoner", new SummonerDTO());	// LOL계정 정보를 담을 폼을 모델에 저장
-		return "/lol/findSummoner";
-	}
-
-	@PostMapping("/findSummoner")
-	public String findSummoner(@Valid @ModelAttribute("summoner") SummonerDTO summoner, BindingResult br, HttpServletRequest request, RedirectAttributes rdAttributes, Model model) {
-		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-		String requestURL = "https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/" + summoner.getName().replaceAll(" ", "") + "?api_key=" + api.getLOL_API_KEY();
-		SummonerDTO summonerDto = new SummonerDTO();
-		try {
-			HttpClient client = HttpClientBuilder.create().build();
-			HttpGet getRequest = new HttpGet(requestURL);
-			HttpResponse response = client.execute(getRequest);
-			
-			/*
-			 * 기본적인 계정 정보를 받아옴
-			 */
-			if (response.getStatusLine().getStatusCode() == 200) {
-				ResponseHandler<String> handler = new BasicResponseHandler();
-				String body = handler.handleResponse(response);
-				summonerDto = objectMapper.readValue(body, SummonerDTO.class);		// JSON 응답을 DTO로 바꾸는 작업
-				model.addAttribute("summoner", summonerDto);	
-
-				/*
-				 * 계정의 티어를 받아옴
-				 */
-				String leagueURL = "https://kr.api.riotgames.com/lol/league/v4/entries/by-summoner/" + summonerDto.getId() + "?api_key=" + api.getLOL_API_KEY();
-				getRequest = new HttpGet(leagueURL);
-				response = client.execute(getRequest);
-				if (response.getStatusLine().getStatusCode() == 200) {
-					handler = new BasicResponseHandler();
-					body = handler.handleResponse(response);
-					
-					if (!body.equals("[]")) {
-						LeagueDTO leagueDto = objectMapper.readValue(body.substring(1, body.length()-1), LeagueDTO.class);	// JSON 응답을 DTO로 바꾸는 작업
-						model.addAttribute("leagueDto", leagueDto);
-					}
-					else {
-						model.addAttribute("leagueDto", null);
-					}
-				} else {
-					rdAttributes.addFlashAttribute("error", new Exception("API 접속 오류(League) : " + response.getStatusLine().getStatusCode()));
-					return "redirect:" + request.getHeader("Referer");
-				}
-			}
-		} catch(Exception e) {
-			model.addAttribute("error", new RuntimeException("오류가 발생했습니다. 지속적으로 발생할 경우 관리자에게 문의해 주세요."));
-		}
-		
-		return "/lol/findSummoner";		// 다시 /lol/findSummoner 페이지로 이동해서 검색 결과를 확인하도록 함
-	}
 	
 	@PostMapping("/addSummoner") 
-	public String addSummoner(@Valid @ModelAttribute("summoner") SummonerDTO summonerDto, BindingResult br, Model model, HttpServletRequest request, RedirectAttributes rdAttributes) {
-		LCharDTO lcharDto = new LCharDTO(((AuthInfo)model.getAttribute("authInfo")).getUid(), summonerDto.getName());	// 새로운 LOL 계정 정보 생성
+	public String addSummoner(@RequestParam("summonerName") String summonerName, Model model, HttpServletRequest request, RedirectAttributes rdAttributes) {
+		LCharDTO lcharDto = new LCharDTO(((AuthInfo)model.getAttribute("authInfo")).getUid(), summonerName);	// 새로운 LOL 계정 정보 생성
 		try {
 			lcServ.create(lcharDto);					// 아이디를 계정에 연동
+			rdAttributes.addFlashAttribute("error", new RuntimeException(summonerName + "의 계정 연동에 성공했습니다."));
 		} catch(AlreadyExistedLCharNameException aelne) {
 			rdAttributes.addFlashAttribute("error", aelne);
 		}
@@ -581,5 +530,65 @@ public class LOLController {
 			rdAttributes.addFlashAttribute("error", nsae);
 		}
 		return "redirect:" + request.getHeader("Referer");
+	}
+	
+	@GetMapping("/findSummoner/summonerDto/{summonerName}")
+	@ResponseBody
+	public String summonerDto(@PathVariable("summonerName") String summonerName) {
+		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+		String requestURL = "https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/" + summonerName.replaceAll(" ", "") + "?api_key=" + api.getLOL_API_KEY();
+		
+		try {
+			HttpClient client = HttpClientBuilder.create().build();
+			HttpGet getRequest = new HttpGet(requestURL);
+			HttpResponse response = client.execute(getRequest);
+			
+			/*
+			 * 기본적인 계정 정보를 받아옴
+			 */
+			if (response.getStatusLine().getStatusCode() == 200) {
+				ResponseHandler<String> handler = new BasicResponseHandler();
+				String body = handler.handleResponse(response);
+				
+				SummonerDTO summonerDto = objectMapper.readValue(body, SummonerDTO.class);		// JSON 응답을 DTO로 바꾸는 작업
+				Gson gson = new Gson();
+				String json = gson.toJson(summonerDto);
+				return json;
+			}
+		} catch(Exception e) {
+			
+		}
+			
+		return "";
+	}
+	
+	@GetMapping("/findSummoner/leagueDto/{encryptedSummonerId}")
+	@ResponseBody
+	public String leagueDto(@PathVariable("encryptedSummonerId") String encryptedSummonerId) {
+		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+		String requestURL = "https://kr.api.riotgames.com/lol/league/v4/entries/by-summoner/" + encryptedSummonerId + "?api_key=" + api.getLOL_API_KEY();
+		try {
+			HttpClient client = HttpClientBuilder.create().build();
+			HttpGet getRequest = new HttpGet(requestURL);
+			HttpResponse response = client.execute(getRequest);
+			
+			getRequest = new HttpGet(requestURL);
+			response = client.execute(getRequest);
+			if (response.getStatusLine().getStatusCode() == 200) {
+				ResponseHandler<String> handler = new BasicResponseHandler();
+				String body = handler.handleResponse(response);
+				LeagueDTO leagueDto = objectMapper.readValue(body.substring(1, body.length()-1), LeagueDTO.class);		// JSON 응답을 DTO로 바꾸는 작업
+				if (!body.equals("[]")) {
+					Gson gson = new Gson();
+					String json = gson.toJson(leagueDto);
+					return json;
+				} else
+					return "";
+			}
+		} catch(Exception e) {
+			
+		}
+		
+		return "";
 	}
 }
