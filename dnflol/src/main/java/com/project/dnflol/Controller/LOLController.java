@@ -115,9 +115,13 @@ public class LOLController {
 	 *   검색 버튼을 누르면 입력 폼에 입력된 정보와 체크박스에서 선택된 정보를 가지고 비슷한 글을 찾아서 그 글들을 보여줌.
 	 */
 	@RequestMapping("/board")
-	public String lolBoard() {
+	public String lolBoard(RedirectAttributes rdAttributes, Model model) {
 		bmm = new BoardMinMax(lgServ.readMaxCount());		// 새로운 bmm 객체를 만들어 둠
 		lgroupList = lgServ.readLimitList(bmm);				// 최신 글 리스트(100개)를 불러옴 
+		
+		if (model.getAttribute("error") != null) {
+			rdAttributes.addFlashAttribute("error", model.getAttribute("error"));
+		}
 		
 		return "redirect:/lol/board/" + bmm.getPaging();	// 첫 번째 페이지로 리다이렉트
 	}
@@ -188,11 +192,10 @@ public class LOLController {
 
 	@PostMapping(value="/board/newPost")
 	public String newPost(@Valid @ModelAttribute("post") LGroupDTO lgroupDto, BindingResult br, HttpServletRequest request, RedirectAttributes rdAttributes) {
-		if (br.hasErrors())													// 필요한 정보가 정한 폼에 맞지 않으면 이전 단계로 돌아감
-			return "redirect:/lol/board/newPostGET";
-
-		if (lgroupDto.getLgroupOwner() == null)								
-			return "redirect:/lol/board/newPostGET";
+		if (lgroupDto.getLgroupName().equals("")) {
+			rdAttributes.addFlashAttribute("error", new RuntimeException("게시글 제목은 필수로 입력해야 합니다."));
+			return "redirect:/lol/board";
+		}
 		
 		if (lgroupDto.getLgroupType().equals("듀오랭크"))						// 선택한 게임 타입에 따라 최대 인원수를 정함
 			lgroupDto.setLgroupMax(2);

@@ -33,11 +33,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.dnflol.DTO.DAdventureDTO;
-import com.project.dnflol.DTO.TimeLineDTO;
-import com.project.dnflol.DTO.TimeLineDataDTO;
-import com.project.dnflol.DTO.DEquipDTO;
 import com.project.dnflol.DTO.DApplyDTO;
 import com.project.dnflol.DTO.DCharDTO;
+import com.project.dnflol.DTO.DEquipDTO;
 import com.project.dnflol.DTO.DGroupDTO;
 import com.project.dnflol.DTO.TimeLineDTO;
 import com.project.dnflol.DTO.UserDTO;
@@ -113,9 +111,13 @@ public class DNFController {
 	 *   검색 버튼을 누르면 입력 폼에 입력된 정보와 체크박스에서 선택된 정보를 가지고 비슷한 글을 찾아서 그 글들을 보여줌.
 	 */
 	@RequestMapping("/board")
-	public String dnfBoard() {
+	public String dnfBoard(RedirectAttributes rdAttributes, Model model) {
 		bmm = new BoardMinMax(dgServ.readMaxCount());		// 새로운 bmm 객체를 만들어 둠
 		dgroupList = dgServ.readLimitList(bmm);				// 최신 글 리스트(100개)를 불러옴
+		
+		if (model.getAttribute("error") != null) {
+			rdAttributes.addFlashAttribute("error", model.getAttribute("error"));
+		}
 		
 		return "redirect:/dnf/board/" + bmm.getPaging();	// 첫 번째 페이지로 리다이렉트
 	}
@@ -190,11 +192,10 @@ public class DNFController {
 	
 	@PostMapping(value="/board/newPost")
 	public String newPost(@Valid @ModelAttribute("post") DGroupDTO dgroupDto, BindingResult br, HttpServletRequest request, RedirectAttributes rdAttributes) {
-		if (br.hasErrors())													// 필요한 정보가 정한 폼에 맞지 않으면 이전 단계로 돌아감
-			return "redirect:/dnf/board/newPostGET";
-
-		if (dgroupDto.getDgroupOwner() == null)								
-			return "redirect:/dnf/board/newPostGET";
+		if (dgroupDto.getDgroupName().equals("")) {
+			rdAttributes.addFlashAttribute("error", new RuntimeException("게시글 제목은 필수로 입력해야 합니다."));
+			return "redirect:/dnf/board";
+		}
 		
 		if (dgroupDto.getDgroupType() == 1)						// 선택한 게임 타입에 따라 최대 인원수를 정함
 			dgroupDto.setDgroupMax(8);
