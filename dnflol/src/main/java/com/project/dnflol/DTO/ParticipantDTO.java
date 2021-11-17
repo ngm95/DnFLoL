@@ -31,6 +31,7 @@ public class ParticipantDTO {
 	int item5;
 	int item6;
 	int totalMinionsKilled;
+	int neutralMinionsKilled;
 	PerksDTO perks;
 	int summoner1Id;
 	int summoner2Id;

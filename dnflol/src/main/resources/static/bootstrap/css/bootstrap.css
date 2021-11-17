@@ -666,28 +666,30 @@ progress {
 
 @media (min-width: 576px) {
   .footer {
-    max-width: 540px;
+    max-width: 516px;
   }
 }
 @media (min-width: 768px) {
   .footer {
-    max-width: 720px;
+    max-width: 696px;
   }
 }
 @media (min-width: 992px) {
   .footer {
-    max-width: 960px;
+    max-width: 936px;
   }
 }
 @media (min-width: 1200px) {
   .footer {
-    max-width: 1140px;
+    max-width: 1116px;
   }
 }
 @media (min-width: 1400px) {
   .footer {
-    max-width: 1320px;
+    max-width: 1296px;
   }
+}
+
 
 .container,
 .container-fluid,
@@ -704,7 +706,7 @@ progress {
 }
 
 @media (min-width: 576px) {
-  .container-sm, .container {
+  .container-sm, .container  {
     max-width: 540px;
   }
 }
@@ -11331,7 +11333,4 @@ textarea.form-control-lg {
   }
 }
 
-.tab {
-	white-space:pre;
-}
 /*# sourceMappingURL=bootstrap.css.map */
