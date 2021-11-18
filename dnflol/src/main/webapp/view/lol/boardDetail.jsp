@@ -7,15 +7,12 @@
 <html>
 <head>
 <%@ include file="/view/includes/00_head.jsp"%>
-<script src="/js/spinner.js"></script>
 <title>LoL 게시글 세부내용</title>
 </head>
 <body>
 	<div class="container contents-wrap" style="height: 100%">
 		<%@ include file="/view/includes/03_header.jsp"%>
-		<c:if test="${not empty error}">
-			<jsp:include page="/view/includes/errorModal.jsp"></jsp:include>
-		</c:if>
+		<jsp:include page="/view/includes/noticeModal.jsp"></jsp:include>
 		
 		<div class="jumbotron">
 			<button type="button" class="btn btn-success" onclick="location.href='/lol/board'" style="float:right">목록</button>

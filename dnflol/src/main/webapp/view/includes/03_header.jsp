@@ -23,7 +23,7 @@
 					<li class="nav-item"><a class="nav-link" href="/register/step1">회원가입</a></li>
 				</sec:authorize>
 				<sec:authorize access="isAuthenticated()">
-					<li class="nav-item dropdown"><a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="font-size:1.2rem">Dnf 신청 관리</a>
+					<li class="nav-item dropdown"><a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="font-size:1.2rem">DnF 신청 관리</a>
 						<ul id="dnfNotice" class="dropdown-menu" aria-labelledby="navbarDropdown">
 							
 						</ul>

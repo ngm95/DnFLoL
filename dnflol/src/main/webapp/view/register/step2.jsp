@@ -10,9 +10,7 @@
 <body class="signup-pages">
 	<div class="container contents-wrap" style="height: 100%">
 		<%@ include file="/view/includes/03_header.jsp"%>
-		<c:if test="${not empty error}">
-			<jsp:include page="/view/includes/errorModal.jsp"></jsp:include>
-		</c:if>
+		<jsp:include page="/view/includes/noticeModal.jsp"></jsp:include>
 		
 		<div class="jumbotron">
 			<h3>회원가입 정보 입력</h3>

@@ -13,6 +13,7 @@
 <body>
 	<div class="container contents-wrap" style="height: 100px">
 		<%@ include file="/view/includes/03_header.jsp" %>
+		<jsp:include page="/view/includes/noticeModal.jsp"></jsp:include>
 		<div class="container text-center">
 			<h1>접근 거부됨</h1>
 			<br>

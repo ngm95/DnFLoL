@@ -14,7 +14,7 @@
 
 	<div class="container contents-wrap" style="height: 100%">
 		<%@ include file="/view/includes/03_header.jsp"%>
-		<jsp:include page="/view/includes/errorModal.jsp"></jsp:include>
+		<jsp:include page="/view/includes/noticeModal.jsp"></jsp:include>
 		<div class="jumbotron">
 			<h2>계정 상세정보</h2>
 			<div class="jumbotron-board">

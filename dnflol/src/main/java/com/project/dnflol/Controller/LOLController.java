@@ -121,8 +121,8 @@ public class LOLController {
 		bmm = new BoardMinMax(lgServ.readMaxCount());		// 새로운 bmm 객체를 만들어 둠
 		lgroupList = lgServ.readLimitList(bmm);				// 최신 글 리스트(100개)를 불러옴 
 		
-		if (model.getAttribute("error") != null) {
-			rdAttributes.addFlashAttribute("error", model.getAttribute("error"));
+		if (model.getAttribute("notice") != null) {										
+			rdAttributes.addFlashAttribute("notice", model.getAttribute("notice"));
 		}
 		
 		return "redirect:/lol/board/" + bmm.getPaging();	// 첫 번째 페이지로 리다이렉트
@@ -155,7 +155,7 @@ public class LOLController {
 	@RequestMapping("/board/{page}")
 	public String lolBoardPaging(@PathVariable("page") int page, RedirectAttributes rdAttributes, Model model) {
 		if (bmm.getLimit() - page*10 < -10)	{											// URL로 비활성화된 페이지로 접근하면 다시 첫 페이지로 이동하도록 함
-			rdAttributes.addFlashAttribute("error", new Exception("존재하지 않는 게시글 페이지입니다."));
+			rdAttributes.addFlashAttribute("notice", new RuntimeException("존재하지 않는 게시글 페이지입니다."));
 			return "redirect:/lol/board/" + bmm.getPaging();	
 		}
 
@@ -195,7 +195,7 @@ public class LOLController {
 	@PostMapping(value="/board/newPost")
 	public String newPost(@Valid @ModelAttribute("post") LGroupDTO lgroupDto, BindingResult br, HttpServletRequest request, RedirectAttributes rdAttributes) {
 		if (lgroupDto.getLgroupName().equals("")) {
-			rdAttributes.addFlashAttribute("error", new RuntimeException("게시글 제목은 필수로 입력해야 합니다."));
+			rdAttributes.addFlashAttribute("notice", new RuntimeException("게시글 제목은 필수로 입력해야 합니다."));
 			return "redirect:/lol/board";
 		}
 		
@@ -217,7 +217,7 @@ public class LOLController {
 			
 			return "redirect:/lol/boardDetail/" + lgroupId;						// 생성한 게시글로 리다이렉트
 		} catch(Exception e) {
-			rdAttributes.addFlashAttribute("error", e);
+			rdAttributes.addFlashAttribute("notice", e);
 			return "redirect:" + request.getHeader("Referer");
 		}
 	}
@@ -225,17 +225,17 @@ public class LOLController {
 	@PostMapping("/board/delete")
 	public String deletePost(@RequestParam("lgroupId") int lgroupId, @RequestParam("ownerUid") String ownerUid, Model model, HttpServletRequest request, RedirectAttributes rdAttributes) {
 		if (!ownerUid.equals(((AuthInfo)model.getAttribute("authInfo")).getUid())) {
-			rdAttributes.addFlashAttribute("error", new Exception("현재 계정과 작성한 계정이 달라 삭제할 수 없습니다."));
+			rdAttributes.addFlashAttribute("notice", new RuntimeException("현재 계정과 작성한 계정이 달라 삭제할 수 없습니다."));
 			return "redirect:/lol/board";
 		}
 		
 		try {
 			lgServ.deleteById(lgroupId);		
 		} catch(NoSuchGroupException nsge) {
-			rdAttributes.addFlashAttribute("error", nsge);
+			rdAttributes.addFlashAttribute("notice", nsge);
 			return "redirect:/lol/board";
 		}
-		rdAttributes.addFlashAttribute("error", new Exception("삭제에 성공했습니다"));
+		rdAttributes.addFlashAttribute("notice", new RuntimeException("삭제에 성공했습니다"));
 		return "redirect:/lol/board";
 	}
 	
@@ -251,7 +251,7 @@ public class LOLController {
 		try {
 			lgroupDto = lgServ.readById(lgroupId);										// 게시글 세부 정보
 		} catch(NoSuchGroupException nsge) {
-			rdAttributes.addFlashAttribute("error", nsge);
+			rdAttributes.addFlashAttribute("notice", nsge);
 			return "redirect:/lol/board";
 		}
 		List<LApplyDTO> acceptedList = laServ.readAllAcceptedByGroupId(lgroupId);				// 수락된 멤버 목록
@@ -290,15 +290,15 @@ public class LOLController {
 						matches.add(Arrays.asList(body.substring(2, body.length()-2).split("\",\"")));		// match_id를 리스트 형태로 변환해 다시 리스트에 넣는다.
 					}
 					else {
-						rdAttributes.addFlashAttribute("error", new Exception("API 접속 오류(Match) : " + response.getStatusLine().getStatusCode()));
+						rdAttributes.addFlashAttribute("notice", new RuntimeException("API 접속 오류(Match) : " + response.getStatusLine().getStatusCode()));
 						return "redirect:" + request.getHeader("Referer");
 					}
 				} else {
-					rdAttributes.addFlashAttribute("error", new Exception("API 접속 오류(Summoner) : " + response.getStatusLine().getStatusCode()));
+					rdAttributes.addFlashAttribute("notice", new RuntimeException("API 접속 오류(Summoner) : " + response.getStatusLine().getStatusCode()));
 					return "redirect:" + request.getHeader("Referer");
 				}
 			} catch (Exception e) {
-				model.addAttribute("error", new RuntimeException("오류가 발생했습니다. 지속적으로 발생할 경우 관리자에게 문의해 주세요."));
+				model.addAttribute("notice", new RuntimeException("오류가 발생했습니다. 지속적으로 발생할 경우 관리자에게 문의해 주세요."));
 			}
 		}
 		model.addAttribute("summonerList", summonerList);
@@ -315,7 +315,7 @@ public class LOLController {
 			model.addAttribute("ownerUid", lcharDto.getUid());
 			return "/lol/boardDetail";
 		} catch(NoSuchCharException nsce) {
-			rdAttributes.addFlashAttribute("error", nsce);
+			rdAttributes.addFlashAttribute("notice", nsce);
 			return "redirect:" + request.getHeader("Referer");
 		}
 	}
@@ -331,7 +331,7 @@ public class LOLController {
 		try {
 			laServ.create(lapplyDto);						// DB접근을 통해 신청 정보 생성
 		} catch(AlreadyExistedApplyException leae) {
-			rdAttributes.addFlashAttribute("error", leae);
+			rdAttributes.addFlashAttribute("notice", leae);
 			return "redirect:" + request.getHeader("Referer");
 		}
 		
@@ -343,9 +343,9 @@ public class LOLController {
 		LCharDTO lcharDto = new LCharDTO(((AuthInfo)model.getAttribute("authInfo")).getUid(), summonerName);	// 새로운 LOL 계정 정보 생성
 		try {
 			lcServ.create(lcharDto);					// 아이디를 계정에 연동
-			rdAttributes.addFlashAttribute("error", new RuntimeException(summonerName + "의 계정 연동에 성공했습니다."));
+			rdAttributes.addFlashAttribute("notice", new RuntimeException(summonerName + "의 계정 연동에 성공했습니다."));
 		} catch(AlreadyExistedLCharNameException aelne) {
-			rdAttributes.addFlashAttribute("error", aelne);
+			rdAttributes.addFlashAttribute("notice", aelne);
 		}
 		return "redirect:/user/myPage";				// 마이페이지로 리다이렉트
 	}
@@ -354,8 +354,9 @@ public class LOLController {
 	public String deleteSummoner(@RequestParam(value="lcharName") String lcharName, HttpServletRequest request, RedirectAttributes rdAttributes) {
 		try {
 			lcServ.deleteByName(lcharName);				// DB에서 해당 LOL 계정 삭제
+			rdAttributes.addFlashAttribute("notice", new RuntimeException("계정 연동 해제에 성공했습니다."));
 		} catch(NoSuchCharException nsce) {
-			rdAttributes.addFlashAttribute("error", nsce);
+			rdAttributes.addFlashAttribute("notice", nsce);
 		}
 		
 		return "redirect:/user/myPage";				// 마이페이지로 리다이렉트
@@ -377,7 +378,7 @@ public class LOLController {
 			lcharDto = lcServ.readByName(lcharName);
 			model.addAttribute("lcharDto", lcharDto);
 		} catch(NoSuchCharException nsce) {
-			rdAttributes.addFlashAttribute("error", nsce);
+			rdAttributes.addFlashAttribute("notice", nsce);
 			return "redirect:" + request.getHeader("Referer");
 		}
 		
@@ -444,7 +445,7 @@ public class LOLController {
 							}
 						}
 						else {
-							rdAttributes.addFlashAttribute("error", new Exception("API 접속 오류(Match) : " + response.getStatusLine().getStatusCode()));
+							rdAttributes.addFlashAttribute("notice", new RuntimeException("API 접속 오류(Match) : " + response.getStatusLine().getStatusCode()));
 							return "redirect:" + request.getHeader("Referer");
 						}
 					}
@@ -464,17 +465,17 @@ public class LOLController {
 					model.addAttribute("matchDetail", matchDetail);
 				}
 				else {
-					rdAttributes.addFlashAttribute("error", new Exception("API 접속 오류(League) : " + response.getStatusLine().getStatusCode()));
+					rdAttributes.addFlashAttribute("notice", new RuntimeException("API 접속 오류(League) : " + response.getStatusLine().getStatusCode()));
 					return "redirect:" + request.getHeader("Referer");
 				}
 			}
 			else {
-				rdAttributes.addFlashAttribute("error", new Exception("API 접속 오류(Summoner) : " + response.getStatusLine().getStatusCode()));
+				rdAttributes.addFlashAttribute("notice", new RuntimeException("API 접속 오류(Summoner) : " + response.getStatusLine().getStatusCode()));
 				return "redirect:" + request.getHeader("Referer");
 			}
 			
 		} catch(Exception e) {
-			model.addAttribute("error", new RuntimeException("오류가 발생했습니다. 지속적으로 발생할 경우 관리자에게 문의해 주세요."));
+			model.addAttribute("notice", new RuntimeException("오류가 발생했습니다. 지속적으로 발생할 경우 관리자에게 문의해 주세요."));
 		}
 
 		return "/lol/charDetail";		
@@ -501,11 +502,11 @@ public class LOLController {
 				model.addAttribute("gameDuration", gameDuration);
 			}
 			else {
-				rdAttributes.addFlashAttribute("error", new Exception("API 접속 오류(Match) : " + response.getStatusLine().getStatusCode()));
+				rdAttributes.addFlashAttribute("notice", new RuntimeException("API 접속 오류(Match) : " + response.getStatusLine().getStatusCode()));
 				return "redirect:" + request.getHeader("Referer");
 			}
 		} catch(Exception e) {
-			model.addAttribute("error", new RuntimeException("오류가 발생했습니다. 지속적으로 발생할 경우 관리자에게 문의해 주세요."));
+			model.addAttribute("notice", new RuntimeException("오류가 발생했습니다. 지속적으로 발생할 경우 관리자에게 문의해 주세요."));
 		}
 		return "/lol/matchDetail";
 	}
@@ -516,7 +517,7 @@ public class LOLController {
 		try {
 			laServ.updateResult(applyForm);
 		} catch(TooManyApplyException tmae) {
-			rdAttributes.addFlashAttribute("error", tmae);
+			rdAttributes.addFlashAttribute("notice", tmae);
 		}
 		return "redirect:" + request.getHeader("Referer");
 	}
@@ -527,7 +528,7 @@ public class LOLController {
 		try {
 			laServ.delete(applyForm);
 		} catch(NoSuchApplyException nsae) {
-			rdAttributes.addFlashAttribute("error", nsae);
+			rdAttributes.addFlashAttribute("notice", nsae);
 		}
 		return "redirect:" + request.getHeader("Referer");
 	}
@@ -556,10 +557,10 @@ public class LOLController {
 				return json;
 			}
 		} catch(Exception e) {
-			
+			return "";
 		}
 			
-		return "";
+		return "[]";
 	}
 	
 	@GetMapping("/findSummoner/leagueDto/{encryptedSummonerId}")
@@ -583,12 +584,12 @@ public class LOLController {
 					String json = gson.toJson(leagueDto);
 					return json;
 				} else
-					return "";
+					return "[]";
 			}
 		} catch(Exception e) {
-			
+			return "";
 		}
 		
-		return "";
+		return "[]";
 	}
 }

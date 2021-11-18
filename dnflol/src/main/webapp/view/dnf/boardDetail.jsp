@@ -14,9 +14,7 @@
 
 	<div class="container contents-wrap" style="height: 100%">
 		<%@ include file="/view/includes/03_header.jsp"%>
-		<c:if test="${not empty error}">
-			<jsp:include page="/view/includes/errorModal.jsp"></jsp:include>
-		</c:if>
+		<jsp:include page="/view/includes/noticeModal.jsp"></jsp:include>
 		
 		<div class="jumbotron">
 			<button type="button" class="btn btn-success" onclick="location.href='/dnf/board'" style="float:right">목록</button>
@@ -86,7 +84,7 @@
 								<div class="col-6 col-md-4">
 									<div class="card">
 										<div class="card-body">
-											<button id="character${status.count}" class="btn btn-info" onclick="location.href='/dnf/charDetail/${accepted.dcharId}'">${accepted.dcname}</button>
+											<button id="character" class="btn btn-info" onclick="location.href='/dnf/charDetail/${accepted.dcharId}'">${accepted.dcname}</button>
 											<c:if test="${authInfo.uid eq ownerUid and accepted.dcname ne dgroupDto.dgroupOwnerName}">
 												<form action="/dnf/denyApply" method="post" style="float:right">
 													<input name="${_csrf.parameterName}" type="hidden" value="${_csrf.token}" /> 

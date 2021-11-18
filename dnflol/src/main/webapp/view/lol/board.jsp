@@ -12,13 +12,11 @@
 
 	<div class="container contents-wrap" style="height: 100%">
 		<%@ include file="/view/includes/03_header.jsp"%>
-		<c:if test="${not empty error}">
-			<jsp:include page="/view/includes/errorModal.jsp"></jsp:include>
-		</c:if>
+		<jsp:include page="/view/includes/noticeModal.jsp"></jsp:include>
 		
 		<div class="jumbotron">
 			<jsp:include page="/view/lol/newPostModal.jsp"></jsp:include>
-			<button id="createBtn" type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#postModal" style="float:right">새로운 글 작성</button>
+			<button id="createBtn" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#postModal" style="float:right">새로운 글 작성</button>
 			<h3><b>게시판</b></h3>
 			<div class="jumbotron-board" style="margin-top:45px">
 
@@ -112,7 +110,7 @@
 						<form:option value="detail">세부 내용</form:option>
 					</form:select>
 					<form:input class="form-control" type="text" path="findDetail" placeholder="검색할 내용"/>
-					<form:button class="btn btn-outline-secondary" type="submit">검색하기</form:button>
+					<form:button class="btn btn-outline-primary" type="submit">검색하기</form:button>
 				</div>
 			</form:form>
 		</div>

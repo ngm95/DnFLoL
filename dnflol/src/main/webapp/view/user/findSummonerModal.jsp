@@ -16,7 +16,7 @@
 					<tr>
 						<td>아이디</td>
 						<td><input id="summonerName" type="text" class="form-control" placeholder="아이디"/></td>
-						<td><button id="findBtn" type="button" class="btn btn-success">검색</button></td>
+						<td><button id="findBtn" type="button" class="btn btn-primary">검색</button></td>
 					</tr>
 				</table>
 				
@@ -24,6 +24,7 @@
 				<div class="card">
 					<div class="card-body">
 						<h3>검색 결과</h3>
+						<hr/>
 						<div id="resultBody" class="jumbotron-board" style="padding-top : 10px; padding-bottom : 10px;">
 							<h4>검색하지 않았거나 검색 결과가 없습니다.</h4>
 							

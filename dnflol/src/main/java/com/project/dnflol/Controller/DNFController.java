@@ -115,8 +115,8 @@ public class DNFController {
 		bmm = new BoardMinMax(dgServ.readMaxCount());		// 새로운 bmm 객체를 만들어 둠
 		dgroupList = dgServ.readLimitList(bmm);				// 최신 글 리스트(100개)를 불러옴
 		
-		if (model.getAttribute("error") != null) {
-			rdAttributes.addFlashAttribute("error", model.getAttribute("error"));
+		if (model.getAttribute("notice") != null) {
+			rdAttributes.addFlashAttribute("notice", model.getAttribute("notice"));
 		}
 		
 		return "redirect:/dnf/board/" + bmm.getPaging();	// 첫 번째 페이지로 리다이렉트
@@ -164,8 +164,13 @@ public class DNFController {
 	}
 	
 	@GetMapping("/deletecharacter/{dcharId}")
-	public String deletecharacter(@PathVariable(value="dcharId") String dcharId) {
-		dcServ.deleteById(dcharId);				// DB에서 해당 던 캐릭터 삭제
+	public String deletecharacter(@PathVariable(value="dcharId") String dcharId, RedirectAttributes rdAttributes) {
+		try {
+			dcServ.deleteById(dcharId);				// DB에서 해당 던 캐릭터 삭제
+			rdAttributes.addFlashAttribute("notice", new RuntimeException("삭제에 성공했습니다"));
+		} catch (NoSuchCharException nsce) {
+			rdAttributes.addFlashAttribute("notice", nsce);
+		}
 		return "redirect:/user/myPage";				// 마이페이지로 리다이렉트
 	}
 	
@@ -193,7 +198,7 @@ public class DNFController {
 	@PostMapping(value="/board/newPost")
 	public String newPost(@Valid @ModelAttribute("post") DGroupDTO dgroupDto, BindingResult br, HttpServletRequest request, RedirectAttributes rdAttributes) {
 		if (dgroupDto.getDgroupName().equals("")) {
-			rdAttributes.addFlashAttribute("error", new RuntimeException("게시글 제목은 필수로 입력해야 합니다."));
+			rdAttributes.addFlashAttribute("notice", new RuntimeException("게시글 제목은 필수로 입력해야 합니다."));
 			return "redirect:/dnf/board";
 		}
 		
@@ -221,7 +226,7 @@ public class DNFController {
 			
 			return "redirect:/dnf/boardDetail/" + dgroupId;						// 생성한 게시글로 리다이렉트
 		} catch(Exception e) {
-			rdAttributes.addFlashAttribute("error", e);
+			rdAttributes.addFlashAttribute("notice", e);
 			return "redirect:" + request.getHeader("Referer");
 		}
 	}
@@ -229,17 +234,18 @@ public class DNFController {
 	@PostMapping("/board/delete")
 	public String deletePost(@RequestParam("dgroupId") int dgroupId, @RequestParam("ownerUid") String ownerUid, Model model, HttpServletRequest request, RedirectAttributes rdAttributes) {
 		if (!ownerUid.equals(((AuthInfo)model.getAttribute("authInfo")).getUid())) {
-			rdAttributes.addFlashAttribute("error", new Exception("현재 계정과 작성한 계정이 달라 삭제할 수 없습니다."));
+			rdAttributes.addFlashAttribute("notice", new RuntimeException("현재 계정과 작성한 계정이 달라 삭제할 수 없습니다."));
 			return "redirect:/dnf/board";
 		}
 		
 		try {
 			dgServ.deleteById(dgroupId);		
+			rdAttributes.addFlashAttribute("notice", new RuntimeException("삭제에 성공했습니다"));
 		} catch(NoSuchGroupException nsge) {
-			rdAttributes.addFlashAttribute("error", nsge);
+			rdAttributes.addFlashAttribute("notice", nsge);
 			return "redirect:/dnf/board";
 		}
-		rdAttributes.addFlashAttribute("error", new Exception("삭제에 성공했습니다"));
+		
 		return "redirect:/dnf/board";
 	}
 	
@@ -255,7 +261,7 @@ public class DNFController {
 		try {
 			dgroupDto = dgServ.readById(dgroupId);										// 게시글 세부 정보
 		} catch (NoSuchGroupException nsge) {
-			rdAttributes.addFlashAttribute("error", nsge);
+			rdAttributes.addFlashAttribute("notice", nsge);
 			return "redirect:/dnf/board";
 		}
 		
@@ -273,7 +279,7 @@ public class DNFController {
 			model.addAttribute("ownerUid", dcharDto.getUid());
 			return "/dnf/boardDetail";
 		} catch (NoSuchCharException nsce) {
-			rdAttributes.addFlashAttribute("error", nsce);
+			rdAttributes.addFlashAttribute("notice", nsce);
 			return "redirect:/dnf/board";
 		}
 	}
@@ -289,7 +295,7 @@ public class DNFController {
 		try {
 			daServ.create(dapplyDto);						// DB접근을 통해 신청 정보 생성
 		} catch(AlreadyExistedApplyException leae) {
-			rdAttributes.addFlashAttribute("error", leae);
+			rdAttributes.addFlashAttribute("notice", leae);
 			return "redirect:" + request.getHeader("Referer");
 		}
 		
@@ -324,7 +330,7 @@ public class DNFController {
 				model.addAttribute("characters", characters);
 			}
 		} catch(Exception e) {
-			rdAttributes.addFlashAttribute("error", new RuntimeException("API 접속 에러가 발생했습니다."));
+			rdAttributes.addFlashAttribute("notice", new RuntimeException("API 접속 에러가 발생했습니다."));
 			return "redirect:/dnf/findcharacter";
 		}
 		
@@ -337,7 +343,7 @@ public class DNFController {
 		try {
 			dcServ.create(dcharDto);					// 아이디를 계정에 연동
 		} catch(AlreadyExistedLCharNameException aelne) {
-			rdAttributes.addFlashAttribute("error", aelne);
+			rdAttributes.addFlashAttribute("notice", aelne);
 		}
 		return "redirect:/user/myPage";				// 마이페이지로 리다이렉트
 	}
@@ -346,8 +352,9 @@ public class DNFController {
 	public String deletecharacter(@RequestParam(value="dcharId") String dcharId, HttpServletRequest request, RedirectAttributes rdAttributes) {
 		try {
 			dcServ.deleteById(dcharId);				// DB에서 해당 던 캐릭터 삭제
+			rdAttributes.addFlashAttribute("notice", new RuntimeException("캐릭터 연동 해제에 성공했습니다."));
 		} catch (NoSuchCharException nsce) {
-			rdAttributes.addFlashAttribute("error", nsce);
+			rdAttributes.addFlashAttribute("notice", nsce);
 			return "redirect:" + request.getHeader("Referer");
 		}
 		return "redirect:/user/myPage";				// 마이페이지로 리다이렉트
@@ -368,7 +375,7 @@ public class DNFController {
 			dcharDto = dcServ.readByNametocid(dcharId);
 			model.addAttribute("dcharDto", dcharDto);
 		} catch (NoSuchCharException nsce) {
-			rdAttributes.addFlashAttribute("error", nsce);
+			rdAttributes.addFlashAttribute("notice", nsce);
 			return "redirect:" + request.getHeader("Referer");
 		}
 String url ="https://api.neople.co.kr/df/servers/"+dcharDto.getDcserver()+"/characters/"+dcharDto.getDcharId() +"/timeline?limit=100&code=201&apikey=" + api.getDNF_API_KEY();
@@ -393,7 +400,7 @@ String url ="https://api.neople.co.kr/df/servers/"+dcharDto.getDcserver()+"/char
 			
 			
 		} catch(Exception e) {
-			rdAttributes.addFlashAttribute("error", new RuntimeException("API 접속 에러가 발생했습니다."));
+			rdAttributes.addFlashAttribute("notice", new RuntimeException("API 접속 에러가 발생했습니다."));
 			return "redirect:" + request.getHeader("Referer");
 		}
 		url ="https://api.neople.co.kr/df/servers/"+dcharDto.getDcserver()+"/characters/"+dcharDto.getDcharId() +"/timeline?limit=100&code=507&apikey=" + api.getDNF_API_KEY();
@@ -417,7 +424,7 @@ String url ="https://api.neople.co.kr/df/servers/"+dcharDto.getDcserver()+"/char
 			
 			
 		} catch(Exception e) {
-			rdAttributes.addFlashAttribute("error", new RuntimeException("API 접속 에러가 발생했습니다."));
+			rdAttributes.addFlashAttribute("notice", new RuntimeException("API 접속 에러가 발생했습니다."));
 			return "redirect:" + request.getHeader("Referer");
 		}
 		
@@ -445,7 +452,7 @@ String url ="https://api.neople.co.kr/df/servers/"+dcharDto.getDcserver()+"/char
 			
 			
 		} catch(Exception e) {
-			rdAttributes.addFlashAttribute("error", new RuntimeException("API 접속 에러가 발생했습니다."));
+			rdAttributes.addFlashAttribute("notice", new RuntimeException("API 접속 에러가 발생했습니다."));
 			return "redirect:" + request.getHeader("Referer");
 		}
 		
@@ -458,7 +465,7 @@ String url ="https://api.neople.co.kr/df/servers/"+dcharDto.getDcserver()+"/char
 		try {
 			daServ.updateResult(applyForm);
 		} catch(TooManyApplyException tmae) {
-			rdAttributes.addFlashAttribute("error", tmae);
+			rdAttributes.addFlashAttribute("notice", tmae);
 		}
 		return "redirect:" + request.getHeader("Referer");
 	}
@@ -469,7 +476,7 @@ String url ="https://api.neople.co.kr/df/servers/"+dcharDto.getDcserver()+"/char
 		try {
 			daServ.delete(applyForm);
 		} catch(NoSuchApplyException nsae) {
-			rdAttributes.addFlashAttribute("error", nsae);
+			rdAttributes.addFlashAttribute("notice", nsae);
 		}
 		return "redirect:" + request.getHeader("Referer");
 	}

@@ -10,10 +10,10 @@
 <link href="/bootstrap/css/bootstrap.css" rel="stylesheet">
 <script src="/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-<script src="/js/async.js"></script>
+<script src="/js/headerNotice.js"></script>
 
-<c:if test="${not empty error}">
-	<script src="/js/errorModal.js"></script>
+<c:if test="${not empty notice}">
+	<script src="/js/noticeModal.js"></script>
 </c:if>
 <script src="/js/findSummonerModal.js"></script>
 

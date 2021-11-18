@@ -56,7 +56,7 @@ public class RegisterController {
 	public String registerStep3(@Valid @ModelAttribute("request") RegisterRequest regReq, BindingResult br, HttpServletRequest request, RedirectAttributes rdAttributes) throws Exception {
 		
 		if (br.hasErrors()) {					// 필요한 정보가 정한 폼에 맞지 않으면 이전 단계로 돌아감
-			rdAttributes.addFlashAttribute("error", new Exception("정해진 형식에 맞지 않습니다."));
+			rdAttributes.addFlashAttribute("notice", new RuntimeException("정해진 형식에 맞지 않습니다."));
 			return "redirect:" + request.getHeader("Referer");
 		}
 		
